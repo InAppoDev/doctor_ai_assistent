@@ -1,8 +1,8 @@
-import 'package:doctor_ai_assistent/features/app/ui/app.dart';
-import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'package:doctor_ai_assistent/features/app/init_app.dart';
+
+Future<void> main() async {
+  await initApp();
 }
 
 
