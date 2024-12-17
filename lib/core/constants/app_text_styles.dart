@@ -26,7 +26,16 @@ class AppTextStyles {
   static const TextStyle regularPx14 =
       TextStyle(fontFamily: 'Inter', fontSize: 14, fontWeight: FontWeight.w400, height: 17);
 
+  static const TextStyle mediumPx14 = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    height: 17,
+  );
+
   static const TextStyle regularPx12 =
       TextStyle(fontFamily: 'Inter', fontSize: 12, fontWeight: FontWeight.w400, height: 15);
+
+
       
 }
