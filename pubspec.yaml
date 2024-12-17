@@ -13,9 +13,20 @@ dependencies:
 
 
   cupertino_icons: ^1.0.8
+
+  # local storage
   shared_preferences: ^2.3.3
+
+  # dependency injection
   get_it: ^8.0.3
+
+  # navigation
   auto_route: ^9.2.2
+
+  # design
+  flutter_screenutil: ^5.9.3
+
+  # state management
   provider: ^6.1.2
 
 dev_dependencies:
