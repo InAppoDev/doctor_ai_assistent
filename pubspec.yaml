@@ -24,10 +24,12 @@ dependencies:
   auto_route: ^9.2.2
 
   # design
+  flutter_svg: ^2.0.16
   flutter_screenutil: ^5.9.3
 
   # state management
   provider: ^6.1.2
+  awesome_extensions: ^2.0.19
 
 dev_dependencies:
   flutter_test:
@@ -45,7 +47,6 @@ flutter:
     - assets/fonts/
     - assets/icons/
     - assets/images/
-
 
   fonts:
     - family: Inter
