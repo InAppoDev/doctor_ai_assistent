@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
+import 'package:doctor_ai_assistent/core/constants/app_icons.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/record_button.dart';
 import 'package:doctor_ai_assistent/features/record/provider/record_provider.dart';
@@ -60,9 +61,9 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                 padding: Responsive.isDesktop(context) ? 30 : 20,
                 size: Responsive.isDesktop(context) ? 28 : 24,
                 image: recordProvider.status == 1
-                    ? 'assets/icons/stop.png'
+                    ? AppIcons.pauseIcon
                     : recordProvider.status == 2
-                      ? 'assets/icons/start.png'
+                      ? AppIcons.playIcon
                       : null,
               )
             ],

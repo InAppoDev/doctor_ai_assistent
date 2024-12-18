@@ -1,5 +1,6 @@
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class RecordButton extends StatelessWidget {
 
@@ -30,7 +31,7 @@ class RecordButton extends StatelessWidget {
       ),
       padding: EdgeInsets.all(padding),
       child: Center(
-        child: image != null ? Image.asset(image!, height: size, width: size,) : Icon(Icons.circle, color: AppColors.bg, size: size,),
+        child: image != null ? SvgPicture.asset(image!, height: size, width: size,) : Icon(Icons.circle, color: AppColors.bg, size: size,),
       ),
     );
   }
