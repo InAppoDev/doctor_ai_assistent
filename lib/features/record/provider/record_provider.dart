@@ -55,6 +55,23 @@ class RecordProvider extends ChangeNotifier {
     _timer?.cancel();
   }
 
+
+  // textfield
+
+  bool _showTextField = true;
+
+  bool get showTextField => _showTextField;
+
+  void setHideTextField(bool hideTextField) {
+    _showTextField = hideTextField;
+    notifyListeners();
+  }
+
+  void toggleTextField() {
+    _showTextField = !_showTextField;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
