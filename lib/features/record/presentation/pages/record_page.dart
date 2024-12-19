@@ -12,7 +12,6 @@ import '../../../../core/widgets/responsive/responsive_widget.dart';
 
 @RoutePage()
 class RecordPage extends StatelessWidget implements AutoRouteWrapper {
-
   const RecordPage({super.key});
 
   @override
@@ -33,10 +32,11 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
         recordProvider.dispose();
       },
       child: Scaffold(
-        backgroundColor: AppColors.bg,
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          backgroundColor: AppColors.bg,
+          body: SafeArea(
+              child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 recordProvider.timerText,
@@ -45,16 +45,16 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
               ).paddingOnly(bottom: Responsive.isDesktop(context) ? 8 : 6),
               Text(
                 'Recording',
-                style: Responsive.isDesktop(context) ? AppTextStyles.regularPx20.copyWith(color: AppColors.accentGreen) : AppTextStyles.regularPx14.copyWith(color: AppColors.accentGreen),
+                style: Responsive.isDesktop(context)
+                    ? AppTextStyles.regularPx20.copyWith(color: AppColors.accentGreen)
+                    : AppTextStyles.regularPx14.copyWith(color: AppColors.accentGreen),
               ).paddingOnly(bottom: 70),
               recordProvider.status == 1
                   ? Container()
                   : const Divider(
-                color: AppColors.accentBlue,
-                thickness: 3,
-              ).paddingOnly(
-                bottom: Responsive.isDesktop(context) ? 200 : 50
-              ),
+                      color: AppColors.accentBlue,
+                      thickness: 3,
+                    ).paddingOnly(bottom: Responsive.isDesktop(context) ? 200 : 50),
               RecordButton(
                 height: Responsive.isDesktop(context) ? 88 : 62,
                 width: Responsive.isDesktop(context) ? 88 : 62,
@@ -65,11 +65,17 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                     : recordProvider.status == 2
                       ? AppIcons.playIcon
                       : null,
+                  onPressed: () {
+                    if (recordProvider.status == 1) {
+                      recordProvider.stopRecording();
+                    } else {
+                      recordProvider.startRecording();
+                    }
+                  }
+
               )
             ],
-          )
-        )
-      ),
+          ))),
     );
   }
 }
