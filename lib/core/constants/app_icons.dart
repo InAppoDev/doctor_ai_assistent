@@ -21,4 +21,8 @@ class AppIcons {
   // underline icon
   static const String underlineIcon = 'assets/icons/underline_icon.svg';
 
+
+  // Logo
+  static const String logo = 'assets/images/logo_1x.svg';
+
 }

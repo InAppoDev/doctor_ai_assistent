@@ -6,6 +6,7 @@ import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/record_button.dart';
 import 'package:doctor_ai_assistent/features/record/provider/record_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/widgets/responsive/responsive_widget.dart';
@@ -38,8 +39,17 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SvgPicture.asset(
+                    AppIcons.logo,
+                    width: Responsive.isDesktop(context) ? 102 : 63,
+                  ).paddingOnly(left: Responsive.isDesktop(context) ? 40 : 16),
+                ],
+              ),
               Text(
-                recordProvider.timerText,
+                '${recordProvider.minutes.toString().padLeft(2, '0')}:${recordProvider.seconds.toString().padLeft(2, '0')}',
                 style: Responsive.isDesktop(context) ? AppTextStyles.mediumPx40 : AppTextStyles.mediumPx32,
                 textAlign: TextAlign.center,
               ).paddingOnly(bottom: Responsive.isDesktop(context) ? 8 : 6),
@@ -68,14 +78,18 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                   onPressed: () {
                     if (recordProvider.status == 1) {
                       recordProvider.stopRecording();
+                      recordProvider.stopTimer();
                     } else {
                       recordProvider.startRecording();
+                      recordProvider.startTimer();
                     }
                   }
 
               )
             ],
-          ))),
+          ).paddingOnly(top: Responsive.isDesktop(context) ? 56 : 24)
+        )
+      ),
     );
   }
 }

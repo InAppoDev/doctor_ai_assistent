@@ -33,17 +33,20 @@ class RecordProvider extends ChangeNotifier {
 
   // Timer
   Timer? _timer;
-  String get timerText {
-    final int seconds = _timer?.tick ?? 0;
-    final int minutes = seconds ~/ 60;
-    final int remainingSeconds = seconds % 60;
-    return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
-  }
+
+  int seconds = 0;
+  int minutes = 0;
 
   Timer? get timer => _timer;
 
   void startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (seconds == 59) {
+        seconds = 0;
+        minutes++;
+      } else {
+        seconds++;
+      }
       notifyListeners();
     });
   }
