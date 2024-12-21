@@ -11,7 +11,7 @@ class AppColors {
   static const Color text = Color(0xff333333);
 
   // accent blue color
-  static const Color accentBlue = Color(0xff4A90E2);
+  static const Color accentBlue = Color(0xff177BFE);
 
   // accent green color
   static const Color accentGreen = Color(0xff1ECFA7);
@@ -24,4 +24,7 @@ class AppColors {
 
   // accent pink color
   static const Color accentPink = Color(0xffF56173);
+
+  // white color
+  static const Color white = Color(0xffF9F9F9);
 }

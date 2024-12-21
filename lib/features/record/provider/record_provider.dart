@@ -72,6 +72,16 @@ class RecordProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _hideShowButton = true;
+
+  bool get hideShowButton => _hideShowButton;
+
+  void setHideShowButton(bool hideShowButton) {
+    _hideShowButton = hideShowButton;
+    notifyListeners();
+  }
+
+
   @override
   void dispose() {
     _timer?.cancel();

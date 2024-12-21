@@ -3,6 +3,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_icons.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
+import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/animated_waves.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/record_button.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/recorded_text.dart';
@@ -83,13 +84,15 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                         if (recordProvider.status == 1) {
                           recordProvider.stopRecording();
                           recordProvider.stopTimer();
+                          recordProvider.setHideShowButton(true);
                         } else {
                           recordProvider.startRecording();
                           recordProvider.startTimer();
+                          recordProvider.setHideShowButton(false);
                         }
                       }
                   ).paddingOnly(bottom: Responsive.isDesktop(context) ? 61 : 35),
-                  recordProvider.showTextField ? Row(
+                  (recordProvider.showTextField && recordProvider.seconds != 0) ? Row(
                     children: [
                       if (Responsive.isDesktop(context))
                         Expanded(
@@ -113,16 +116,81 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                     left: Responsive.isDesktop(context) ? 0 : 16,
                     right: Responsive.isDesktop(context) ? 0 : 16,
                   )
-                      : Container(height: Responsive.isDesktop(context) ? 330 : 270 ,).paddingOnly(bottom: 8),
-                  GestureDetector(
-                    onTap: () {
-                      recordProvider.toggleTextField();
-                    },
-                    child: Text(
-                      recordProvider.showTextField ? 'Hide text' : 'Show text',
-                      style: AppTextStyles.mediumPx16.copyWith(color: AppColors.accentBlue, decoration: TextDecoration.underline, decorationColor: AppColors.accentBlue),
+                      : Container(height: Responsive.isDesktop(context) ? 330 : 270 ,).paddingOnly(bottom: recordProvider.status == 2 ? 24 : 8),
+                  if (recordProvider.status == 1)
+                    GestureDetector(
+                      onTap: () {
+                        recordProvider.toggleTextField();
+                      },
+                      child: Text(
+                        recordProvider.showTextField ? 'Hide text' : 'Show text',
+                        style: AppTextStyles.mediumPx16.copyWith(color: AppColors.accentBlue, decoration: TextDecoration.underline, decorationColor: AppColors.accentBlue),
+                      ),
+                    )
+                  else if (recordProvider.status == 2)
+                    Responsive(
+                      desktop: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PrimaryButton(
+                            text: 'Fill out a medical form',
+                            textColor: AppColors.white,
+                            color: AppColors.accentBlue,
+                            borderColor: AppColors.accentBlue,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            onPress: () {},
+                          ).paddingOnly(right: 20),
+                          PrimaryButton(
+                            text: 'Edit text',
+                            textColor: AppColors.text,
+                            color: Colors.transparent,
+                            borderColor: AppColors.accentBlue,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            onPress: () {},
+                          ).paddingOnly(right: 20),
+                          PrimaryButton(
+                            text: 'Edit text',
+                            textColor: AppColors.text,
+                            color: Colors.transparent,
+                            borderColor: AppColors.accentBlue,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            onPress: () {},
+                          ),
+                        ],
+                      ),
+                      mobile: Column(
+                        children: [
+                          PrimaryButton(
+                            text: 'Fill out a medical form',
+                            textColor: AppColors.white,
+                            color: AppColors.accentBlue,
+                            borderColor: AppColors.accentBlue,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            textStyle: AppTextStyles.regularPx16,
+                            onPress: () {},
+                          ).paddingOnly(bottom: 16),
+                          PrimaryButton(
+                            text: 'Edit text',
+                            textColor: AppColors.text,
+                            color: Colors.transparent,
+                            borderColor: AppColors.accentBlue,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            textStyle: AppTextStyles.regularPx16,
+                            onPress: () {},
+                          ).paddingOnly(bottom: 16),
+                          PrimaryButton(
+                            text: 'Save',
+                            textColor: AppColors.text,
+                            color: Colors.transparent,
+                            borderColor: AppColors.accentBlue,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            textStyle: AppTextStyles.regularPx16,
+                            onPress: () {},
+                          )
+                        ]
+                      ).paddingSymmetric(horizontal: 16)
                     ),
-                  )
+
               ],
             ).paddingSymmetric(vertical: Responsive.isDesktop(context) ? 56 : 24),
           )
