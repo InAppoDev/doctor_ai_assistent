@@ -25,4 +25,7 @@ class AppIcons {
   // Logo
   static const String logo = 'assets/images/logo_1x.svg';
 
+  // copy icon
+  static const String copyIcon = 'assets/icons/copy_icon.svg';
+
 }
