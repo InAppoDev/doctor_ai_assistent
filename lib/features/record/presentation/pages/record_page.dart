@@ -4,13 +4,11 @@ import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_icons.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
-import 'package:doctor_ai_assistent/features/record/presentation/widgets/animated_waves.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/record_button.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/recorded_text.dart';
 import 'package:doctor_ai_assistent/features/record/provider/record_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/widgets/responsive/responsive_widget.dart';
@@ -65,7 +63,8 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                         : AppTextStyles.regularPx14.copyWith(color: AppColors.accentGreen),
                   ).paddingOnly(bottom: 70),
                   recordProvider.status == 1
-                      ? Lottie.asset('assets/gifs/wave_animation.json', width: double.infinity, height: Responsive.isDesktop(context) ? 130 : 36,)
+                      // ? Lottie.asset('assets/gifs/wave_animation.json', width: double.infinity, height: Responsive.isDesktop(context) ? 130 : 36,)
+                      ? Container()
                       : const Divider(
                           color: AppColors.accentBlue,
                           thickness: 3,
