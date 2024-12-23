@@ -9,7 +9,6 @@ import 'package:doctor_ai_assistent/features/record/presentation/widgets/record_
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/recorded_text.dart';
 import 'package:doctor_ai_assistent/features/record/provider/record_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/widgets/responsive/responsive_widget.dart';

@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:doctor_ai_assistent/core/navigation/app_routes.dart';
-import 'package:doctor_ai_assistent/core/navigation/guard/auth_guard.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/pages/record_page.dart';
 import 'package:flutter/material.dart';
 

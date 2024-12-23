@@ -1,6 +1,5 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/features/edit/presentation/widgets/transcribed_list_item_widget.dart';
-import 'package:doctor_ai_assistent/features/record/presentation/pages/record_page.dart';
 import 'package:flutter/material.dart';
 
 class TranscribedList extends StatelessWidget {
