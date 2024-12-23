@@ -36,7 +36,9 @@ class TranscribedListItemWidget extends StatelessWidget {
             ).paddingOnly(bottom: 8),
             Text(
               text,
-              style: AppTextStyles.regularPx16
+              style: AppTextStyles.regularPx16,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis
             )
           ])
         ],

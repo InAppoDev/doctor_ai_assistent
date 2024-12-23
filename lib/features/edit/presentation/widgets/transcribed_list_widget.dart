@@ -1,46 +1,28 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/extensions/datetime_extension.dart';
-import 'package:doctor_ai_assistent/core/widgets/avatar_widget.dart';
+import 'package:doctor_ai_assistent/features/edit/presentation/widgets/transcribed_list_item_widget.dart';
 import 'package:flutter/material.dart';
 
-class TranscribedListItemWidget extends StatelessWidget {
-  final String text;
-  final DateTime date;
+class TranscribedList extends StatelessWidget {
 
-  const TranscribedListItemWidget({super.key, required this.text, required this.date});
+  final List<int> list;
+
+  const TranscribedList({super.key, this.list = const []});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          const AvatarWidget(),
-          Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  date.toHourAndMinute(),
-                  style: AppTextStyles.mediumPx16
-                ),
-                Text(
-                  date.toNameOfMonthAndDay(),
-                  style: AppTextStyles.regularPx12.copyWith(
-                    color: AppColors.disabled
-                  )
-                )
-              ]
-            ).paddingOnly(bottom: 8),
-            Text(
-              text,
-              style: AppTextStyles.regularPx16
-            )
-          ])
-        ],
-      )
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+              return TranscribedListItemWidget(
+                text: 'Speech-to-Text Implementation.Speech Input Indicator .Transcribed Patient Responses. Speech-to-Text Implementation.Speech Input Indicator .Transcribed Patient Responses ',
+                date: DateTime.now(),
+              );
+            },
+            childCount: list.length,
+          ),
+        ),
+      ]
     );
   }
 }
