@@ -3,6 +3,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_icons.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
+import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
 import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/record_button.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/recorded_text.dart';
@@ -45,9 +46,8 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SvgPicture.asset(
-                        AppIcons.logo,
-                        width: Responsive.isDesktop(context) ? 102 : 63,
+                    LogoWidget(
+                      onTap: () {},
                       ).paddingOnly(left: Responsive.isDesktop(context) ? 40 : 16),
                     ],
                   ),
