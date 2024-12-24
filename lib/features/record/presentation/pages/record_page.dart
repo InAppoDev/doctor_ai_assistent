@@ -164,7 +164,7 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                             color: AppColors.accentBlue,
                             borderColor: AppColors.accentBlue,
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            textStyle: AppTextStyles.regularPx16,
+                            textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.white),
                             onPress: () {},
                           ).paddingOnly(bottom: 16),
                           PrimaryButton(

@@ -30,6 +30,7 @@ dependencies:
   # state management
   provider: ^6.1.2
   awesome_extensions: ^2.0.19
+  flutter_quill: ^10.8.5
 
 dev_dependencies:
   flutter_test:

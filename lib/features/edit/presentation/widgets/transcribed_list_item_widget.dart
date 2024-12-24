@@ -16,31 +16,37 @@ class TranscribedListItemWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const AvatarWidget(),
-          Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          const AvatarWidget().paddingOnly(right: 12),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      date.toHourAndMinute(),
+                      style: AppTextStyles.mediumPx16
+                    ),
+                    Text(
+                      date.toNameOfMonthAndDay(),
+                      style: AppTextStyles.regularPx12.copyWith(
+                        color: AppColors.disabled
+                      )
+                    )
+                  ]
+                ).paddingOnly(bottom: 8),
                 Text(
-                  date.toHourAndMinute(),
-                  style: AppTextStyles.mediumPx16
-                ),
-                Text(
-                  date.toNameOfMonthAndDay(),
-                  style: AppTextStyles.regularPx12.copyWith(
-                    color: AppColors.disabled
-                  )
+                  text,
+                  style: AppTextStyles.regularPx16,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis
                 )
               ]
-            ).paddingOnly(bottom: 8),
-            Text(
-              text,
-              style: AppTextStyles.regularPx16,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis
-            )
-          ])
+            ),
+          )
         ],
       )
     );

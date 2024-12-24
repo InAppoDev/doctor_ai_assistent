@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:doctor_ai_assistent/core/navigation/app_routes.dart';
+import 'package:doctor_ai_assistent/features/edit/presentation/pages/edit_page.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/pages/record_page.dart';
 import 'package:flutter/material.dart';
 
@@ -19,5 +20,6 @@ class AppRouter extends RootStackRouter {
           path: AppRoutes.record,
         ),
         AutoRoute(page: LoginRoute.page, path: AppRoutes.login),
+        AutoRoute(page: EditRoute.page, path: AppRoutes.editRecord),
   ];
 }
