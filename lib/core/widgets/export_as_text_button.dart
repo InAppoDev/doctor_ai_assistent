@@ -8,12 +8,15 @@ class ExportAsTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Text(
-        'Export as',
-        style: AppTextStyles.mediumPx16.copyWith(
-          decoration: TextDecoration.underline
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Text(
+          'Export as',
+          style: AppTextStyles.mediumPx16.copyWith(
+            decoration: TextDecoration.underline
+          ),
         ),
       ),
     );
