@@ -31,7 +31,7 @@ class RecordButton extends StatelessWidget {
       ),
       padding: EdgeInsets.all(padding),
       child: Center(
-        child: image != null ? SvgPicture.asset(image!, height: size, width: size, color: AppColors.bg,) : Icon(Icons.circle, color: AppColors.bg, size: size,),
+        child: image != null ? SvgPicture.asset(image!, height: size, width: size, colorFilter: const ColorFilter.mode(AppColors.bg, BlendMode.srcIn),) : Icon(Icons.circle, color: AppColors.bg, size: size,),
         ),
       ),
     );

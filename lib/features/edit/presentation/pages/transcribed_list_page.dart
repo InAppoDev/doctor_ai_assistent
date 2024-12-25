@@ -25,7 +25,7 @@ class TranscribedListPage extends StatelessWidget {
                     AppIcons.closeIcon,
                     height: 24,
                     width: 24,
-                    color: AppColors.accentBlue
+                    colorFilter: const ColorFilter.mode(AppColors.accentBlue, BlendMode.srcIn),
                   ),
                 )
               ]

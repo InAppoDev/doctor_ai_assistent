@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_icons.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/core/widgets/export_as_text_button.dart';
 import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
@@ -10,7 +9,6 @@ import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.da
 import 'package:doctor_ai_assistent/features/edit/presentation/widgets/edit_texts_list_widget.dart';
 import 'package:doctor_ai_assistent/features/edit/presentation/widgets/transcribed_list_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 @RoutePage()
 class EditPage extends StatelessWidget {
@@ -50,14 +48,12 @@ class EditPage extends StatelessWidget {
                       mobile: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          GestureDetector(
-                            onTap: () {}, 
-                            child: SvgPicture.asset(
-                              AppIcons.closeIcon, 
-                              height: 12, 
-                              width: 18, 
-                              color: AppColors.accentBlue
-                            )
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: () {}, 
+                              child: const Icon(Icons.arrow_back, color: AppColors.accentBlue, size: 24),
+                            ),
                           ),
                           const Text(
                             'Edit the text', 
@@ -74,7 +70,7 @@ class EditPage extends StatelessWidget {
                         textColor: AppColors.white,
                         text: 'Transcribed',
                         borderColor: AppColors.accentGreen,
-                      ),
+                      ).paddingOnly(bottom: 24),
                     EditTextsListWidget(list: List.generate(5, (index) => index),).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
                     Responsive(
                       desktop: Row(
