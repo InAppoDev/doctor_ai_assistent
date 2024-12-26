@@ -26,11 +26,15 @@ dependencies:
   # design
   flutter_svg: ^2.0.16
   flutter_screenutil: ^5.9.3
+  flutter_quill: ^10.8.5
+  gif: ^2.3.0
+  awesome_extensions: ^2.0.19
+
+  # audio
+  just_audio: ^0.9.42
 
   # state management
   provider: ^6.1.2
-  awesome_extensions: ^2.0.19
-  flutter_quill: ^10.8.5
 
 dev_dependencies:
   flutter_test:
@@ -48,6 +52,7 @@ flutter:
     - assets/fonts/
     - assets/icons/
     - assets/images/
+    - assets/gifs/
 
   fonts:
     - family: Inter

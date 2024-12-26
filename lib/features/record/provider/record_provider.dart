@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:gif/gif.dart';
 
 class RecordProvider extends ChangeNotifier {
-
   /*
   * 0 - Initial
   * 1 - Recording
@@ -30,7 +30,6 @@ class RecordProvider extends ChangeNotifier {
     setStatus(0);
   }
 
-
   // Timer
   Timer? _timer;
 
@@ -54,7 +53,6 @@ class RecordProvider extends ChangeNotifier {
   void stopTimer() {
     _timer?.cancel();
   }
-
 
   // textfield
 
@@ -80,7 +78,6 @@ class RecordProvider extends ChangeNotifier {
     _hideShowButton = hideShowButton;
     notifyListeners();
   }
-
 
   @override
   void dispose() {

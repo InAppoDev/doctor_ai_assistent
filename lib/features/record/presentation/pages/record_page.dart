@@ -9,13 +9,17 @@ import 'package:doctor_ai_assistent/features/record/presentation/widgets/record_
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/recorded_text.dart';
 import 'package:doctor_ai_assistent/features/record/provider/record_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:gif/gif.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/widgets/responsive/responsive_widget.dart';
 
 @RoutePage()
-class RecordPage extends StatelessWidget implements AutoRouteWrapper {
+class RecordPage extends StatefulWidget implements AutoRouteWrapper {
   const RecordPage({super.key});
+
+  @override
+  State<RecordPage> createState() => _RecordPageState();
 
   @override
   Widget wrappedRoute(BuildContext context) {
@@ -23,6 +27,22 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
       create: (context) => RecordProvider(),
       child: this,
     );
+  }
+}
+
+class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateMixin {
+  late GifController _gifController;
+
+  @override
+  void initState() {
+    super.initState();
+    _gifController = GifController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _gifController.dispose();
+    super.dispose();
   }
 
   @override
@@ -37,47 +57,65 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
       child: Scaffold(
           backgroundColor: AppColors.bg,
           body: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
+              child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
                     LogoWidget(
                       onTap: () {},
-                      ).paddingOnly(left: Responsive.isDesktop(context) ? 40 : 16),
-                    ],
-                  ),
-                  Text(
-                    '${recordProvider.minutes.toString().padLeft(2, '0')}:${recordProvider.seconds.toString().padLeft(2, '0')}',
-                    style: Responsive.isDesktop(context) ? AppTextStyles.mediumPx40 : AppTextStyles.mediumPx32,
-                    textAlign: TextAlign.center,
-                  ).paddingOnly(bottom: Responsive.isDesktop(context) ? 8 : 6),
-                  Text(
-                    'Recording',
-                    style: Responsive.isDesktop(context)
-                        ? AppTextStyles.regularPx20.copyWith(color: AppColors.accentGreen)
-                        : AppTextStyles.regularPx14.copyWith(color: AppColors.accentGreen),
-                  ).paddingOnly(bottom: 70),
-                  recordProvider.status == 1
-                      // ? Lottie.asset('assets/gifs/wave_animation.json', width: double.infinity, height: Responsive.isDesktop(context) ? 130 : 36,)
-                      ? Container()
-                      : const Divider(
-                          color: AppColors.accentBlue,
-                          thickness: 3,
-                        ).paddingOnly(bottom: Responsive.isDesktop(context) ? 200 : 50),
-                  RecordButton(
-                    height: Responsive.isDesktop(context) ? 88 : 62,
-                    width: Responsive.isDesktop(context) ? 88 : 62,
-                    padding: Responsive.isDesktop(context) ? 30 : 20,
-                    size: Responsive.isDesktop(context) ? 28 : 24,
-                    image: recordProvider.status == 1
-                        ? AppIcons.pauseIcon
-                        : recordProvider.status == 2
-                          ? AppIcons.playIcon
-                          : null,
+                    ).paddingOnly(left: Responsive.isDesktop(context) ? 40 : 16),
+                  ],
+                ),
+                Text(
+                  '${recordProvider.minutes.toString().padLeft(2, '0')}:${recordProvider.seconds.toString().padLeft(2, '0')}',
+                  style: Responsive.isDesktop(context) ? AppTextStyles.mediumPx40 : AppTextStyles.mediumPx32,
+                  textAlign: TextAlign.center,
+                ).paddingOnly(bottom: Responsive.isDesktop(context) ? 8 : 6),
+                Text(
+                  'Recording',
+                  style: Responsive.isDesktop(context)
+                      ? AppTextStyles.regularPx20.copyWith(color: AppColors.accentGreen)
+                      : AppTextStyles.regularPx14.copyWith(color: AppColors.accentGreen),
+                ).paddingOnly(bottom: 70),
+                recordProvider.status == 1
+                    ? Row(
+                        children: [
+                          Expanded(
+                            child: Gif(
+                              image: const AssetImage("assets/gifs/wave_animation.gif"),
+                              controller: _gifController,
+                              //fps: 30,
+                              //duration: const Duration(seconds: 3),
+                              width: double.infinity,
+                              autostart: Autostart.loop,
+                              onFetchCompleted: () {
+                                _gifController.reset();
+                                _gifController.forward();
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                    : const Divider(
+                        color: AppColors.accentBlue,
+                        thickness: 3,
+                      ).paddingOnly(bottom: Responsive.isDesktop(context) ? 200 : 50),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: RecordButton(
+                      height: Responsive.isDesktop(context) ? 88 : 62,
+                      width: Responsive.isDesktop(context) ? 88 : 62,
+                      padding: Responsive.isDesktop(context) ? 30 : 20,
+                      size: Responsive.isDesktop(context) ? 28 : 24,
+                      image: recordProvider.status == 1
+                          ? AppIcons.pauseIcon
+                          : recordProvider.status == 2
+                              ? AppIcons.playIcon
+                              : null,
                       onPressed: () {
                         if (recordProvider.status == 1) {
                           recordProvider.stopRecording();
@@ -88,45 +126,43 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                           recordProvider.startTimer();
                           recordProvider.setHideShowButton(false);
                         }
-                      }
-                  ).paddingOnly(bottom: Responsive.isDesktop(context) ? 61 : 35),
-                  (recordProvider.showTextField && recordProvider.seconds != 0) ? Row(
-                    children: [
-                      if (Responsive.isDesktop(context))
-                        Expanded(
-                          flex: 1,
-                          child: Container()
-                        ),
-                      Expanded(
-                        flex: 2,
-                        child: ColorCodedTextField(
-                          height: Responsive.isDesktop(context) ? 330 : 270,
-                        ),
-                      ),
-                      if (Responsive.isDesktop(context))
-                        Expanded(
-                            flex: 1,
-                            child: Container()
-                        ),
-                    ],
-                  ).paddingOnly(
-                    bottom: 8,
-                    left: Responsive.isDesktop(context) ? 0 : 16,
-                    right: Responsive.isDesktop(context) ? 0 : 16,
+                      }).paddingOnly(bottom: Responsive.isDesktop(context) ? 61 : 35),
+                ),
+                (recordProvider.showTextField && recordProvider.seconds != 0)
+                    ? Row(
+                        children: [
+                          if (Responsive.isDesktop(context)) Expanded(flex: 1, child: Container()),
+                          Expanded(
+                            flex: 2,
+                            child: ColorCodedTextField(
+                              height: Responsive.isDesktop(context) ? 330 : 270,
+                            ),
+                          ),
+                          if (Responsive.isDesktop(context)) Expanded(flex: 1, child: Container()),
+                        ],
+                      ).paddingOnly(
+                        bottom: 8,
+                        left: Responsive.isDesktop(context) ? 0 : 16,
+                        right: Responsive.isDesktop(context) ? 0 : 16,
+                      )
+                    : Container(
+                        height: Responsive.isDesktop(context) ? 330 : 270,
+                      ).paddingOnly(bottom: recordProvider.status == 2 ? 24 : 8),
+                if (recordProvider.status == 1)
+                  GestureDetector(
+                    onTap: () {
+                      recordProvider.toggleTextField();
+                    },
+                    child: Text(
+                      recordProvider.showTextField ? 'Hide text' : 'Show text',
+                      style: AppTextStyles.mediumPx16.copyWith(
+                          color: AppColors.accentBlue,
+                          decoration: TextDecoration.underline,
+                          decorationColor: AppColors.accentBlue),
+                    ),
                   )
-                      : Container(height: Responsive.isDesktop(context) ? 330 : 270 ,).paddingOnly(bottom: recordProvider.status == 2 ? 24 : 8),
-                  if (recordProvider.status == 1)
-                    GestureDetector(
-                      onTap: () {
-                        recordProvider.toggleTextField();
-                      },
-                      child: Text(
-                        recordProvider.showTextField ? 'Hide text' : 'Show text',
-                        style: AppTextStyles.mediumPx16.copyWith(color: AppColors.accentBlue, decoration: TextDecoration.underline, decorationColor: AppColors.accentBlue),
-                      ),
-                    )
-                  else if (recordProvider.status == 2)
-                    Responsive(
+                else if (recordProvider.status == 2)
+                  Responsive(
                       desktop: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -147,7 +183,7 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                             onPress: () {},
                           ).paddingOnly(right: 20),
                           PrimaryButton(
-                            text: 'Edit text',
+                            text: 'Save',
                             textColor: AppColors.text,
                             color: Colors.transparent,
                             borderColor: AppColors.accentBlue,
@@ -156,44 +192,38 @@ class RecordPage extends StatelessWidget implements AutoRouteWrapper {
                           ),
                         ],
                       ),
-                      mobile: Column(
-                        children: [
-                          PrimaryButton(
-                            text: 'Fill out a medical form',
-                            textColor: AppColors.white,
-                            color: AppColors.accentBlue,
-                            borderColor: AppColors.accentBlue,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.white),
-                            onPress: () {},
-                          ).paddingOnly(bottom: 16),
-                          PrimaryButton(
-                            text: 'Edit text',
-                            textColor: AppColors.text,
-                            color: Colors.transparent,
-                            borderColor: AppColors.accentBlue,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            textStyle: AppTextStyles.regularPx16,
-                            onPress: () {},
-                          ).paddingOnly(bottom: 16),
-                          PrimaryButton(
-                            text: 'Save',
-                            textColor: AppColors.text,
-                            color: Colors.transparent,
-                            borderColor: AppColors.accentBlue,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            textStyle: AppTextStyles.regularPx16,
-                            onPress: () {},
-                          )
-                        ]
-                      ).paddingSymmetric(horizontal: 16)
-                    ),
-
+                      mobile: Column(children: [
+                        PrimaryButton(
+                          text: 'Fill out a medical form',
+                          textColor: AppColors.white,
+                          color: AppColors.accentBlue,
+                          borderColor: AppColors.accentBlue,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.white),
+                          onPress: () {},
+                        ).paddingOnly(bottom: 16),
+                        PrimaryButton(
+                          text: 'Edit text',
+                          textColor: AppColors.text,
+                          color: Colors.transparent,
+                          borderColor: AppColors.accentBlue,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          textStyle: AppTextStyles.regularPx16,
+                          onPress: () {},
+                        ).paddingOnly(bottom: 16),
+                        PrimaryButton(
+                          text: 'Save',
+                          textColor: AppColors.text,
+                          color: Colors.transparent,
+                          borderColor: AppColors.accentBlue,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          textStyle: AppTextStyles.regularPx16,
+                          onPress: () {},
+                        )
+                      ]).paddingSymmetric(horizontal: 16)),
               ],
             ).paddingSymmetric(vertical: Responsive.isDesktop(context) ? 56 : 24),
-          )
-        )
-      ),
+          ))),
     );
   }
 }
