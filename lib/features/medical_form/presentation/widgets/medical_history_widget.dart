@@ -6,17 +6,18 @@ import 'package:doctor_ai_assistent/core/widgets/editable_textfield.dart';
 import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
 import 'package:doctor_ai_assistent/features/edit/presentation/widgets/edit_text_tile/edit_text_tile_buttons.dart';
 import 'package:doctor_ai_assistent/features/edit/provider/edit_text_provider.dart';
+import 'package:doctor_ai_assistent/features/medical_form/presentation/widgets/history_log_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class EditTextTile extends StatefulWidget {
-  const EditTextTile({super.key});
+class MedicalHistoryTile extends StatefulWidget {
+  const MedicalHistoryTile({super.key});
 
   @override
-  State<EditTextTile> createState() => _EditTextTileState();
+  State<MedicalHistoryTile> createState() => _MedicalHistoryTileState();
 }
 
-class _EditTextTileState extends State<EditTextTile> {
+class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
   late EditTextProvider _editProvider;
 
   @override
@@ -49,52 +50,22 @@ class _EditTextTileState extends State<EditTextTile> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (Responsive.isDesktop(context)) const AvatarWidget().paddingOnly(right: 12),
                 Flexible(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (Responsive.isMobile(context))
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            EditTextTileButtons(
-                              onCopyClick: () {},
-                              onTranslateClick: () {},
-                              onPlayClick: () {},
-                            ),
-                          ]
-                        ).paddingOnly(bottom: 16),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (Responsive.isMobile(context))
-                            const Expanded(
-                              flex: 1,
-                              child: AvatarWidget(),
-                            ).paddingOnly(right: 12),
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: Responsive.isDesktop(context) ? 16 : 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: AppColors.accentBlue,
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Text(
-                                'Doctor',
-                                style: AppTextStyles.regularPx16,
-                              ),
-                            ),
+                      Responsive(
+                        desktop: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                          const Text('Medical history', style: AppTextStyles.mediumPx20),
+                          HistoryLogButtonWidget(onTap: () {})
+                        ]).paddingOnly(bottom: 20),
+                        mobile: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                          const Text('Medical history', style: AppTextStyles.mediumPx20),
+                          EditTextTileButtons(
+                            onCopyClick: () {},
                           ),
-                        ],
-                      ).paddingOnly(bottom: 16),
+                        ]).paddingOnly(bottom: 16),
+                      ),
                       EditableTextfield(quillController: _editProvider.quillController),
                     ],
                   ),
@@ -110,13 +81,10 @@ class _EditTextTileState extends State<EditTextTile> {
               const SizedBox(width: 20),
               EditTextTileButtons(
                 onCopyClick: () {},
-                onTranslateClick: () {},
-                onPlayClick: () {},
               ),
             ]),
           )
       ],
     );
   }
-
 }
