@@ -2,9 +2,7 @@ import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/features/edit/presentation/widgets/audio_progress_bar.dart';
 import 'package:doctor_ai_assistent/features/edit/presentation/widgets/transcribed_list/transcribed_list_widget.dart';
-import 'package:doctor_ai_assistent/features/edit/provider/player_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class DesktopTranscribedListWidget extends StatelessWidget {
   const DesktopTranscribedListWidget({super.key});

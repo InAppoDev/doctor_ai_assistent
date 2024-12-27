@@ -7,14 +7,14 @@ import 'package:flutter_svg/svg.dart';
 
 class EditTextTileButtons extends StatelessWidget {
   final Function() onCopyClick;
-  final Function() onTranslateClick;
-  final Function() onPlayClick;
+  final Function()? onTranslateClick;
+  final Function()? onPlayClick;
 
   const EditTextTileButtons({
     super.key,
     required this.onCopyClick,
-    required this.onTranslateClick,
-    required this.onPlayClick,
+    this.onTranslateClick,
+    this.onPlayClick,
   });
 
   @override
@@ -33,23 +33,25 @@ class EditTextTileButtons extends StatelessWidget {
               ),
             ),
           ).paddingOnly(right: 16),
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: onTranslateClick,
-              child: SvgPicture.asset(AppIcons.translateIcon,
-                      height: 24, width: 24, colorFilter: const ColorFilter.mode(AppColors.disabled, BlendMode.srcIn))
-                  .paddingOnly(right: 16),
+          if (onTranslateClick != null)
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: onTranslateClick,
+                child: SvgPicture.asset(AppIcons.translateIcon,
+                        height: 24, width: 24, colorFilter: const ColorFilter.mode(AppColors.disabled, BlendMode.srcIn))
+                    .paddingOnly(right: 16),
+              ),
             ),
-          ),
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: onPlayClick,
-              child: SvgPicture.asset(AppIcons.playIcon,
-                  height: 24, width: 24, colorFilter: const ColorFilter.mode(AppColors.disabled, BlendMode.srcIn)),
-            ),
-          )
+          if (onPlayClick != null)
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: onPlayClick,
+                child: SvgPicture.asset(AppIcons.playIcon,
+                    height: 24, width: 24, colorFilter: const ColorFilter.mode(AppColors.disabled, BlendMode.srcIn)),
+              ),
+            )
         ]),
         desktop: Column(children: [
           MouseRegion(
@@ -64,22 +66,24 @@ class EditTextTileButtons extends StatelessWidget {
               ),
             ),
           ).paddingOnly(bottom: 16),
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: onTranslateClick,
-              child: SvgPicture.asset(AppIcons.translateIcon,
-                      height: 24, width: 24, colorFilter: const ColorFilter.mode(AppColors.disabled, BlendMode.srcIn))
-            ),
-          ).paddingOnly(bottom: 16),
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: onPlayClick,
-              child: SvgPicture.asset(AppIcons.playIcon,
-                  height: 24, width: 24, colorFilter: const ColorFilter.mode(AppColors.disabled, BlendMode.srcIn)),
-            ),
-          )
+          if (onTranslateClick != null)
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: onTranslateClick,
+                child: SvgPicture.asset(AppIcons.translateIcon,
+                        height: 24, width: 24, colorFilter: const ColorFilter.mode(AppColors.disabled, BlendMode.srcIn))
+              ),
+            ).paddingOnly(bottom: 16),
+          if (onPlayClick != null)
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: onPlayClick,
+                child: SvgPicture.asset(AppIcons.playIcon,
+                    height: 24, width: 24, colorFilter: const ColorFilter.mode(AppColors.disabled, BlendMode.srcIn)),
+              ),
+            )
         ]));
   }
 }

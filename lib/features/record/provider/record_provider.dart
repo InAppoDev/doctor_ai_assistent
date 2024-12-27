@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:gif/gif.dart';
 
 class RecordProvider extends ChangeNotifier {
   /*

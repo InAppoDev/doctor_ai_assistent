@@ -2,11 +2,11 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/core/widgets/avatar_widget.dart';
+import 'package:doctor_ai_assistent/core/widgets/editable_textfield.dart';
 import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
 import 'package:doctor_ai_assistent/features/edit/presentation/widgets/edit_text_tile/edit_text_tile_buttons.dart';
 import 'package:doctor_ai_assistent/features/edit/provider/edit_text_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:provider/provider.dart';
 
 class EditTextTile extends StatefulWidget {
@@ -95,80 +95,7 @@ class _EditTextTileState extends State<EditTextTile> {
                           ),
                         ],
                       ).paddingOnly(bottom: 16),
-                      Flexible(
-                        child: Container(
-                          constraints: const BoxConstraints(
-                            maxHeight: 400,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                children: [
-                                  QuillToolbar.simple(
-                                    controller: _editProvider.quillController,
-                                    configurations: const QuillSimpleToolbarConfigurations(
-                                        showBoldButton: true,
-                                        showItalicButton: true,
-                                        showUnderLineButton: true,
-                                        showStrikeThrough: false,
-                                        showColorButton: false,
-                                        showBackgroundColorButton: false,
-                                        showClearFormat: false,
-                                        showHeaderStyle: false,
-                                        showListNumbers: false,
-                                        showListBullets: false,
-                                        showCodeBlock: false,
-                                        showQuote: false,
-                                        showLink: false,
-                                        showClipboardCopy: false,
-                                        showUndo: false,
-                                        showRedo: false,
-                                        showAlignmentButtons: false,
-                                        showFontSize: false,
-                                        showIndent: false,
-                                        showCenterAlignment: false,
-                                        showClipboardCut: false,
-                                        showClipboardPaste: false,
-                                        showDirection: false,
-                                        showDividers: false,
-                                        showFontFamily: false,
-                                        showInlineCode: false,
-                                        showJustifyAlignment: false,
-                                        showLeftAlignment: false,
-                                        showLineHeightButton: false,
-                                        showListCheck: false,
-                                        showRightAlignment: false,
-                                        showSearchButton: false,
-                                        showSmallButton: false,
-                                        showSubscript: false,
-                                        showSuperscript: false,
-                                        toolbarIconAlignment: WrapAlignment.start,
-                                        toolbarSectionSpacing: 0,
-                                      ),
-                                  ),
-                                  _buildHighlightButton(),
-                                ],
-                              ),
-                              Flexible(
-                                child: Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: AppColors.accentBlue,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: QuillEditor.basic(
-                                    controller: _editProvider.quillController,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      EditableTextfield(quillController: _editProvider.quillController),
                     ],
                   ),
                 ),
@@ -192,26 +119,4 @@ class _EditTextTileState extends State<EditTextTile> {
     );
   }
 
-  Widget _buildHighlightButton() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.edit_outlined, color: AppColors.text),
-          onPressed: () {
-            final currentSelection = _editProvider.quillController.selection;
-            if (!currentSelection.isCollapsed) {
-              final currentAttributes = _editProvider.quillController.getSelectionStyle().attributes;
-              if (currentAttributes.containsKey(Attribute.background.key)) {
-                _editProvider.quillController.formatSelection(Attribute.clone(Attribute.background, null));
-              } else {
-                _editProvider.quillController.formatSelection(Attribute.clone(Attribute.background, '#FFFF00'));
-              }
-            }
-          },
-          tooltip: 'Highlight Text',
-        ),
-      ],
-    );
-  }
 }

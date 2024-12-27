@@ -8,12 +8,14 @@ import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
 import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
 import 'package:doctor_ai_assistent/features/edit/presentation/widgets/desktop_transcribed_list_widget.dart';
 import 'package:doctor_ai_assistent/features/edit/provider/player_provider.dart';
+import 'package:doctor_ai_assistent/features/medical_form/presentation/widgets/medical_form_details_body.dart';
+import 'package:doctor_ai_assistent/features/medical_form/presentation/widgets/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
-class EditPage extends StatelessWidget {
-  const EditPage({super.key});
+class MedicalFormPage extends StatelessWidget {
+  const MedicalFormPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +68,6 @@ class EditPage extends StatelessWidget {
                           ],
                         ),
                       ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
-                      //TODO: need to add the search bar 
                       if (Responsive.isMobile(context))
                         PrimaryButton(
                           onPress: () {},
@@ -75,7 +76,21 @@ class EditPage extends StatelessWidget {
                           text: 'Transcribed Patient Responses',
                           borderColor: AppColors.accentGreen,
                         ).paddingOnly(bottom: 24),
-                      //TODO: need to add the list of the medical history tiles
+                      Row(
+                        children: [
+                          Flexible(
+                            flex: 7,
+                            child: SearchBarWidget(
+                              controller: TextEditingController(),
+                              onSearch: () {},
+                              onMicTap: () {},
+                            ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
+                          ),
+                          if (Responsive.isDesktop(context))
+                            Flexible(flex: 1, child: Container(),)
+                        ],
+                      ),
+                      MedicalFormDetailsBody(list: List.generate(3, (index) => index),),
                       Responsive(
                         desktop: Row(
                           mainAxisAlignment: MainAxisAlignment.start,

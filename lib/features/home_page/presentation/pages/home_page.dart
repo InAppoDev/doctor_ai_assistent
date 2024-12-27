@@ -12,7 +12,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Center(
+          const Center(
             child: Text('Home Page'),
           ),
           ElevatedButton(
