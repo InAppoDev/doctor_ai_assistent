@@ -3,7 +3,6 @@ import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
 import 'package:flutter/material.dart';
 
-
 class PrimaryButton extends StatelessWidget {
   final String text;
   final bool isLoading;
@@ -21,12 +20,12 @@ class PrimaryButton extends StatelessWidget {
   final double borderRadius;
   final double? textSize;
   final MainAxisAlignment mainAxisAlignment;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
   final TextAlign? textAlign;
   final FontWeight? fontWeight;
   final double? iconSize;
   final TextStyle? textStyle;
-
+  final bool? fullWidth;
   const PrimaryButton({
     super.key,
     required this.onPress,
@@ -44,18 +43,19 @@ class PrimaryButton extends StatelessWidget {
     this.borderColor = Colors.transparent,
     this.borderRadius = 6.0,
     this.mainAxisAlignment = MainAxisAlignment.center,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
+    this.padding,
     this.textSize = 12,
     this.textAlign,
     this.fontWeight,
     this.iconSize = 24.0,
     this.textStyle,
+    this.fullWidth = false
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: Responsive.isDesktop(context) ? 324 : double.infinity,
+      width: fullWidth == true ? double.infinity : Responsive.isDesktop(context) ? 324 : double.infinity,
       height: height,
       child: MaterialButton(
         elevation: elevation,
@@ -63,7 +63,7 @@ class PrimaryButton extends StatelessWidget {
         onPressed: isDisabled || isLoading ? null : () => onPress(),
         disabledTextColor: disabledColor ?? AppColors.text,
         color: color ?? AppColors.accentBlue,
-        padding: padding,
+        padding: padding ?? EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),
           side: BorderSide(color: borderColor!, width: 2),
@@ -75,7 +75,7 @@ class PrimaryButton extends StatelessWidget {
 
   Widget buildChild(BuildContext context) {
     if (isLoading) {
-      return const SizedBox(height: 25,child: CircularProgressIndicator.adaptive());
+      return const SizedBox(height: 25, child: CircularProgressIndicator.adaptive());
     }
     if (suffixIcon != null && icon != null) {
       return Row(
@@ -90,7 +90,6 @@ class PrimaryButton extends StatelessWidget {
           Text(
             text,
             textAlign: textAlign,
-
             style: textStyle ??
                 AppTextStyles.regularPx20.copyWith(
                   color: textColor,
@@ -138,7 +137,7 @@ class PrimaryButton extends StatelessWidget {
             textAlign: textAlign,
             style: textStyle ??
                 AppTextStyles.regularPx20.copyWith(
-                  color:  textColor,
+                  color: textColor,
                   fontWeight: fontWeight,
                 ),
           ),
