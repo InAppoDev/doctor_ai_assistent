@@ -13,10 +13,10 @@ class AuthGuard extends AutoRouteGuard{
     } else {
       resolver.redirect(
         LoginRoute(
-          onResult: (didLogin) {
-            // stop re-pushing any pending routes after current
-            resolver.resolveNext(didLogin, reevaluateNext: false);
-          },
+          // onResult: (didLogin) {
+          //   // stop re-pushing any pending routes after current
+          //   resolver.resolveNext(didLogin, reevaluateNext: false);
+          // },
         ),
       );
     }
