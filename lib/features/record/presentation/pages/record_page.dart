@@ -3,8 +3,10 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_icons.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
+import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
 import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
 import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
+import 'package:doctor_ai_assistent/features/medical_form/presentation/widgets/medical_form_dialog_widget.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/record_button.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/widgets/recorded_text.dart';
 import 'package:doctor_ai_assistent/features/record/provider/record_provider.dart';
@@ -32,6 +34,7 @@ class RecordPage extends StatefulWidget implements AutoRouteWrapper {
 
 class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateMixin {
   late GifController _gifController;
+  final ValueNotifier<int?> selectedFormIndex = ValueNotifier(null);
 
   @override
   void initState() {
@@ -42,6 +45,7 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
   @override
   void dispose() {
     _gifController.dispose();
+    selectedFormIndex.dispose();
     super.dispose();
   }
 
@@ -82,20 +86,32 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                       : AppTextStyles.regularPx14.copyWith(color: AppColors.accentGreen),
                 ).paddingOnly(bottom: 70),
                 recordProvider.status == 1
-                    ? Row(
+                    ? Stack(
+                        alignment: Alignment.center,
                         children: [
-                          Expanded(
-                            child: Gif(
-                              image: const AssetImage("assets/gifs/wave_animation.gif"),
-                              controller: _gifController,
-                              //fps: 30,
-                              //duration: const Duration(seconds: 3),
-                              width: double.infinity,
-                              autostart: Autostart.loop,
-                              onFetchCompleted: () {
-                                _gifController.reset();
-                                _gifController.forward();
-                              },
+                          Positioned.fill(
+                            child: Container(
+                              color: AppColors.bg.withOpacity(0.8),
+                            ),
+                          ),
+                          Center(
+                            child: SizedBox(
+                              width: Responsive.isDesktop(context) ? 600 : double.infinity,
+                              height: Responsive.isDesktop(context) ? 300 : 200,
+                              child: ClipRect(
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: Gif(
+                                    image: const AssetImage("assets/gifs/wave_animation.gif"),
+                                    controller: _gifController,
+                                    autostart: Autostart.loop,
+                                    onFetchCompleted: () {
+                                      _gifController.reset();
+                                      _gifController.forward();
+                                    },
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -149,16 +165,19 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                         height: Responsive.isDesktop(context) ? 330 : 270,
                       ).paddingOnly(bottom: recordProvider.status == 2 ? 24 : 8),
                 if (recordProvider.status == 1)
-                  GestureDetector(
-                    onTap: () {
-                      recordProvider.toggleTextField();
-                    },
-                    child: Text(
-                      recordProvider.showTextField ? 'Hide text' : 'Show text',
-                      style: AppTextStyles.mediumPx16.copyWith(
-                          color: AppColors.accentBlue,
-                          decoration: TextDecoration.underline,
-                          decorationColor: AppColors.accentBlue),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        recordProvider.toggleTextField();
+                      },
+                      child: Text(
+                        recordProvider.showTextField ? 'Hide text' : 'Show text',
+                        style: AppTextStyles.mediumPx16.copyWith(
+                            color: AppColors.accentBlue,
+                            decoration: TextDecoration.underline,
+                            decorationColor: AppColors.accentBlue),
+                      ),
                     ),
                   )
                 else if (recordProvider.status == 2)
@@ -172,7 +191,21 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                             color: AppColors.accentBlue,
                             borderColor: AppColors.accentBlue,
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            onPress: () {},
+                            onPress: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return MedicalFormDialogWidget(
+                                        onCloseClick: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        onSaveClick: () {
+                                          AutoRouter.of(context).pushNamed(MedicalFormRoute.name);
+                                        },
+                                        medicalForms: const ['Progress Notes', 'H&P form'],
+                                        selectedFormIndex: selectedFormIndex);
+                                  });
+                            },
                           ).paddingOnly(right: 20),
                           PrimaryButton(
                             text: 'Edit text',
@@ -180,7 +213,9 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                             color: Colors.transparent,
                             borderColor: AppColors.accentBlue,
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            onPress: () {},
+                            onPress: () {
+                              AutoRouter.of(context).pushNamed(MedicalFormRoute.name);
+                            },
                           ).paddingOnly(right: 20),
                           PrimaryButton(
                             text: 'Save',
@@ -200,7 +235,21 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                           borderColor: AppColors.accentBlue,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.white),
-                          onPress: () {},
+                          onPress: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return MedicalFormDialogWidget(
+                                      onCloseClick: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      onSaveClick: () {
+                                        AutoRouter.of(context).pushNamed(MedicalFormRoute.name);
+                                      },
+                                      medicalForms: const ['Progress Notes', 'H&P form'],
+                                      selectedFormIndex: selectedFormIndex);
+                                });
+                          },
                         ).paddingOnly(bottom: 16),
                         PrimaryButton(
                           text: 'Edit text',
@@ -209,7 +258,9 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                           borderColor: AppColors.accentBlue,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           textStyle: AppTextStyles.regularPx16,
-                          onPress: () {},
+                          onPress: () {
+                            AutoRouter.of(context).pushNamed(MedicalFormRoute.name);
+                          },
                         ).paddingOnly(bottom: 16),
                         PrimaryButton(
                           text: 'Save',

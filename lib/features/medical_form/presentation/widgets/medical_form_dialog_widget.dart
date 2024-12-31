@@ -24,9 +24,15 @@ class MedicalFormDialogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Responsive(
-      mobile: _buildDialogContent(context, isDesktop: false),
-      desktop: _buildDialogContent(context, isDesktop: true),
+    return Dialog(
+      backgroundColor: AppColors.bg,
+      insetPadding: Responsive.isDesktop(context) 
+        ? EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2) 
+        : const EdgeInsets.symmetric(horizontal: 24),
+      child: Responsive(
+        mobile: _buildDialogContent(context, isDesktop: false),
+        desktop: _buildDialogContent(context, isDesktop: true),
+      ),
     );
   }
 
@@ -76,8 +82,8 @@ class MedicalFormDialogWidget extends StatelessWidget {
             ],
           ),
           Positioned(
-            top: -8,
-            right: -8,
+            top: 0,
+            right: 0,
             child: GestureDetector(
               onTap: onCloseClick,
               child: SvgPicture.asset(
@@ -98,27 +104,31 @@ class MedicalFormDialogWidget extends StatelessWidget {
       return ValueListenableBuilder<int?>(
         valueListenable: selectedFormIndex,
         builder: (context, selectedIndex, _) {
-          return Wrap(
-            spacing: 16,
-            runSpacing: 8,
-            children: List.generate(
-              medicalForms.length,
-              (index) => SizedBox(
-                width: (MediaQuery.of(context).size.width / 2) - 48,
-                child: RadioListTile<int>(
-                  value: index,
-                  groupValue: selectedIndex,
-                  onChanged: (value) {
-                    selectedFormIndex.value = value;
-                  },
-                  title: Text(
-                    medicalForms[index],
-                    style: AppTextStyles.regularPx16,
-                  ),
-                  activeColor: AppColors.accentBlue,
-                ),
-              ),
+          return GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16, 
+              mainAxisSpacing: 8, 
+              childAspectRatio: 3.5, 
             ),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(), 
+            itemCount: medicalForms.length,
+            itemBuilder: (context, index) {
+              return RadioListTile<int>(
+                value: index,
+                groupValue: selectedIndex,
+                fillColor: WidgetStateProperty.all(AppColors.accentGreen),
+                onChanged: (value) {
+                  selectedFormIndex.value = value;
+                },
+                title: Text(
+                  medicalForms[index],
+                  style: AppTextStyles.regularPx16,
+                ),
+                activeColor: AppColors.accentBlue,
+              );
+            },
           );
         },
       );
