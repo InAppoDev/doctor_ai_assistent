@@ -21,6 +21,7 @@ class AppRouter extends RootStackRouter {
           page: HomeRoute.page,
           path: AppRoutes.record,
         ),
+        AutoRoute(page: HomeRoute.page, path: '/home'),
         AutoRoute(page: LoginRoute.page, path: AppRoutes.login),
         AutoRoute(page: EditRoute.page, path: AppRoutes.editRecord),
         AutoRoute(page: MedicalFormRoute.page, path: AppRoutes.medicalForm),
