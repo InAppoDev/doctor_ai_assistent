@@ -28,4 +28,6 @@ class AppIcons {
   // copy icon
   static const String copyIcon = 'assets/icons/copy_icon.svg';
 
+  // alarm icon
+  static const String alarmIcon = 'assets/icons/alarm_icon.svg';
 }
