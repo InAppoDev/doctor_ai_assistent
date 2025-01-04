@@ -55,7 +55,7 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: fullWidth == true ? double.infinity : Responsive.isDesktop(context) ? 324 : double.infinity,
+      width: fullWidth == true ? MediaQuery.of(context).size.width : Responsive.isDesktop(context) ? 324 : MediaQuery.of(context).size.width,
       height: height,
       child: MaterialButton(
         elevation: elevation,

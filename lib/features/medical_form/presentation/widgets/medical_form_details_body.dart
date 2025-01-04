@@ -17,7 +17,10 @@ class MedicalFormDetailsBody extends StatelessWidget {
         itemBuilder: (context, index) {
           return ChangeNotifierProvider(
             create: (context) => EditTextProvider(),
-            child: const MedicalHistoryTile(),
+            child: MedicalHistoryTile(
+              onCopyClick: () {},
+              onHistoryLogClick: () {},
+            ),
           ).paddingOnly(bottom: 20);
         });
   }

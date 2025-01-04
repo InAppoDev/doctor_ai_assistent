@@ -69,10 +69,7 @@ class _EditTextTileState extends State<EditTextTile> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (Responsive.isMobile(context))
-                            const Expanded(
-                              flex: 1,
-                              child: AvatarWidget(),
-                            ).paddingOnly(right: 12),
+                            const AvatarWidget().paddingOnly(right: 12),
                           Expanded(
                             flex: 2,
                             child: Container(

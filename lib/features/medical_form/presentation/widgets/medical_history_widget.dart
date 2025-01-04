@@ -10,7 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MedicalHistoryTile extends StatefulWidget {
-  const MedicalHistoryTile({super.key});
+  const MedicalHistoryTile({ 
+    super.key,
+    required this.onHistoryLogClick,
+    required this.onCopyClick
+  });
+
+  final Function() onHistoryLogClick;
+  final Function() onCopyClick;
 
   @override
   State<MedicalHistoryTile> createState() => _MedicalHistoryTileState();
@@ -56,12 +63,16 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
                       Responsive(
                         desktop: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                           const Text('Medical history', style: AppTextStyles.mediumPx20),
-                          HistoryLogButtonWidget(onTap: () {})
+                          HistoryLogButtonWidget(onTap: () {
+                            widget.onHistoryLogClick();
+                          })
                         ]).paddingOnly(bottom: 20),
                         mobile: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                           const Text('Medical history', style: AppTextStyles.mediumPx20),
                           EditTextTileButtons(
-                            onCopyClick: () {},
+                            onCopyClick: () {
+                              widget.onCopyClick();
+                            },
                           ),
                         ]).paddingOnly(bottom: 16),
                       ),
@@ -79,7 +90,9 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
             child: Row(children: [
               const SizedBox(width: 20),
               EditTextTileButtons(
-                onCopyClick: () {},
+                onCopyClick: () {
+                  widget.onCopyClick();
+                },
               ),
             ]),
           )
