@@ -54,7 +54,7 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: AppColors.accentBlue, size: 24),
                         onPressed: () {
-                          
+                          getIt<AppRouter>().back();
                         }
                       ),
                       const Text(
@@ -198,7 +198,9 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                         color: AppColors.accentBlue,
                         borderColor: AppColors.accentBlue,
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        onPress: () {},
+                        onPress: () {
+                          getIt<AppRouter>().back();
+                        },
                       ).paddingOnly(right: 20),
                       PrimaryButton(
                         text: 'Cancel',
@@ -206,7 +208,9 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                         color: AppColors.bg,
                         borderColor: AppColors.accentBlue,
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        onPress: () {},
+                        onPress: () {
+                          getIt<AppRouter>().back();
+                        },
                       )
                     ]
                   )

@@ -32,10 +32,8 @@ class AppRouter extends RootStackRouter {
         /// Each route is tied to a page responsible for a specific feature (e.g., Record, Medical Form).
         AutoRoute(
           page: RecordRoute.page,
-          path: AppRoutes.home,
-          initial: true, // Initial screen for record feature
+          path: AppRoutes.record,
         ),
-        AutoRoute(page: HomeRoute.page, path: AppRoutes.record),
         AutoRoute(page: EditRoute.page, path: AppRoutes.editRecord),
         AutoRoute(page: MedicalFormRoute.page, path: AppRoutes.medicalForm),
         AutoRoute(page: TranscribedListRoute.page, path: AppRoutes.transcribedList),

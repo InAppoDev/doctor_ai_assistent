@@ -56,6 +56,11 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
                               );
                             }
                           ),
+                          SchedulePatientButton(
+                            onPressed: () {
+                              getIt<AppRouter>().push(const ScheduleRoute());
+                            },
+                          )
                         ],
                       ),
                     ),

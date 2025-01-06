@@ -24,6 +24,7 @@ class SchedulePatientButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
               Icons.add,
