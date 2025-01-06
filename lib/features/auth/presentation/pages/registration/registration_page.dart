@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
+import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
 import 'package:doctor_ai_assistent/core/navigation/app_routes.dart';
+import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
 import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
 import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
 import 'package:doctor_ai_assistent/features/auth/presentation/widgets/registration_widget/registration_form.dart';
@@ -45,12 +47,12 @@ class RegistrationPage extends StatelessWidget implements AutoRouteWrapper {
                             onRegisterTap: () {
                               if (context.read<RegisterState>().formKey.currentState!.validate()) {
                                 context.read<RegisterState>().formKey.currentState!.save();
-                                context.router.pushNamed(AppRoutes.home);
+                                getIt<AppRouter>().replace(const HomeRoute());
                               }
                             },
                             onSignInTap: () {
                               context.read<RegisterState>().dispose();
-                              context.router.pushNamed(AppRoutes.login);
+                              getIt<AppRouter>().replace(const LoginRoute());
                             },
                           ),
                         )),

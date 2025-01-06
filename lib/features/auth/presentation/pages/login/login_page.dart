@@ -3,6 +3,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
+import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
 import 'package:doctor_ai_assistent/core/widgets/custom_text_button.dart';
 import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
 import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
@@ -91,6 +92,7 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                       onPress: () {
                         if (context.read<LoginState>().formKey.currentState!.validate()) {
                           // context.read<LoginState>().login();
+                          getIt<AppRouter>().replace(const HomeRoute());
                         }
                       },
                     ).paddingOnly(bottom: Responsive.isDesktop(context) ? 24 : 16),
@@ -103,7 +105,7 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                       textStyle: Responsive.isDesktop(context) ? AppTextStyles.regularPx20 : AppTextStyles.regularPx16,
                       fullWidth: true,
                       onPress: () {
-                        AutoRouter.of(context).replace(const RegistrationRoute()).then((_) {
+                        getIt<AppRouter>().replace(const RegistrationRoute()).then((_) {
                           if (context.mounted) {
                             context.read<LoginState>().loginController.clear();
                             context.read<LoginState>().passwordController.clear();
