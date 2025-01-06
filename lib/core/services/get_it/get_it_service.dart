@@ -16,5 +16,5 @@ void initDI(){
   getIt.registerFactory<AuthProvider>(() => AuthProvider());
 
   // register app router
-  getIt.registerFactory<AppRouter>(() => AppRouter());
+  getIt.registerLazySingleton<AppRouter>(() => AppRouter());
 }

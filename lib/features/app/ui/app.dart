@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../core/navigation/app_route_config.dart';
 
 class MyApp extends StatelessWidget {
-  final _appRouter = AppRouter();
+  final _appRouter = getIt<AppRouter>();
   final _authProvider = getIt<AuthProvider>();
 
   @override
