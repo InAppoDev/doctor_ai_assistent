@@ -52,11 +52,15 @@ class TranscribedListPage extends StatelessWidget implements AutoRouteWrapper {
             'Transcribed',
             style: AppTextStyles.mediumPx20,
           ).paddingOnly(bottom: 24),
+
+          /// transcribed tiles list
           Expanded(
             child: TranscribedList(
               list: List.generate(5, (index) => index),
             ).paddingSymmetric(horizontal: 13),
           ),
+
+          /// progress bar
           const AudioProgressBar().paddingOnly(bottom: 24, right: 14, left: 14),
         ],
       ).paddingSymmetric(

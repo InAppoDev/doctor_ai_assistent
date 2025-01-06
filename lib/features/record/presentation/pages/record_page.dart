@@ -76,6 +76,8 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                     ).paddingOnly(left: Responsive.isDesktop(context) ? 40 : 16),
                   ],
                 ),
+
+                /// record time section
                 Text(
                   '${recordProvider.minutes.toString().padLeft(2, '0')}:${recordProvider.seconds.toString().padLeft(2, '0')}',
                   style: Responsive.isDesktop(context) ? AppTextStyles.mediumPx40 : AppTextStyles.mediumPx32,
@@ -87,6 +89,8 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                       ? AppTextStyles.regularPx20.copyWith(color: AppColors.accentGreen)
                       : AppTextStyles.regularPx14.copyWith(color: AppColors.accentGreen),
                 ).paddingOnly(bottom: 70),
+
+                /// sound wave animation section
                 recordProvider.status == 1
                     ? Stack(
                         alignment: Alignment.center,
@@ -122,6 +126,8 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                         color: AppColors.accentBlue,
                         thickness: 3,
                       ).paddingOnly(bottom: Responsive.isDesktop(context) ? 200 : 50),
+
+                /// start/pause button 
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: RecordButton(
@@ -146,6 +152,8 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                         }
                       }).paddingOnly(bottom: Responsive.isDesktop(context) ? 61 : 35),
                 ),
+
+                /// recorded text section
                 (recordProvider.showTextField && recordProvider.seconds != 0)
                     ? Row(
                         children: [
@@ -166,6 +174,8 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                     : Container(
                         height: Responsive.isDesktop(context) ? 330 : 270,
                       ).paddingOnly(bottom: recordProvider.status == 2 ? 24 : 8),
+
+                /// hide/show recroded text button
                 if (recordProvider.status == 1)
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
@@ -183,6 +193,7 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                     ),
                   )
                 else if (recordProvider.status == 2)
+                  /// when paused show buttons to navigate to other pages
                   Responsive(
                       desktop: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

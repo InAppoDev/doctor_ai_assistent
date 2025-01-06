@@ -74,6 +74,7 @@ class MedicalFormPage extends StatelessWidget {
                                 ],
                               ),
                             ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
+
                             if (Responsive.isMobile(context))
                               PrimaryButton(
                                 onPress: () {
@@ -84,6 +85,8 @@ class MedicalFormPage extends StatelessWidget {
                                 text: 'Transcribed Patient Responses',
                                 borderColor: AppColors.accentGreen,
                               ).paddingOnly(bottom: 24),
+
+                            /// search bar widget
                             Row(
                               children: [
                                 Flexible(
@@ -101,9 +104,13 @@ class MedicalFormPage extends StatelessWidget {
                                   )
                               ],
                             ),
+
+                            /// editable medical forms list
                             MedicalFormDetailsBody(
                               list: List.generate(3, (index) => index),
                             ),
+
+                            /// buttons section
                             Responsive(
                                 desktop: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -134,6 +141,8 @@ class MedicalFormPage extends StatelessWidget {
                                     ).paddingOnly(bottom: 24),
                                   ],
                                 )),
+
+                            /// export as buttons section
                             Responsive(
                                 desktop: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -159,6 +168,8 @@ class MedicalFormPage extends StatelessWidget {
                     ),
                   ),
                 ),
+
+                /// desktop transcribed list widget
                 if (Responsive.isDesktop(context)) const Expanded(flex: 1, child: DesktopTranscribedListWidget())
               ],
             ),

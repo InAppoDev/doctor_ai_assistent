@@ -64,6 +64,8 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                       Container()
                     ]
                   ).paddingOnly(bottom: 12 ),
+
+                  /// date picker 
                   Consumer<ScheduleState>(builder: (context, state, _) {
                     return DatePickerWidget(
                       onDateSelected: (date) {
@@ -73,6 +75,8 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                       needTitle: false,
                     );
                   }).paddingSymmetric(horizontal: 36, vertical: 12),
+
+                  /// time picker
                   Consumer<ScheduleState>(
                     builder: (context, state, _) {
                       return GridView.builder(
@@ -99,7 +103,11 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                       );
                     }
                   ).paddingOnly(bottom: 24),
+
+                  /// schedule form (first name, last name, birthdate)
                   ChangeNotifierProvider(create: (context) => context.read<ScheduleState>(), child: const ScheduleFormWidget()).paddingOnly(bottom: 16),
+
+                  /// chosed date and time 
                   Consumer<ScheduleState>(
                     builder: (context, state, _) {
                       return Row(
@@ -114,6 +122,7 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                     }
                   ).paddingOnly(bottom: 24)
                 ],
+
                 if (Responsive.isDesktop(context)) ...[
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -153,6 +162,8 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                     ]
                   ).paddingOnly(bottom: 40),
                 ],
+
+                /// submit and cancel buttons
                 Responsive(
                   mobile: Column(
                     children: [

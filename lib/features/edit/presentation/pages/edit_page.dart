@@ -74,6 +74,8 @@ class EditPage extends StatelessWidget {
                                 ],
                               ),
                             ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
+
+                            /// transcribed list button for navigation to transcribed list
                             if (Responsive.isMobile(context))
                               PrimaryButton(
                                 onPress: () {
@@ -84,9 +86,13 @@ class EditPage extends StatelessWidget {
                                 text: 'Transcribed',
                                 borderColor: AppColors.accentGreen,
                               ).paddingOnly(bottom: 24),
+
+                            /// editable textfield list
                             EditTextsListWidget(
                               list: List.generate(5, (index) => index),
                             ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
+
+                            /// responsive buttons section
                             Responsive(
                                 desktop: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -169,6 +175,8 @@ class EditPage extends StatelessWidget {
                                     ).paddingOnly(bottom: 24),
                                   ],
                                 )),
+
+                            /// export as buttons
                             Responsive(
                                 desktop: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -194,6 +202,8 @@ class EditPage extends StatelessWidget {
                     ),
                   ),
                 ),
+
+                /// desktop transcribed list
                 if (Responsive.isDesktop(context)) const Expanded(flex: 1, child: DesktopTranscribedListWidget())
               ],
             ),

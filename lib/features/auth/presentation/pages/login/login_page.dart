@@ -47,6 +47,8 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                     Text('Log in',
                             style: Responsive.isDesktop(context) ? AppTextStyles.mediumPx40 : AppTextStyles.mediumPx24)
                         .paddingOnly(bottom: Responsive.isDesktop(context) ? 56 : 24),
+
+                    /// login form fields
                     CustomTextFieldWidget(
                       context: context,
                       controller: context.read<LoginState>().loginController,
@@ -71,6 +73,8 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                         labelStyle: Responsive.isDesktop(context) ? AppTextStyles.mediumPx16 : AppTextStyles.mediumPx14,
                       ).paddingOnly(bottom: Responsive.isDesktop(context) ? 24 : 20);
                     }),
+
+                    /// forgot password button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -81,6 +85,8 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                         )
                       ],
                     ).paddingOnly(bottom: Responsive.isDesktop(context) ? 32 : 24),
+
+                    /// buttons section
                     PrimaryButton(
                       text: 'Sign in',
                       textColor: AppColors.white,

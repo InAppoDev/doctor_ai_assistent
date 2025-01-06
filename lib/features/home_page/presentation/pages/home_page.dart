@@ -80,6 +80,8 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
                     'Appointments',
                     style: Responsive.isDesktop(context) ? AppTextStyles.mediumPx32 : AppTextStyles.mediumPx24,
                   ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
+
+                  /// mobile appointment list section
                   if (Responsive.isMobile(context)) ...[
                     Consumer<HomeState>(
                       builder: (context, state, _) {
@@ -101,6 +103,8 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
                       appointments: context.read<HomeState>().appointments,
                     ),)
                   ],
+
+                  /// desktop appointment list section
                   if (Responsive.isDesktop(context)) 
                     ChangeNotifierProvider(
                       create: (context) => HomeState(),

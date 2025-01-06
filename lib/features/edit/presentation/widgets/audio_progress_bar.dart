@@ -66,13 +66,13 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
               colorFilter: const ColorFilter.mode(AppColors.text, BlendMode.srcIn),
             ),
           ),
-          ).paddingOnly(right: 16), // Adjusted padding for better spacing
+          ).paddingOnly(right: 16),
 
           // Current Position Text
         Text(
           playerProvider.position.toMinuteAndSecond(),
           style: AppTextStyles.regularPx14,
-          ).paddingOnly(right: 8), // Optional padding for text spacing
+          ).paddingOnly(right: 8),
 
           // Expanded Slider
           Expanded(
@@ -93,7 +93,7 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
         Text(
           playerProvider.duration.toMinuteAndSecond(),
           style: AppTextStyles.regularPx14,
-          ).paddingOnly(left: 8), // Optional padding for text spacing
+          ).paddingOnly(left: 8),
         ],
       ),
     );
