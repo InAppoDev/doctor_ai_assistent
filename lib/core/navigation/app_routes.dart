@@ -8,4 +8,6 @@ class AppRoutes {
   static const String medicalForm = '/medicalForm';
 
   static const String transcribedList = '/transcribedList';
+
+  static const String schedule = '/schedule';
 }

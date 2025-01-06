@@ -5,6 +5,7 @@ import 'package:doctor_ai_assistent/features/edit/presentation/pages/edit_page.d
 import 'package:doctor_ai_assistent/features/edit/presentation/pages/transcribed_list_page.dart';
 import 'package:doctor_ai_assistent/features/medical_form/presentation/pages/medical_form_page.dart';
 import 'package:doctor_ai_assistent/features/record/presentation/pages/record_page.dart';
+import 'package:doctor_ai_assistent/features/schedule/presentation/pages/schedule_page.dart';
 
 import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/home_page/presentation/pages/home_page.dart';
@@ -27,6 +28,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: MedicalFormRoute.page, path: AppRoutes.medicalForm),
         AutoRoute(page: TranscribedListRoute.page, path: AppRoutes.transcribedList),
         AutoRoute(page: LoginRoute.page, path: AppRoutes.login),
-        AutoRoute(page: RegistrationRoute.page, path: AppRoutes.registration)
+        AutoRoute(page: RegistrationRoute.page, path: AppRoutes.registration),
+        AutoRoute(page: ScheduleRoute.page, path: AppRoutes.schedule),
   ];
 }
