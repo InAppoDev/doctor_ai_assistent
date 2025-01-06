@@ -25,6 +25,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: HomeRoute.page, path: AppRoutes.home, initial: true),
 
         /// Authentication-related routes, including login and registration pages.
+        /// Need to add teh AuthGuard to the routes that require authentication.
         AutoRoute(page: LoginRoute.page, path: AppRoutes.login),
         AutoRoute(page: RegistrationRoute.page, path: AppRoutes.registration),
 

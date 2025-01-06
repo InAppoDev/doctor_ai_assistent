@@ -174,6 +174,9 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                         borderColor: AppColors.accentBlue,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         onPress: () {
+                          /// call the view model method to submit the form
+                          /// the view model should submit the form and navigate to the home page
+                          /// context.read<MedicalFormState>().submitForm();
                           getIt<AppRouter>().back();
                         },
                       ).paddingOnly(bottom: 16),
@@ -199,6 +202,9 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                         borderColor: AppColors.accentBlue,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         onPress: () {
+                          /// call the view model method to submit the form
+                          /// the view model should submit the form and navigate to the home page
+                          /// context.read<MedicalFormState>().submitForm();
                           getIt<AppRouter>().back();
                         },
                       ).paddingOnly(right: 20),

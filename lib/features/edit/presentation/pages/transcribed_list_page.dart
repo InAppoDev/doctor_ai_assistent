@@ -54,6 +54,7 @@ class TranscribedListPage extends StatelessWidget implements AutoRouteWrapper {
           ).paddingOnly(bottom: 24),
 
           /// transcribed tiles list
+          /// The list should be replaced with the actual data model list from the provider
           Expanded(
             child: TranscribedList(
               list: List.generate(5, (index) => index),

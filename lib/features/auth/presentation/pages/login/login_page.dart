@@ -96,6 +96,9 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                       textStyle: Responsive.isDesktop(context) ? AppTextStyles.regularPx20.copyWith(color: AppColors.white) : AppTextStyles.regularPx16.copyWith(color: AppColors.white),
                       fullWidth: true,
                       onPress: () {
+                        /// validate the form and login
+                        /// if the form is valid, get the token and navigate to the home page
+                        /// if the form is invalid, show the error message
                         if (context.read<LoginState>().formKey.currentState!.validate()) {
                           // context.read<LoginState>().login();
                           getIt<AppRouter>().replace(const HomeRoute());

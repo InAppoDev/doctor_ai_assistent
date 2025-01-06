@@ -44,12 +44,17 @@ class RegistrationPage extends StatelessWidget implements AutoRouteWrapper {
                           create: (context) => context.read<RegisterState>(),
                           child: RegistrationFormWidget(
                             onRegisterTap: () {
+                              /// Validate the form and save the data
+                              /// If the form is valid, post the data to the server and navigate to the home page
+                              /// If the form is invalid, show the error message
                               if (context.read<RegisterState>().formKey.currentState!.validate()) {
                                 context.read<RegisterState>().formKey.currentState!.save();
                                 getIt<AppRouter>().replace(const HomeRoute());
+                                // context.read<RegisterState>().register();
                               }
                             },
                             onSignInTap: () {
+                              /// The dispose method is called to clear the form controller
                               context.read<RegisterState>().dispose();
                               getIt<AppRouter>().replace(const LoginRoute());
                             },

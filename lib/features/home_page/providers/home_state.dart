@@ -15,6 +15,7 @@ class HomeState extends ChangeNotifier {
   /// Updates the selected date and notifies listeners of the change.
   /// 
   /// [date] - The new date selected by the user.
+  /// Need to add also the fetch appointments logic here
   void onDateSelected(DateTime date) {
     _selectedDate = date;
     notifyListeners(); // Notify UI to refresh based on the new date.

@@ -29,6 +29,27 @@ class EditTextProvider extends ChangeNotifier {
     await Clipboard.setData(ClipboardData(text: text)); // Copies text to system clipboard.
   }
 
+  ///TODO: The method for translation need be implemented
+  /// Translates the plain text content of the Quill document to another language.
+  Future<void> onTranslateTheText() async {
+    final text = _quillController.document.toPlainText();
+    try{
+
+    } catch (e) {
+      debugPrint('Error translating text: $e');
+    }
+  }
+
+  ///TODO: The method for playing the text need to be implemented
+  /// Plays the plain text content of the Quill document using text-to-speech.
+  Future<void> onPlayTheText() async {
+    try{
+
+    } catch (e) {
+      debugPrint('Error playing text: $e');
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Resource Cleanup
   // ---------------------------------------------------------------------------

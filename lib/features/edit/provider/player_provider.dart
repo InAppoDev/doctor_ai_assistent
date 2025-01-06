@@ -11,7 +11,7 @@ class PlayerProvider extends ChangeNotifier {
   // ---------------------------------------------------------------------------
 
   /// Initializes the audio player with the provided [url].
-  /// 
+  ///
   /// - Throws an [ArgumentError] if the URL is empty.
   /// - Sets the audio duration and notifies listeners upon success.
   /// - Logs and rethrows any errors that occur during initialization.
@@ -45,7 +45,7 @@ class PlayerProvider extends ChangeNotifier {
   bool get isPlaying => _isPlaying;
 
   /// Updates the [_isPlaying] state and notifies listeners.
-  /// 
+  ///
   /// [value] - `true` if the player is playing; otherwise `false`.
   void setIsPlaying(bool value) {
     _isPlaying = value;
@@ -61,7 +61,7 @@ class PlayerProvider extends ChangeNotifier {
   Duration get duration => _duration;
 
   /// Updates the total duration of the audio file and notifies listeners.
-  /// 
+  ///
   /// [newDuration] - The updated duration value.
   void setDuration(Duration newDuration) {
     _duration = newDuration;
@@ -73,11 +73,21 @@ class PlayerProvider extends ChangeNotifier {
   Duration get position => _position;
 
   /// Updates the current playback position and notifies listeners.
-  /// 
+  ///
   /// [newPosition] - The updated position value.
   void setPosition(Duration newPosition) {
     _position = newPosition;
     notifyListeners(); // Notify UI of the updated position.
+  }
+
+  int _transcribedId = 0;
+
+  int get transcribedId => _transcribedId;
+
+  void setTranscribedId(int id) {
+    _transcribedId = id;
+    setPosition(_duration.inSeconds > 0 ? Duration(seconds: _duration.inSeconds ~/ 2) : Duration.zero);
+    notifyListeners();
   }
 
   // ---------------------------------------------------------------------------
@@ -85,7 +95,7 @@ class PlayerProvider extends ChangeNotifier {
   // ---------------------------------------------------------------------------
 
   /// Releases resources held by the audio player and notifies listeners.
-  /// 
+  ///
   /// This should be called when the [PlayerProvider] is no longer needed
   /// to prevent memory leaks or dangling resources.
   void close() {

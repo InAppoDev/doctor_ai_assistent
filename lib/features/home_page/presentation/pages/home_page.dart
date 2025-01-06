@@ -50,6 +50,8 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
                             builder: (context, state, _) {
                               return DatePickerWidget(
                                 onDateSelected: (DateTime date) {
+                                  /// call the view model method to update the selected date
+                                  /// the view model should update the appointments list based on the selected date
                                   state.onDateSelected(date);
                                 }, 
                                 selectedDate: state.selectedDate
@@ -92,13 +94,19 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
                       builder: (context, state, _) {
                         return DatePickerWidget(
                           onDateSelected: (DateTime date) {
+                            /// call the view model method to update the selected date
+                            /// the view model should update the appointments list based on the selected date
                             state.onDateSelected(date);
                           }, 
                           selectedDate: state.selectedDate
                         );
                       }
                     ).paddingOnly(bottom: 24),
-                    SearchBarWidget(controller: context.read<HomeState>().searchController, onSearch: () {}, onMicTap: () {}).paddingOnly(bottom: 24),
+                    SearchBarWidget(controller: context.read<HomeState>().searchController, onSearch: () {
+                      /// call the view model method to search for the patient
+                      /// the view model should update the appointments list based on the search result
+                      // context.read<HomeState>().searchPatient();
+                    }, onMicTap: () {}).paddingOnly(bottom: 24),
                     SchedulePatientButton(
                       onPressed: () {
                         getIt<AppRouter>().push(const ScheduleRoute());
