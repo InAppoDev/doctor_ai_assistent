@@ -3,9 +3,10 @@ import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AuthTextFieldWidget extends StatelessWidget {
+class CustomTextFieldWidget extends StatelessWidget {
   final TextEditingController? controller;
   final Function(String)? onChanged;
   final Color? enabledBorderColor;
@@ -30,8 +31,9 @@ class AuthTextFieldWidget extends StatelessWidget {
   final String? label;
   final TextStyle? labelStyle;
   final bool? obscureText;
+  final List<TextInputFormatter>? inputFormatters;
 
-  const AuthTextFieldWidget(
+  const CustomTextFieldWidget(
       {super.key,
       required this.controller,
       this.onChanged,
@@ -56,7 +58,9 @@ class AuthTextFieldWidget extends StatelessWidget {
       this.loseFocusOnTapOutside = false,
       this.label,
       this.labelStyle,
-      this.obscureText});
+      this.obscureText,
+      this.inputFormatters = const []
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +78,7 @@ class AuthTextFieldWidget extends StatelessWidget {
         TextFormField(
           controller: controller,
           autocorrect: false,
+          inputFormatters: inputFormatters,
           onChanged: onChanged,
           obscureText: obscureText ?? false,
           maxLines: 1,
