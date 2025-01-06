@@ -1,12 +1,36 @@
+/// Extension methods on [DateTime] that provide additional functionality for formatting date and time in human-readable formats.
+///
+/// This extension adds several methods to the `DateTime` class that convert a `DateTime` object into various formatted strings. 
+/// These include full and short month names, weekday names, and time formats commonly used in user interfaces or reports.
 extension DateTimeExtension on DateTime {
+  
+  /// Returns the full month name and the day of the month as a string.
+  ///
+  /// Example:
+  /// ```dart
+  /// DateTime.now().toNameOfMonthAndDay(); // "January 6"
+  /// ```
   String toNameOfMonthAndDay() {
     return '${getMonthName()} $day';
   }
 
+  /// Returns the time in "HH:mm" format (24-hour format).
+  ///
+  /// Example:
+  /// ```dart
+  /// DateTime.now().toHourAndMinute(); // "14:30"
+  /// ```
   String toHourAndMinute() { 
     return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
   }
 
+  /// Returns the full month name corresponding to the [DateTime]'s [month] property.
+  ///
+  /// Example:
+  /// ```dart
+  /// DateTime.now().getMonthName(); // "January"
+  /// ```
+  /// This method handles the conversion of the [month] integer (1-12) to a readable month name.
   String getMonthName() {
     switch (month) {
       case 1:
@@ -34,10 +58,17 @@ extension DateTimeExtension on DateTime {
       case 12:
         return 'December';
       default:
-        return 'Wrong month';
+        return 'Wrong month'; // Default case to handle unexpected values
     }
   }
 
+  /// Returns the abbreviated (short) month name corresponding to the [DateTime]'s [month] property.
+  ///
+  /// Example:
+  /// ```dart
+  /// DateTime.now().getShortMonthName(); // "Jan"
+  /// ```
+  /// This method provides a shorter version of the month name (e.g., "Jan" for January).
   String getShortMonthName() {
     switch (month) {
       case 1:
@@ -65,10 +96,17 @@ extension DateTimeExtension on DateTime {
       case 12:
         return 'Dec';
       default:
-        return 'No data';
+        return 'No data'; // Default case in case of unexpected month values
     }
   }
 
+  /// Returns the full weekday name corresponding to the [DateTime]'s [weekday] property.
+  ///
+  /// Example:
+  /// ```dart
+  /// DateTime.now().getWeekDay(); // "Friday"
+  /// ```
+  /// The method returns the full weekday name (e.g., "Monday" for weekday 1).
   String getWeekDay() {
     switch (weekday) {
       case 1:
@@ -86,10 +124,18 @@ extension DateTimeExtension on DateTime {
       case 7:
         return 'Sunday';
       default:
-        return 'No data';
+        return 'No data'; // Default case to handle unexpected values
     }
   }
 
+  /// Returns the time in a 12-hour format with AM/PM notation (e.g., "03:45 PM").
+  ///
+  /// Example:
+  /// ```dart
+  /// DateTime.now().toUSAtimeString(); // "03:45 PM"
+  /// ```
+  /// This method formats the [DateTime] object into a string with the 12-hour time format.
+  /// It uses "AM" for times before noon and "PM" for times after noon.
   String toUSAtimeString() {
     return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} ${hour < 12 ? 'AM' : 'PM'}';
   }
