@@ -37,7 +37,7 @@ class DesktopTranscribedListWidget extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             
-            /// transcribed tiles list should be changed with the list created in the view model 
+            /// transcribed tiles list should be changed with the list created in the view model± 
             Expanded(
                 child: TranscribedList(
               list: List.generate(5, (index) => index),
