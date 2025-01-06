@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
-import 'package:doctor_ai_assistent/core/navigation/app_routes.dart';
 import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
 import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
 import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';

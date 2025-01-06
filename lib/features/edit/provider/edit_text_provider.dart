@@ -9,8 +9,7 @@ class EditTextProvider extends ChangeNotifier {
   QuillController get quillController => _quillController;
 
   Future<void> onCopyToClipboard() async {
-    final delta = _quillController.document.toDelta();
-    final text = delta.toString();
+    final text = _quillController.document.toPlainText();
     await Clipboard.setData(ClipboardData(text: text));
   }
 

@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
+import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
+import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
 import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
 import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
 import 'package:doctor_ai_assistent/features/home_page/presentation/widgets/appointments/appointments_container_widget.dart';
@@ -91,7 +93,9 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
                     ).paddingOnly(bottom: 24),
                     SearchBarWidget(controller: context.read<HomeState>().searchController, onSearch: () {}, onMicTap: () {}).paddingOnly(bottom: 24),
                     SchedulePatientButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        getIt<AppRouter>().push(const ScheduleRoute());
+                      },
                     ).paddingOnly(bottom: 16),
                     Expanded(child: AppointmentsListWidget(
                       appointments: context.read<HomeState>().appointments,

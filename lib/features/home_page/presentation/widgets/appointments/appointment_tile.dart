@@ -1,8 +1,8 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
+import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
 import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
 import 'package:doctor_ai_assistent/features/home_page/data/models/appointment_model.dart';
 import 'package:doctor_ai_assistent/features/home_page/presentation/widgets/review_checkbox.dart';
@@ -56,7 +56,7 @@ class AppointmentTileWidget extends StatelessWidget {
                         StartRecordingButton(
                             isReviewed: appointment.isReviewed,
                             onPressed: () {
-                              AutoRouter.of(context).push(const RecordRoute());
+                              getIt<AppRouter>().push(const RecordRoute());
                             }),
                       ]
                   ]),
@@ -70,7 +70,7 @@ class AppointmentTileWidget extends StatelessWidget {
                   StartRecordingButton(
                           isReviewed: appointment.isReviewed,
                           onPressed: () {
-                            // Start recording
+                            getIt<AppRouter>().push(const RecordRoute());
                           })
                       .paddingOnly(bottom: 8),
                   ReviewCheckboxWidget(

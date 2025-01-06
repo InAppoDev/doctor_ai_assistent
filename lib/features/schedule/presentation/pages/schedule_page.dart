@@ -3,6 +3,8 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/extensions/datetime_extension.dart';
 import 'package:doctor_ai_assistent/core/extensions/time_of_day_extension.dart';
+import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
+import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
 import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
 import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
 import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
@@ -160,7 +162,9 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                         color: AppColors.accentBlue,
                         borderColor: AppColors.accentBlue,
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        onPress: () {},
+                        onPress: () {
+                          getIt<AppRouter>().back();
+                        },
                       ).paddingOnly(bottom: 16),
                       PrimaryButton(
                         text: 'Cancel',
@@ -168,7 +172,9 @@ class SchedulePage extends StatelessWidget implements AutoRouteWrapper {
                         color: AppColors.bg,
                         borderColor: AppColors.accentBlue,
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        onPress: () {},
+                        onPress: () {
+                          getIt<AppRouter>().back();
+                        },
                       )
                     ]
                   ), 

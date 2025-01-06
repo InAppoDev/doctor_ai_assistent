@@ -4,6 +4,7 @@ import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_icons.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
+import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
 import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
 import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
 import 'package:doctor_ai_assistent/features/medical_form/presentation/widgets/medical_form_dialog_widget.dart';
@@ -198,10 +199,10 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                                   builder: (context) {
                                     return MedicalFormDialogWidget(
                                         onCloseClick: () {
-                                          Navigator.of(context).pop();
+                                          getIt<AppRouter>().back();
                                         },
                                         onSaveClick: () {
-                                          AutoRouter.of(context).pushNamed(MedicalFormRoute.name);
+                                          getIt<AppRouter>().push(const MedicalFormRoute());
                                         },
                                         medicalForms: const ['Progress Notes', 'H&P form'],
                                         selectedFormIndex: selectedFormIndex);
@@ -215,7 +216,7 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                             borderColor: AppColors.accentBlue,
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             onPress: () {
-                              AutoRouter.of(context).pushNamed(MedicalFormRoute.name);
+                              getIt<AppRouter>().push(const EditRoute());
                             },
                           ).paddingOnly(right: 20),
                           PrimaryButton(
@@ -224,7 +225,9 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                             color: Colors.transparent,
                             borderColor: AppColors.accentBlue,
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            onPress: () {},
+                            onPress: () {
+                              getIt<AppRouter>().replaceAll([const HomeRoute()]);
+                            },
                           ),
                         ],
                       ),
@@ -245,7 +248,7 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                                         Navigator.of(context).pop();
                                       },
                                       onSaveClick: () {
-                                        AutoRouter.of(context).pushNamed(MedicalFormRoute.name);
+                                        getIt<AppRouter>().push(const MedicalFormRoute());
                                       },
                                       medicalForms: const ['Progress Notes', 'H&P form'],
                                       selectedFormIndex: selectedFormIndex);
@@ -260,7 +263,7 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           textStyle: AppTextStyles.regularPx16,
                           onPress: () {
-                            AutoRouter.of(context).pushNamed(MedicalFormRoute.name);
+                            getIt<AppRouter>().push(const EditRoute());
                           },
                         ).paddingOnly(bottom: 16),
                         PrimaryButton(
@@ -270,7 +273,9 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                           borderColor: AppColors.accentBlue,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           textStyle: AppTextStyles.regularPx16,
-                          onPress: () {},
+                          onPress: () {
+                            getIt<AppRouter>().replaceAll([const HomeRoute()]);
+                          },
                         )
                       ]).paddingSymmetric(horizontal: 16)),
               ],

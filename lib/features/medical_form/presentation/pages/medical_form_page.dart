@@ -3,6 +3,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
 import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
 import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
+import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
 import 'package:doctor_ai_assistent/core/widgets/custom_text_button.dart';
 import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
 import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
@@ -60,7 +61,7 @@ class MedicalFormPage extends StatelessWidget {
                                     cursor: SystemMouseCursors.click,
                                     child: GestureDetector(
                                       onTap: () {
-                                        AutoRouter.of(context).back();
+                                        getIt<AppRouter>().back();
                                       },
                                       child: const Icon(Icons.arrow_back, color: AppColors.accentBlue, size: 24),
                                     ),
@@ -76,7 +77,7 @@ class MedicalFormPage extends StatelessWidget {
                             if (Responsive.isMobile(context))
                               PrimaryButton(
                                 onPress: () {
-                                  AutoRouter.of(context).push(const TranscribedListRoute());
+                                  getIt<AppRouter>().push(const TranscribedListRoute());
                                 },
                                 color: AppColors.accentGreen,
                                 textColor: AppColors.white,
@@ -113,7 +114,9 @@ class MedicalFormPage extends StatelessWidget {
                                       color: AppColors.accentBlue,
                                       borderColor: AppColors.accentBlue,
                                       padding: const EdgeInsets.symmetric(vertical: 12),
-                                      onPress: () {},
+                                      onPress: () {
+                                        getIt<AppRouter>().replaceAll([const HomeRoute()]);
+                                      },
                                     ).paddingOnly(right: 20),
                                   ],
                                 ).paddingOnly(bottom: 32),
@@ -125,7 +128,9 @@ class MedicalFormPage extends StatelessWidget {
                                       borderColor: AppColors.accentBlue,
                                       padding: const EdgeInsets.symmetric(vertical: 12),
                                       textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.white),
-                                      onPress: () {},
+                                      onPress: () {
+                                        getIt<AppRouter>().replaceAll([const HomeRoute()]);
+                                      },
                                     ).paddingOnly(bottom: 24),
                                   ],
                                 )),
