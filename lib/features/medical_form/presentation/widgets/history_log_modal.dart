@@ -16,6 +16,8 @@ class HistoryLogModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: AppColors.bg,
+      insetPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2),
       child: Container(
           decoration: BoxDecoration(
             color: AppColors.bg,
@@ -25,7 +27,7 @@ class HistoryLogModal extends StatelessWidget {
               horizontal: Responsive.isDesktop(context) ? 40 : 16, vertical: Responsive.isDesktop(context) ? 40 : 24),
           child: Stack(
             children: [
-              Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Text(
                     'History log Symptop',
@@ -38,7 +40,7 @@ class HistoryLogModal extends StatelessWidget {
                       ? AppTextStyles.mediumPx16.copyWith(color: AppColors.error)
                       : AppTextStyles.mediumPx14.copyWith(color: AppColors.error),
                 ).paddingOnly(bottom: Responsive.isDesktop(context) ? 16 : 12),
-                Text(before, style: AppTextStyles.regularPx16)
+                Text(after, style: AppTextStyles.regularPx16)
                     .paddingOnly(bottom: Responsive.isDesktop(context) ? 32 : 16),
                 Text(
                   'Before the Symptop',
@@ -46,18 +48,21 @@ class HistoryLogModal extends StatelessWidget {
                       ? AppTextStyles.mediumPx16.copyWith(color: AppColors.accentGreen)
                       : AppTextStyles.mediumPx14.copyWith(color: AppColors.accentGreen),
                 ).paddingOnly(bottom: Responsive.isDesktop(context) ? 16 : 12),
-                Text(after, style: AppTextStyles.regularPx16)
+                Text(before, style: AppTextStyles.regularPx16)
               ]),
               Positioned(
-                top: -8,
-                right: -8,
-                child: GestureDetector(
-                  onTap: onCloseClick,
-                  child: SvgPicture.asset(
-                    AppIcons.closeIcon,
-                    height: Responsive.isDesktop(context) ? 32 : 24,
-                    width: Responsive.isDesktop(context) ? 32 : 24,
-                    colorFilter: const ColorFilter.mode(AppColors.accentBlue, BlendMode.srcIn),
+                top: 0,
+                right: 0,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: onCloseClick,
+                    child: SvgPicture.asset(
+                      AppIcons.closeIcon,
+                      height: Responsive.isDesktop(context) ? 32 : 24,
+                      width: Responsive.isDesktop(context) ? 32 : 24,
+                      colorFilter: const ColorFilter.mode(AppColors.accentBlue, BlendMode.srcIn),
+                    ),
                   ),
                 ),
               ),

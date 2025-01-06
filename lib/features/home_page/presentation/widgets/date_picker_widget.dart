@@ -9,7 +9,10 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 class DatePickerWidget extends StatelessWidget {
   final Function(DateTime) onDateSelected;
   final DateTime selectedDate;
-  const DatePickerWidget({super.key, required this.onDateSelected, required this.selectedDate});
+  final bool needTitle;
+  const DatePickerWidget({
+    super.key, required this.onDateSelected, required this.selectedDate, this.needTitle = true
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +20,7 @@ class DatePickerWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: Responsive.isDesktop(context) ? CrossAxisAlignment.start : CrossAxisAlignment.center, 
       children: [
+        if (needTitle)
         Text(
           '${selectedDate.getWeekDay()}, ${selectedDate.toNameOfMonthAndDay()}',
           style: Responsive.isDesktop(context) ? AppTextStyles.mediumPx20 : AppTextStyles.mediumPx16,

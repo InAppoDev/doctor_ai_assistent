@@ -46,6 +46,7 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
   void dispose() {
     _gifController.dispose();
     selectedFormIndex.dispose();
+    context.read<RecordProvider>().dispose();
     super.dispose();
   }
 

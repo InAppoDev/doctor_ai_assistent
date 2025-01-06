@@ -41,7 +41,12 @@ class DesktopTranscribedListWidget extends StatelessWidget {
               list: List.generate(5, (index) => index),
             )),
             const SizedBox(height: 32),
-            const AudioProgressBar(),
+            const Row(
+              children: [
+                Flexible(flex: 4, child: AudioProgressBar()),
+                Flexible(flex: 1, child: SizedBox())
+              ],
+            ),
             const SizedBox(height: 32),
           ]),
         ),

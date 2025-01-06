@@ -13,11 +13,9 @@ class MedicalHistoryTile extends StatefulWidget {
   const MedicalHistoryTile({ 
     super.key,
     required this.onHistoryLogClick,
-    required this.onCopyClick
   });
 
   final Function() onHistoryLogClick;
-  final Function() onCopyClick;
 
   @override
   State<MedicalHistoryTile> createState() => _MedicalHistoryTileState();
@@ -70,13 +68,15 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
                         mobile: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                           const Text('Medical history', style: AppTextStyles.mediumPx20),
                           EditTextTileButtons(
-                            onCopyClick: () {
-                              widget.onCopyClick();
+                            onCopyClick: () async {
+                              await _editProvider.onCopyToClipboard();
                             },
                           ),
                         ]).paddingOnly(bottom: 16),
                       ),
-                      EditableTextfield(quillController: _editProvider.quillController),
+                      EditableTextfield(quillController: _editProvider.quillController, onHistoryLogClick: () {
+                        widget.onHistoryLogClick();
+                      },),
                     ],
                   ),
                 ),
@@ -91,7 +91,7 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
               const SizedBox(width: 20),
               EditTextTileButtons(
                 onCopyClick: () {
-                  widget.onCopyClick();
+                  _editProvider.onCopyToClipboard();
                 },
               ),
             ]),

@@ -15,10 +15,19 @@ class HomeState extends ChangeNotifier {
   final TextEditingController _searchController = TextEditingController();
   TextEditingController get searchController => _searchController;
 
+  bool _isEmpty = true;
+  bool get isEmpty => _isEmpty;
+
+  void setIsEmpty(bool value) {
+    _isEmpty = value;
+    notifyListeners();
+  }
+
   // appointments list
   final List<AppointmentModel> _appointments = [
     AppointmentModel(name: 'Anna Harney', birthDate: DateTime.now(), isReviewed: false, time: DateTime.now()),
-    AppointmentModel(name: 'Anna Harney', birthDate: DateTime.now(), isReviewed: true, time: DateTime.now(), minutes: 14)
+    AppointmentModel(
+        name: 'Anna Harney', birthDate: DateTime.now(), isReviewed: true, time: DateTime.now(), minutes: 14)
   ];
   List<AppointmentModel> get appointments => _appointments;
 
@@ -30,6 +39,4 @@ class HomeState extends ChangeNotifier {
   void onMicTap() {
     // handle mic tap
   }
-
-
 }

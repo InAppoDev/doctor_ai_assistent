@@ -10,12 +10,7 @@ class SearchBarWidget extends StatelessWidget {
   final Function() onSearch;
   final Function() onMicTap;
 
-  const SearchBarWidget({
-    super.key,
-    required this.controller,
-    required this.onSearch,
-    required this.onMicTap
-  });
+  const SearchBarWidget({super.key, required this.controller, required this.onSearch, required this.onMicTap});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +36,19 @@ class SearchBarWidget extends StatelessWidget {
                       hintStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.disabled),
                       border: InputBorder.none,
                     ),
+                    onSubmitted: (_) {
+                      onSearch();
+                    },
                   ),
                 ),
+                if (controller.text.isNotEmpty)
+                  IconButton(
+                    icon: const Icon(Icons.close, color: AppColors.accentBlue),
+                    onPressed: () {
+                      controller.clear();
+                      debugPrint("clear the controller"); 
+                    },
+                  ).paddingOnly(left: 16),
                 IconButton(
                   icon: const Icon(Icons.mic, color: AppColors.accentBlue),
                   onPressed: () {
