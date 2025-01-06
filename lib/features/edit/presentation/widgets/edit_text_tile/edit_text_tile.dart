@@ -59,7 +59,9 @@ class _EditTextTileState extends State<EditTextTile> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             EditTextTileButtons(
-                              onCopyClick: () {},
+                              onCopyClick: () async {
+                                await _editProvider.onCopyToClipboard();
+                              },
                               onTranslateClick: () {},
                               onPlayClick: () {},
                             ),
@@ -106,7 +108,9 @@ class _EditTextTileState extends State<EditTextTile> {
             child: Row(children: [
               const SizedBox(width: 20),
               EditTextTileButtons(
-                onCopyClick: () {},
+                onCopyClick: () async {
+                  await _editProvider.onCopyToClipboard();
+                },
                 onTranslateClick: () {},
                 onPlayClick: () {},
               ),

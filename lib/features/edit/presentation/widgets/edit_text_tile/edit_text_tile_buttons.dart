@@ -32,7 +32,7 @@ class EditTextTileButtons extends StatelessWidget {
                 colorFilter: const ColorFilter.mode(AppColors.disabled, BlendMode.srcIn),
               ),
             ),
-          ).paddingOnly(right: 16),
+          ).paddingOnly(right: onTranslateClick != null ? 16 : 0),
           if (onTranslateClick != null)
             MouseRegion(
               cursor: SystemMouseCursors.click,

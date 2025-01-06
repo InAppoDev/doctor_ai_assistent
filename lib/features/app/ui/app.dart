@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'ECNX Ambient Listening',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.accentGreen),
+        primaryColor: AppColors.accentBlue,
         useMaterial3: true,
       ),
       routerConfig: _appRouter.config(
