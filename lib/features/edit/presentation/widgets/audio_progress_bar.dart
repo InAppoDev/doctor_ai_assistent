@@ -45,10 +45,13 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {  
     playerProvider = context.watch<PlayerProvider>();
-    return Row(
+    return SizedBox(
+      width: MediaQuery.of(context).size.width, 
+      child: Row(
       children: [
+          // Play/Pause Button
         MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
@@ -63,26 +66,37 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
               colorFilter: const ColorFilter.mode(AppColors.text, BlendMode.srcIn),
             ),
           ),
-        ).paddingOnly(right: 24),
+          ).paddingOnly(right: 16), // Adjusted padding for better spacing
+
+          // Current Position Text
         Text(
           playerProvider.position.toMinuteAndSecond(),
           style: AppTextStyles.regularPx14,
-        ),
-        Slider(
-          min: 0,
-          max: playerProvider.duration.inSeconds.toDouble(),
-          value: playerProvider.position.inSeconds.toDouble().clamp(0, playerProvider.duration.inSeconds.toDouble()),
-          thumbColor: AppColors.accentBlue,
-          activeColor: AppColors.accentBlue,
-          onChanged: (value) {
-            _player.seek(Duration(seconds: value.toInt()));
-          },
-        ),
+          ).paddingOnly(right: 8), // Optional padding for text spacing
+
+          // Expanded Slider
+          Expanded(
+            child: Slider(
+              min: 0,
+              max: playerProvider.duration.inSeconds.toDouble(),
+              value:
+                  playerProvider.position.inSeconds.toDouble().clamp(0, playerProvider.duration.inSeconds.toDouble()),
+              thumbColor: AppColors.accentBlue,
+              activeColor: AppColors.accentBlue,
+              onChanged: (value) {
+                _player.seek(Duration(seconds: value.toInt()));
+              },
+            ),
+          ),
+
+          // Total Duration Text
         Text(
           playerProvider.duration.toMinuteAndSecond(),
           style: AppTextStyles.regularPx14,
-        ),
-      ],
+          ).paddingOnly(left: 8), // Optional padding for text spacing
+        ],
+      ),
     );
   }
+
 }
