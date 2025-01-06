@@ -90,11 +90,14 @@ class PrimaryButton extends StatelessWidget {
           Text(
             text,
             textAlign: textAlign,
-            style: textStyle ??
+            style: textStyle ?? (Responsive.isDesktop(context) ?
                 AppTextStyles.regularPx20.copyWith(
                   color: textColor,
                   fontWeight: fontWeight,
-                ),
+                ) : AppTextStyles.regularPx16.copyWith(
+                  color: textColor,
+                  fontWeight: fontWeight,
+                )),
           ),
           const Expanded(child: SizedBox()),
           Image.asset(
@@ -118,11 +121,14 @@ class PrimaryButton extends StatelessWidget {
           Text(
             text,
             textAlign: textAlign,
-            style: textStyle ??
+            style: textStyle ?? (Responsive.isDesktop(context) ?
                 AppTextStyles.regularPx20.copyWith(
                   color: textColor,
                   fontWeight: fontWeight,
-                ),
+                ) : AppTextStyles.regularPx16.copyWith(
+                  color: textColor,
+                  fontWeight: fontWeight,
+                )),
           )
         ],
       );
@@ -135,11 +141,14 @@ class PrimaryButton extends StatelessWidget {
           Text(
             text,
             textAlign: textAlign,
-            style: textStyle ??
+            style: textStyle ?? (Responsive.isDesktop(context) ?
                 AppTextStyles.regularPx20.copyWith(
                   color: textColor,
                   fontWeight: fontWeight,
-                ),
+                ) : AppTextStyles.regularPx16.copyWith(
+                  color: textColor,
+                  fontWeight: fontWeight,
+                )),
           ),
           const Expanded(child: SizedBox()),
           Image.asset(
@@ -154,11 +163,14 @@ class PrimaryButton extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      style: textStyle ??
-          AppTextStyles.regularPx20.copyWith(
-            color: textColor,
-            fontWeight: fontWeight,
-          ),
+      style: textStyle ?? (Responsive.isDesktop(context) ?
+                AppTextStyles.regularPx20.copyWith(
+                  color: textColor,
+                  fontWeight: fontWeight,
+                ) : AppTextStyles.regularPx16.copyWith(
+                  color: textColor,
+                  fontWeight: fontWeight,
+                )),
     );
   }
 }
