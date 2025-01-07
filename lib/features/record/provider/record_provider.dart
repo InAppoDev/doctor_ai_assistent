@@ -52,10 +52,11 @@ class RecordProvider extends ChangeNotifier {
         final directory = await _getDirectoryPath();
         _audioFilePath = p.join(directory, '${_generateRandomId()}.wav');
         await _audioRecord.start(
-            const RecordConfig(
-              encoder: AudioEncoder.wav,
-            ),
-            path: _audioFilePath!);
+          const RecordConfig(
+            encoder: AudioEncoder.wav,
+          ),
+          path: _audioFilePath!
+        );
       } else {
         debugPrint('Permission denied');
       }
@@ -78,7 +79,7 @@ class RecordProvider extends ChangeNotifier {
   /// This method also stops the timer tracking the recording duration.
   Future<void> stopRecordingAudio() async {
     try {
-      await _audioRecord.stop();
+      _audioFilePath = await  _audioRecord.stop();
     } catch (e) {
       debugPrint('Error stopping recording: $e');
     }
@@ -203,6 +204,10 @@ class RecordProvider extends ChangeNotifier {
   /// This ensures that the timer is canceled to avoid memory leaks.
   @override
   void dispose() {
+    debugPrint('Disposing RecordProvider');
+    _audioRecord.dispose();
+    _status = 3;
+    _timer?.cancel();
     super.dispose();
   }
 

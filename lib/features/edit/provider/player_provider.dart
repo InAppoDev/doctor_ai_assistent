@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 
 /// Manages the state and logic for an audio player using the Just Audio package.
@@ -23,7 +23,13 @@ class PlayerProvider extends ChangeNotifier {
     }
 
     try {
-      AudioSource source = AudioSource.file(url);
+      var source;
+      if (kIsWeb){
+        source = AudioSource.uri(Uri.parse(url));
+      } else {
+        source = AudioSource.file(url);
+      }
+
       await player.setAudioSource(source);
       // await _player.setFilePath(url); // Loads the audio file from the URL.
       _duration = _player.duration ?? Duration.zero; // Set audio duration or fallback to zero.
@@ -38,7 +44,6 @@ class PlayerProvider extends ChangeNotifier {
   String _audioFilePath = '';
 
   String get audioFilePath => _audioFilePath;
-
 
   // ---------------------------------------------------------------------------
   // Audio Player and State Management

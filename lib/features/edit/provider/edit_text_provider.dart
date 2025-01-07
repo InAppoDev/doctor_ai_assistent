@@ -58,6 +58,7 @@ class EditTextProvider extends ChangeNotifier {
   /// Ensures that any resources held by the controller are properly released.
   @override
   void dispose() {
+    debugPrint('Disposing EditTextProvider');
     _quillController.dispose();
     super.dispose();
   }
