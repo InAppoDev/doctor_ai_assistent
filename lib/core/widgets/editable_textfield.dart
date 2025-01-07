@@ -141,6 +141,9 @@ class EditableTextfield extends StatelessWidget {
                 ),
                 child: QuillEditor.basic(
                   controller: quillController,
+                  configurations: QuillEditorConfigurations(
+
+                  ),
                 ),
               ),
             ),
