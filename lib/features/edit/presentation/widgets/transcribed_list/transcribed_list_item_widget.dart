@@ -1,9 +1,9 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/extensions/datetime_extension.dart';
-import 'package:doctor_ai_assistent/core/widgets/avatar_widget.dart';
-import 'package:doctor_ai_assistent/features/edit/provider/player_provider.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/extensions/datetime_extension.dart';
+import 'package:ecnx_ambient_listening/core/widgets/avatar_widget.dart';
+import 'package:ecnx_ambient_listening/features/edit/provider/player_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +26,11 @@ class TranscribedListItemWidget extends StatelessWidget {
         child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              border: Border.all(color: context.read<PlayerProvider>().transcribedId == id ? AppColors.accentBlue : AppColors.disabled, width: 1),
+                border: Border.all(
+                    color:
+                        context.read<PlayerProvider>().transcribedId == id ? AppColors.accentBlue : Colors.transparent,
+                    width: 1),
+                borderRadius: BorderRadius.circular(10)
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

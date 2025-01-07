@@ -1,7 +1,7 @@
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/features/home_page/presentation/widgets/date_picker_widget.dart';
-import 'package:doctor_ai_assistent/features/schedule/presentation/provider/schedule_state.dart';
-import 'package:doctor_ai_assistent/features/schedule/presentation/widgets/radio_with_time.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/features/home_page/presentation/widgets/date_picker_widget.dart';
+import 'package:ecnx_ambient_listening/features/schedule/presentation/provider/schedule_state.dart';
+import 'package:ecnx_ambient_listening/features/schedule/presentation/widgets/radio_with_time.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

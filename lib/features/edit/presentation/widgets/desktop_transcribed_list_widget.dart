@@ -1,7 +1,7 @@
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/features/edit/presentation/widgets/audio_progress_bar.dart';
-import 'package:doctor_ai_assistent/features/edit/presentation/widgets/transcribed_list/transcribed_list_widget.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/audio_progress_bar.dart';
+import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/transcribed_list/transcribed_list_widget.dart';
 import 'package:flutter/material.dart';
 
 class DesktopTranscribedListWidget extends StatelessWidget {

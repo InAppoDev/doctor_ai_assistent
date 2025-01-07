@@ -137,6 +137,9 @@ extension DateTimeExtension on DateTime {
   /// This method formats the [DateTime] object into a string with the 12-hour time format.
   /// It uses "AM" for times before noon and "PM" for times after noon.
   String toUSAtimeString() {
-    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} ${hour < 12 ? 'AM' : 'PM'}';
+    final hour = this.hour > 12 ? this.hour - 12 : this.hour;
+    final minute = this.minute.toString().padLeft(2, '0');
+    final period = this.hour >= 12 ? 'PM' : 'AM';
+    return '$hour:$minute $period';
   }
 }

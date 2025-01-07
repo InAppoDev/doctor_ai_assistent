@@ -1,10 +1,10 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
-import 'package:doctor_ai_assistent/core/widgets/custom_textfield_widget.dart';
-import 'package:doctor_ai_assistent/features/auth/provider/registration_provider.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/core/widgets/custom_textfield_widget.dart';
+import 'package:ecnx_ambient_listening/features/auth/provider/registration_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -18,10 +18,14 @@ class PlayerProvider extends ChangeNotifier {
   Future<void> initData({required String url}) async {
     if (url.isEmpty) {
       throw ArgumentError('URL cannot be empty');
+    } else {
+      _audioFilePath = url;
     }
 
     try {
-      await _player.setUrl(url); // Loads the audio file from the URL.
+      AudioSource source = AudioSource.file(url);
+      await player.setAudioSource(source);
+      // await _player.setFilePath(url); // Loads the audio file from the URL.
       _duration = _player.duration ?? Duration.zero; // Set audio duration or fallback to zero.
       notifyListeners(); // Notify UI of updated state.
     } catch (e) {
@@ -29,6 +33,12 @@ class PlayerProvider extends ChangeNotifier {
       rethrow; // Rethrow the exception for higher-level handling.
     }
   }
+
+  /// Audio file path for the current audio player instance.
+  String _audioFilePath = '';
+
+  String get audioFilePath => _audioFilePath;
+
 
   // ---------------------------------------------------------------------------
   // Audio Player and State Management
@@ -98,8 +108,10 @@ class PlayerProvider extends ChangeNotifier {
   ///
   /// This should be called when the [PlayerProvider] is no longer needed
   /// to prevent memory leaks or dangling resources.
-  void close() {
+  @override
+  void dispose() {
+    debugPrint('PlayerProvider disposed');
     _player.dispose();
-    notifyListeners(); // Notify UI of the disposed state if necessary.
+    super.dispose();
   }
 }

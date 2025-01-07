@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
-import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
-import 'package:doctor_ai_assistent/features/auth/provider/auth_provider.dart';
+import 'package:ecnx_ambient_listening/core/navigation/app_route_config.dart';
+import 'package:ecnx_ambient_listening/core/services/get_it/get_it_service.dart';
+import 'package:ecnx_ambient_listening/features/auth/provider/auth_provider.dart';
 
 /// [AuthGuard] is a custom route guard for managing navigation based on the authentication status of the user.
 /// 

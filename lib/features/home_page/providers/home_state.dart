@@ -1,4 +1,4 @@
-import 'package:doctor_ai_assistent/features/home_page/data/models/appointment_model.dart';
+import 'package:ecnx_ambient_listening/features/home_page/data/models/appointment_model.dart';
 import 'package:flutter/material.dart';
 
 /// Manages the state for the home page, including selected date,

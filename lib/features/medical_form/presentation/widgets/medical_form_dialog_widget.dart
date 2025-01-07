@@ -1,10 +1,10 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_icons.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/widgets/column_builder_widget.dart';
-import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_icons.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/widgets/column_builder_widget.dart';
+import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -25,7 +25,8 @@ class MedicalFormDialogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AppColors.bg,
-      insetPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2),
+      insetPadding: EdgeInsets.symmetric(
+          horizontal: Responsive.isDesktop(context) ? MediaQuery.of(context).size.width * 0.2 : 24),
       child: Responsive(
         mobile: _buildDialogContent(context, isDesktop: false),
         desktop: _buildDialogContent(context, isDesktop: true),

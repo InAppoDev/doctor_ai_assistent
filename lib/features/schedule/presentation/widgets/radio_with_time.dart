@@ -1,7 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/extensions/time_of_day_extension.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/extensions/time_of_day_extension.dart';
 import 'package:flutter/material.dart';
 
 class RadioWithTimeWidget extends StatelessWidget {

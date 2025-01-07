@@ -1,11 +1,11 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/widgets/editable_textfield.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
-import 'package:doctor_ai_assistent/features/edit/presentation/widgets/edit_text_tile/edit_text_tile_buttons.dart';
-import 'package:doctor_ai_assistent/features/edit/provider/edit_text_provider.dart';
-import 'package:doctor_ai_assistent/features/medical_form/presentation/widgets/history_log_button_widget.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/widgets/editable_textfield.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/edit_text_tile/edit_text_tile_buttons.dart';
+import 'package:ecnx_ambient_listening/features/edit/provider/edit_text_provider.dart';
+import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/history_log_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

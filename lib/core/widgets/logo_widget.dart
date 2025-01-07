@@ -1,5 +1,5 @@
-import 'package:doctor_ai_assistent/core/constants/app_icons.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_icons.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 

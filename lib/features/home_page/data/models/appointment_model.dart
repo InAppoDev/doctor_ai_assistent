@@ -1,4 +1,4 @@
-import 'package:doctor_ai_assistent/core/extensions/datetime_extension.dart';
+import 'package:ecnx_ambient_listening/core/extensions/datetime_extension.dart';
 /// The AppointmentModel data model should be changed to the actual data model
 class AppointmentModel {
   final String name;

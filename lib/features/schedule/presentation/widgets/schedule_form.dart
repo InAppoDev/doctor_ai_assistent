@@ -1,7 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/widgets/custom_textfield_widget.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
-import 'package:doctor_ai_assistent/features/schedule/presentation/provider/schedule_state.dart';
+import 'package:ecnx_ambient_listening/core/widgets/custom_textfield_widget.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/features/schedule/presentation/provider/schedule_state.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';

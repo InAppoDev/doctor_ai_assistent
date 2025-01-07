@@ -1,13 +1,14 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:doctor_ai_assistent/core/navigation/app_routes.dart';
-import 'package:doctor_ai_assistent/features/auth/presentation/pages/registration/registration_page.dart';
-import 'package:doctor_ai_assistent/features/edit/presentation/pages/edit_page.dart';
-import 'package:doctor_ai_assistent/features/edit/presentation/pages/transcribed_list_page.dart';
-import 'package:doctor_ai_assistent/features/medical_form/presentation/pages/medical_form_page.dart';
-import 'package:doctor_ai_assistent/features/record/presentation/pages/record_page.dart';
-import 'package:doctor_ai_assistent/features/schedule/presentation/pages/schedule_page.dart';
-import 'package:doctor_ai_assistent/features/auth/presentation/pages/login/login_page.dart';
-import 'package:doctor_ai_assistent/features/home_page/presentation/pages/home_page.dart';
+import 'package:ecnx_ambient_listening/core/navigation/app_routes.dart';
+import 'package:ecnx_ambient_listening/features/auth/presentation/pages/registration/registration_page.dart';
+import 'package:ecnx_ambient_listening/features/edit/presentation/pages/edit_page.dart';
+import 'package:ecnx_ambient_listening/features/edit/presentation/pages/transcribed_list_page.dart';
+import 'package:ecnx_ambient_listening/features/medical_form/presentation/pages/medical_form_page.dart';
+import 'package:ecnx_ambient_listening/features/record/presentation/pages/record_page.dart';
+import 'package:ecnx_ambient_listening/features/schedule/presentation/pages/schedule_page.dart';
+import 'package:ecnx_ambient_listening/features/auth/presentation/pages/login/login_page.dart';
+import 'package:ecnx_ambient_listening/features/home_page/presentation/pages/home_page.dart';
+import 'package:flutter/material.dart';
 
 part 'app_route_config.gr.dart';
 

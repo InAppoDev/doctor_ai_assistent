@@ -1,8 +1,8 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/features/home_page/presentation/widgets/appointments/appointments_list.dart';
-import 'package:doctor_ai_assistent/features/home_page/providers/home_state.dart';
-import 'package:doctor_ai_assistent/features/medical_form/presentation/widgets/search_bar_widget.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/features/home_page/presentation/widgets/appointments/appointments_list.dart';
+import 'package:ecnx_ambient_listening/features/home_page/providers/home_state.dart';
+import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

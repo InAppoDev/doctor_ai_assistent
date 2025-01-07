@@ -1,6 +1,6 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/features/edit/presentation/widgets/transcribed_list/transcribed_list_item_widget.dart';
-import 'package:doctor_ai_assistent/features/edit/provider/player_provider.dart';
+import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/transcribed_list/transcribed_list_item_widget.dart';
+import 'package:ecnx_ambient_listening/features/edit/provider/player_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

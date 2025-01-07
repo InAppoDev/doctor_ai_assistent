@@ -1,13 +1,13 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/navigation/app_route_config.dart';
-import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
-import 'package:doctor_ai_assistent/features/home_page/data/models/appointment_model.dart';
-import 'package:doctor_ai_assistent/features/home_page/presentation/widgets/review_checkbox.dart';
-import 'package:doctor_ai_assistent/features/home_page/presentation/widgets/start_recording_button.dart';
-import 'package:doctor_ai_assistent/features/home_page/presentation/widgets/time_with_icon_widget.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/navigation/app_route_config.dart';
+import 'package:ecnx_ambient_listening/core/services/get_it/get_it_service.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/features/home_page/data/models/appointment_model.dart';
+import 'package:ecnx_ambient_listening/features/home_page/presentation/widgets/review_checkbox.dart';
+import 'package:ecnx_ambient_listening/features/home_page/presentation/widgets/start_recording_button.dart';
+import 'package:ecnx_ambient_listening/features/home_page/presentation/widgets/time_with_icon_widget.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentTileWidget extends StatelessWidget {

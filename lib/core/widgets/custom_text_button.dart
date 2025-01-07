@@ -1,4 +1,4 @@
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextButton extends StatelessWidget {
