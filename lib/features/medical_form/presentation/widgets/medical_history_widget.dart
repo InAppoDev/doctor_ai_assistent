@@ -60,13 +60,13 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
                     children: [
                       Responsive(
                         desktop: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          const Text('Medical history', style: AppTextStyles.mediumPx20),
+                          Text(_editProvider.titleAndTextModel.title, style: AppTextStyles.mediumPx20),
                           HistoryLogButtonWidget(onTap: () {
                             widget.onHistoryLogClick();
                           })
                         ]).paddingOnly(bottom: 20),
                         mobile: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          const Text('Medical history', style: AppTextStyles.mediumPx20),
+                          Text(_editProvider.titleAndTextModel.title, style: AppTextStyles.mediumPx20),
                           EditTextTileButtons(
                             onCopyClick: () async {
                               await _editProvider.onCopyToClipboard();

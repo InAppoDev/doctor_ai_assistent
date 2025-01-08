@@ -4,8 +4,6 @@ import 'package:just_audio/just_audio.dart';
 /// Manages the state and logic for an audio player using the Just Audio package.
 /// This class handles audio playback, tracks player state, and manages cleanup.
 class PlayerProvider extends ChangeNotifier {
-  PlayerProvider();
-
   // ---------------------------------------------------------------------------
   // Initialization
   // ---------------------------------------------------------------------------

@@ -23,30 +23,34 @@ class TranscribedListItemWidget extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-                border: Border.all(
-                    color:
-                        context.read<PlayerProvider>().transcribedId == id ? AppColors.accentBlue : Colors.transparent,
-                    width: 1),
-                borderRadius: BorderRadius.circular(10)
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const AvatarWidget().paddingOnly(right: 12),
-                Expanded(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Text(date.toHourAndMinute(), style: AppTextStyles.mediumPx16),
-                      Text(date.toNameOfMonthAndDay(), style: AppTextStyles.regularPx12.copyWith(color: AppColors.disabled))
-                    ]).paddingOnly(bottom: 8),
-                    Text(text, style: AppTextStyles.regularPx16, maxLines: 2, overflow: TextOverflow.ellipsis)
-                  ]),
-                )
-              ],
-            )),
+        child: Consumer<PlayerProvider>(
+          builder: (context, state, _) {
+            return Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color:
+                            state.transcribedId == id ? AppColors.accentBlue : Colors.transparent,
+                        width: 1),
+                    borderRadius: BorderRadius.circular(10)
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const AvatarWidget().paddingOnly(right: 12),
+                    Expanded(
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                          Text(date.toUSAtimeWithoutPeriod(), style: AppTextStyles.mediumPx16),
+                          Text(date.toNameOfMonthAndDay(), style: AppTextStyles.regularPx12.copyWith(color: AppColors.disabled))
+                        ]).paddingOnly(bottom: 8),
+                        Text(text, style: AppTextStyles.regularPx16, maxLines: 2, overflow: TextOverflow.ellipsis)
+                      ]),
+                    )
+                  ],
+                ));
+          }
+        ),
       ),
     );
   }

@@ -86,8 +86,8 @@ class _EditTextTileState extends State<EditTextTile> {
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Text(
-                                'Doctor',
+                              child: Text(
+                                _editProvider.transcribed.author,
                                 style: AppTextStyles.regularPx16,
                               ),
                             ),

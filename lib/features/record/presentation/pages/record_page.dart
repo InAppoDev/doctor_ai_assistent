@@ -188,7 +188,7 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                         ),
                       ),
                     )
-                  else if (recordProvider.status == 2)
+                  else if (recordProvider.status == 2 || recordProvider.status == 3)
 
                     /// when paused show buttons to navigate to other pages
                     Responsive(
@@ -209,11 +209,13 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                                           onCloseClick: () {
                                             Navigator.of(context).pop();
                                           },
-                                          onSaveClick: () {
-                                            recordProvider.close();
-                                            getIt<AppRouter>().push(
-                                              MedicalFormRoute(path: recordProvider.audioFilePath ?? ''),
-                                            );
+                                          onSaveClick: () async {
+                                            await recordProvider.stopRecordingAudio().then((_) {
+                                              recordProvider.close();
+                                              getIt<AppRouter>().push(
+                                                MedicalFormRoute(path: recordProvider.audioFilePath ?? ''),
+                                              );
+                                            });
                                           },
                                           medicalForms: const ['Progress Notes', 'H&P form'],
                                           selectedFormIndex: selectedFormIndex);
@@ -261,11 +263,13 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                                         onCloseClick: () {
                                           Navigator.of(context).pop();
                                         },
-                                        onSaveClick: () {
-                                          recordProvider.close();
-                                          getIt<AppRouter>().push(
-                                            MedicalFormRoute(path: recordProvider.audioFilePath ?? ''),
-                                          );
+                                        onSaveClick: () async {
+                                          await recordProvider.stopRecordingAudio().then((_) {
+                                            recordProvider.close();
+                                            getIt<AppRouter>().push(
+                                              MedicalFormRoute(path: recordProvider.audioFilePath ?? ''),
+                                            );
+                                          });
                                         },
                                         medicalForms: const ['Progress Notes', 'H&P form'],
                                         selectedFormIndex: selectedFormIndex);

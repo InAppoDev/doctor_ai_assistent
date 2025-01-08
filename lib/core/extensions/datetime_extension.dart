@@ -14,6 +14,10 @@ extension DateTimeExtension on DateTime {
     return '${getMonthName()} $day';
   }
 
+  String toShortNameOfMonthAndDay() {
+    return '${getShortMonthName()} $day';
+  }
+
   /// Returns the time in "HH:mm" format (24-hour format).
   ///
   /// Example:
@@ -141,5 +145,17 @@ extension DateTimeExtension on DateTime {
     final minute = this.minute.toString().padLeft(2, '0');
     final period = this.hour >= 12 ? 'PM' : 'AM';
     return '$hour:$minute $period';
+  }
+
+  String toUSAhourString() {
+    final hour = this.hour > 12 ? this.hour - 12 : this.hour;
+    final period = this.hour >= 12 ? 'PM' : 'AM';
+    return '$hour$period';
+  }
+
+  String toUSAtimeWithoutPeriod() {
+    final hour = this.hour > 12 ? this.hour - 12 : this.hour;
+    final minute = this.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 }
