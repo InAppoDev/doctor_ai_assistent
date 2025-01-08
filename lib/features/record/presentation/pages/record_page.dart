@@ -102,20 +102,20 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
                               child: SizedBox(
                                 width: Responsive.isDesktop(context) ? 600 : double.infinity,
                                 height: Responsive.isDesktop(context) ? 300 : 200,
-                                child: ClipRect(
-                                  child: FittedBox(
-                                    fit: BoxFit.cover,
-                                    child: Gif(
-                                      image: const AssetImage("assets/gifs/wave_animation.gif"),
-                                      controller: _gifController,
-                                      autostart: Autostart.loop,
-                                      onFetchCompleted: () {
-                                        _gifController.reset();
-                                        _gifController.forward();
-                                      },
-                                    ),
-                                  ),
-                                ),
+                                // child: ClipRect(
+                                //   child: FittedBox(
+                                //     fit: BoxFit.cover,
+                                //     child: Gif(
+                                //       image: const AssetImage("assets/gifs/wave_animation.gif"),
+                                //       controller: _gifController,
+                                //       autostart: Autostart.loop,
+                                //       onFetchCompleted: () {
+                                //         _gifController.reset();
+                                //         _gifController.forward();
+                                //       },
+                                //     ),
+                                //   ),
+                                // ),
                               ),
                             ),
                           ],

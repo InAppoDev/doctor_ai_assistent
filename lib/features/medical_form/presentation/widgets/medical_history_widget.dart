@@ -66,7 +66,7 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
                           })
                         ]).paddingOnly(bottom: 20),
                         mobile: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          Text(_editProvider.titleAndTextModel.title, style: AppTextStyles.mediumPx20),
+                          Expanded(child: Text(_editProvider.titleAndTextModel.title, style: AppTextStyles.mediumPx20, overflow: TextOverflow.ellipsis, maxLines: 2,)),
                           EditTextTileButtons(
                             onCopyClick: () async {
                               await _editProvider.onCopyToClipboard();

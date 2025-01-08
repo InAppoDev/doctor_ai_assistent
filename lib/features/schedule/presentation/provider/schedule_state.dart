@@ -60,9 +60,21 @@ class ScheduleState extends ChangeNotifier {
   /// Returns the list of available times for scheduling.
   List<TimeOfDay> get availableTimes => _availableTimes;
 
+  /// for fetching the available time slots for scheduling.
+  /// This method should be replaced with the actual API call.
+  
+  Future<void> fetchAvailableTimeSlots() async {
+    try {
+      // Fetch available time slots from the API.
+    } catch (e) {
+      debugPrint('Error fetching available time slots: $e');
+    }
+  }
+
   /// Disposes of the controllers to free up resources when no longer needed.
   @override
   void dispose() {
+    debugPrint('ScheduleState disposed');
     firstNameController.dispose();
     lastNameController.dispose();
     dateOfBirthController.dispose();
