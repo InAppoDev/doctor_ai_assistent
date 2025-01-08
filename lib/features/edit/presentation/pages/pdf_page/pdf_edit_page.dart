@@ -10,54 +10,66 @@ import 'package:printing/printing.dart';
 Future<void> generateEditedTextPdf(
   List<EditedTextModel> editedTexts,
   String title,
-  PatientInformationModel? patientInformation
+  PatientInformationModel? patientInformation,
 ) async {
-  final pdf = pw.Document();
+  final pdf = pw.Document(
+    pageMode: PdfPageMode.fullscreen,
+  );
+
   pdf.addPage(
-    buildPage(editedTexts, title, patientInformation),
+    buildMultiPage(editedTexts, title, patientInformation),
   );
 
   await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
 }
 
-/// Builds a PDF page for displaying the edited text content.
-/// This page includes the Quill rich text editor and associated functionality.
-pw.Page buildPage(
+/// Builds a PDF document with multiple pages for displaying the edited text content.
+/// Dynamically splits content across multiple pages if needed.
+pw.MultiPage buildMultiPage(
   List<EditedTextModel> editedTexts,
   String title,
-  PatientInformationModel? patientInformation
+  PatientInformationModel? patientInformation,
 ) {
-  return pw.Page(build: (context) {
-    return pw.Column(
-      mainAxisAlignment: pw.MainAxisAlignment.start,
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        if (patientInformation != null)
-          pw.Column(
-            children: [
-              pw.Text('Patient Name: ${patientInformation.name}'),
-              pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
-              pw.Text('Age: ${patientInformation.age}'),
-              pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
-              pw.Text('DOB: ${patientInformation.dob.toShortNameOfMonthAndDay()} ${patientInformation.dob.year}'),
-              pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
-              pw.Text('Medical Record Number: ${patientInformation.recordNumber}'),
-              pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
-              pw.Text('Date of Admission: ${patientInformation.dateOfAdmission.toNameOfMonthAndDay()}, ${patientInformation.dateOfAdmission.toUSAhourString()}'),
-              pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
-              pw.Text('Admitting Physician: ${patientInformation.admittingPhysician}'),
-              pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
-            ]
-          ),  
-        pw.Text(title, style: const pw.TextStyle(fontSize: 24)),
-        pw.Padding(padding: const pw.EdgeInsets.only(top: 24)),
-        for (final editedText in editedTexts) ...[
-          pw.Text(editedText.name, style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+  return pw.MultiPage(
+    pageFormat: PdfPageFormat.a4,
+    margin: const pw.EdgeInsets.all(20),
+    build: (context) {
+      List<pw.Widget> widgets = [];
+
+      // Add patient information, if available.
+      if (patientInformation != null) {
+        widgets.addAll([
+          pw.Text('Patient Name: ${patientInformation.name}'),
+          pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
+          pw.Text('Age: ${patientInformation.age}'),
+          pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
+          pw.Text('DOB: ${patientInformation.dob.toShortNameOfMonthAndDay()} ${patientInformation.dob.year}'),
+          pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
+          pw.Text('Medical Record Number: ${patientInformation.recordNumber}'),
+          pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
+          pw.Text('Date of Admission: ${patientInformation.dateOfAdmission.toNameOfMonthAndDay()}, ${patientInformation.dateOfAdmission.toUSAhourString()}'),
+          pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
+          pw.Text('Admitting Physician: ${patientInformation.admittingPhysician}'),
+          pw.Padding(padding: const pw.EdgeInsets.only(top: 24)),
+        ]);
+      }
+
+      // Add the title.
+      widgets.add(pw.Text(title, style: const pw.TextStyle(fontSize: 24)));
+      widgets.add(pw.Padding(padding: const pw.EdgeInsets.only(top: 24)));
+
+      // Add edited texts.
+      for (final editedText in editedTexts) {
+        widgets.addAll([
+          pw.Text(editedText.name, style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 18)),
           pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
           pw.Text(editedText.text, style: const pw.TextStyle(fontSize: 16)),
           pw.Padding(padding: const pw.EdgeInsets.only(top: 12)),
-        ],
-        pw.Padding(padding: const pw.EdgeInsets.only(top: 24)),
-      ]);
-  });
+        ]);
+      }
+
+      // Return widgets. `pw.MultiPage` will handle the page breaks automatically.
+      return widgets;
+    },
+  );
 }

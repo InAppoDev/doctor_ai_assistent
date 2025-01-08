@@ -17,9 +17,9 @@ class PatientInformationWidget extends StatelessWidget {
       children: [
         TitleAndSubtitle(title: 'Patient Name:', subtitle: patientInformation.name).paddingOnly(bottom: 12),
         TitleAndSubtitle(title: 'Age:', subtitle: patientInformation.age.toString()).paddingOnly(bottom: 12),
-        TitleAndSubtitle(title: 'DOB:', subtitle: '${patientInformation.dob.toShortNameOfMonthAndDay()} ${patientInformation.dob.year}').paddingOnly(bottom: 12),
+        TitleAndSubtitle(title: 'DOB:', subtitle: '${patientInformation.dob.toShortNameOfMonthAndDay()}, ${patientInformation.dob.year}').paddingOnly(bottom: 12),
         TitleAndSubtitle(title: 'Medical Record Number:', subtitle: patientInformation.recordNumber).paddingOnly(bottom: 12),
-        TitleAndSubtitle(title: 'Date of admission:', subtitle: '${patientInformation.dateOfAdmission.toNameOfMonthAndDay()} ${patientInformation.dateOfAdmission.toUSAhourString()}').paddingOnly(bottom: 12),
+        TitleAndSubtitle(title: 'Date of admission:', subtitle: '${patientInformation.dateOfAdmission.toNameOfMonthAndDay()}, ${patientInformation.dateOfAdmission.toUSAhourString()}').paddingOnly(bottom: 12),
         TitleAndSubtitle(title: 'Admitting Physician:', subtitle: patientInformation.admittingPhysician),
     ]);
   }
