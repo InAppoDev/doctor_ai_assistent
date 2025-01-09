@@ -61,9 +61,6 @@ class EditState extends ChangeNotifier {
 
   @override
   void dispose() {
-    for (final controller in _quillControllers) {
-      controller.dispose();
-    }
     super.dispose();
   }
 }

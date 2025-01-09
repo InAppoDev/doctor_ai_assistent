@@ -9,21 +9,8 @@ import 'package:ecnx_ambient_listening/features/edit/provider/edit_text_provider
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class EditTextTile extends StatefulWidget {
+class EditTextTile extends StatelessWidget {
   const EditTextTile({super.key});
-
-  @override
-  State<EditTextTile> createState() => _EditTextTileState();
-}
-
-class _EditTextTileState extends State<EditTextTile> {
-  late EditTextProvider _editProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    _editProvider = context.read<EditTextProvider>();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +47,7 @@ class _EditTextTileState extends State<EditTextTile> {
                           children: [
                             EditTextTileButtons(
                               onCopyClick: () async {
-                                await _editProvider.onCopyToClipboard();
+                                await context.read<EditTextProvider>().onCopyToClipboard();
                               },
                               onTranslateClick: () {},
                               onPlayClick: () {},
@@ -87,14 +74,14 @@ class _EditTextTileState extends State<EditTextTile> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(
-                                _editProvider.transcribed.author,
+                                context.read<EditTextProvider>().transcribed.author,
                                 style: AppTextStyles.regularPx16,
                               ),
                             ),
                           ),
                         ],
                       ).paddingOnly(bottom: 16),
-                      EditableTextfield(quillController: _editProvider.quillController),
+                      EditableTextfield(quillController: context.read<EditTextProvider>().quillController),
                     ],
                   ),
                 ),
@@ -109,7 +96,7 @@ class _EditTextTileState extends State<EditTextTile> {
               const SizedBox(width: 20),
               EditTextTileButtons(
                 onCopyClick: () async {
-                  await _editProvider.onCopyToClipboard();
+                  await context.read<EditTextProvider>().onCopyToClipboard();
                 },
                 onTranslateClick: () {},
                 onPlayClick: () {},
@@ -119,5 +106,4 @@ class _EditTextTileState extends State<EditTextTile> {
       ],
     );
   }
-
 }

@@ -89,7 +89,7 @@ class _RecordPageState extends State<RecordPage> {
                   recordProvider.status == 1
                       ? SizedBox(
                           width: double.infinity,
-                          height: Responsive.isDesktop(context) ? 200 : 100,
+                          height: Responsive.isDesktop(context) ? 130 : 36,
                           child: const AnimatedWave(),
                         ).paddingOnly(bottom: Responsive.isDesktop(context) ? 200 : 50)
                       : const Divider(

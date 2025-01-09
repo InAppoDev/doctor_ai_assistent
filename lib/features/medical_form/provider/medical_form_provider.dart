@@ -186,7 +186,6 @@ Psych: Mood and affect appropriate. No depression or anxiety.
 
   @override
   void dispose() {
-    _quillControllers.forEach((controller) => controller.dispose());
     _searchController.dispose();
     super.dispose();
   }
