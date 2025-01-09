@@ -10,9 +10,9 @@ import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/medical_form_dialog_widget.dart';
 import 'package:ecnx_ambient_listening/features/record/presentation/widgets/record_button.dart';
 import 'package:ecnx_ambient_listening/features/record/presentation/widgets/recorded_text.dart';
+import 'package:ecnx_ambient_listening/features/record/presentation/widgets/wave_animation.dart';
 import 'package:ecnx_ambient_listening/features/record/provider/record_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:gif/gif.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/widgets/responsive/responsive_widget.dart';
@@ -33,19 +33,16 @@ class RecordPage extends StatefulWidget implements AutoRouteWrapper {
   }
 }
 
-class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateMixin {
-  late GifController _gifController;
+class _RecordPageState extends State<RecordPage> {
   final ValueNotifier<int?> selectedFormIndex = ValueNotifier(null);
 
   @override
   void initState() {
     super.initState();
-    _gifController = GifController(vsync: this);
   }
 
   @override
   void dispose() {
-    _gifController.dispose();
     selectedFormIndex.dispose();
     super.dispose();
   }
@@ -90,36 +87,11 @@ class _RecordPageState extends State<RecordPage> with SingleTickerProviderStateM
 
                   /// sound wave animation section
                   recordProvider.status == 1
-                      ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Positioned.fill(
-                              child: Container(
-                                color: AppColors.bg.withOpacity(0.8),
-                              ),
-                            ),
-                            Center(
-                              child: SizedBox(
-                                width: Responsive.isDesktop(context) ? 600 : double.infinity,
-                                height: Responsive.isDesktop(context) ? 300 : 200,
-                                // child: ClipRect(
-                                //   child: FittedBox(
-                                //     fit: BoxFit.cover,
-                                //     child: Gif(
-                                //       image: const AssetImage("assets/gifs/wave_animation.gif"),
-                                //       controller: _gifController,
-                                //       autostart: Autostart.loop,
-                                //       onFetchCompleted: () {
-                                //         _gifController.reset();
-                                //         _gifController.forward();
-                                //       },
-                                //     ),
-                                //   ),
-                                // ),
-                              ),
-                            ),
-                          ],
-                        )
+                      ? SizedBox(
+                          width: double.infinity,
+                          height: Responsive.isDesktop(context) ? 200 : 100,
+                          child: const AnimatedWave(),
+                        ).paddingOnly(bottom: Responsive.isDesktop(context) ? 200 : 50)
                       : const Divider(
                           color: AppColors.accentBlue,
                           thickness: 3,

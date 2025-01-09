@@ -27,7 +27,6 @@ dependencies:
   flutter_svg: ^2.0.16
   flutter_screenutil: ^5.9.3
   flutter_quill: ^10.8.5
-  gif: ^2.3.0
   awesome_extensions: ^2.0.19
   mask_text_input_formatter: ^2.9.0
   syncfusion_flutter_datepicker: ^27.2.5
@@ -67,7 +66,6 @@ flutter:
     - assets/fonts/
     - assets/icons/
     - assets/images/
-    - assets/gifs/
 
   fonts:
     - family: Inter

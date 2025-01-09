@@ -29,7 +29,7 @@ class MedicalFormProvider extends ChangeNotifier {
       }
       await generateEditedTextPdf(
         editedTexts,
-        'Internal Medicine ICU History and Physical',
+        'Medical Form',
         _medicalFormModel.patientInformation,
       );
 
