@@ -46,7 +46,7 @@ class WavePainter extends CustomPainter {
   final double waveHeight1;
   final double waveHeight2;
 
-  WavePainter(this.animationValue, this.waveHeight1, this.waveHeight2);
+  const WavePainter(this.animationValue, this.waveHeight1, this.waveHeight2);
 
   @override
   void paint(Canvas canvas, Size size) {

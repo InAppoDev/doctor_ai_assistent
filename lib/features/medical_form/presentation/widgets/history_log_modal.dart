@@ -17,7 +17,7 @@ class HistoryLogModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AppColors.bg,
-      insetPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2),
+      insetPadding: EdgeInsets.symmetric(horizontal: Responsive.isDesktop(context) ? MediaQuery.of(context).size.width * 0.2 : 24),
       child: Container(
           decoration: BoxDecoration(
             color: AppColors.bg,
