@@ -185,7 +185,7 @@ class _RecordPageState extends State<RecordPage> {
                                             await recordProvider.stopRecordingAudio().then((_) {
                                               recordProvider.close();
                                               getIt<AppRouter>().push(
-                                                MedicalFormRoute(path: recordProvider.audioFilePath ?? ''),
+                                                MedicalFormRoute(path: Uri.encodeComponent(recordProvider.audioFilePath ?? '')),
                                               );
                                             });
                                           },
@@ -203,7 +203,7 @@ class _RecordPageState extends State<RecordPage> {
                               onPress: () async {
                                 await recordProvider.stopRecordingAudio().then((_) {
                                   recordProvider.close();
-                                  getIt<AppRouter>().push(EditRoute(path: recordProvider.audioFilePath ?? ''));
+                                  getIt<AppRouter>().push(EditRoute(path: Uri.encodeComponent(recordProvider.audioFilePath ?? '')));
                                 });
                               },
                             ).paddingOnly(right: 20),
@@ -214,7 +214,7 @@ class _RecordPageState extends State<RecordPage> {
                               borderColor: AppColors.accentBlue,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               onPress: () {
-                                getIt<AppRouter>().replaceAll([const HomeRoute()]);
+                                getIt<AppRouter>().popUntil((route) => route.settings.name == HomeRoute.name);
                               },
                             ),
                           ],
@@ -239,7 +239,7 @@ class _RecordPageState extends State<RecordPage> {
                                           await recordProvider.stopRecordingAudio().then((_) {
                                             recordProvider.close();
                                             getIt<AppRouter>().push(
-                                              MedicalFormRoute(path: recordProvider.audioFilePath ?? ''),
+                                              MedicalFormRoute(path: Uri.encodeComponent(recordProvider.audioFilePath ?? '')),
                                             );
                                           });
                                         },
@@ -259,7 +259,7 @@ class _RecordPageState extends State<RecordPage> {
                               await recordProvider.stopRecordingAudio().then((_) {
                                 print(recordProvider.audioFilePath);
                                 recordProvider.close();
-                                getIt<AppRouter>().push(EditRoute(path: recordProvider.audioFilePath ?? ''));
+                                getIt<AppRouter>().push(EditRoute(path: Uri.encodeComponent(recordProvider.audioFilePath ?? '')));
                               });
                             },
                           ).paddingOnly(bottom: 16),
@@ -271,7 +271,7 @@ class _RecordPageState extends State<RecordPage> {
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             textStyle: AppTextStyles.regularPx16,
                             onPress: () {
-                              getIt<AppRouter>().replaceAll([const HomeRoute()]);
+                              getIt<AppRouter>().popUntil((route) => route.settings.name == HomeRoute.name);
                             },
                           )
                         ]).paddingSymmetric(horizontal: 16)),

@@ -20,13 +20,14 @@ import 'package:provider/provider.dart';
 @RoutePage()
 class MedicalFormPage extends StatelessWidget implements AutoRouteWrapper {
   final String path;
-  const MedicalFormPage({super.key, required this.path});
+  const MedicalFormPage({super.key, @PathParam('path') required this.path});
 
   @override
   Widget wrappedRoute(BuildContext context) {
+    final decodedPath = Uri.decodeComponent(path);
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => PlayerProvider()..initData(url: path)),
+        ChangeNotifierProvider(create: (context) => PlayerProvider()..initData(url: decodedPath)),
         ChangeNotifierProvider(create: (context) => MedicalFormProvider())
       ],
       child: this
@@ -91,7 +92,7 @@ class MedicalFormPage extends StatelessWidget implements AutoRouteWrapper {
                             onPress: () {
                               final audioFilePath = context.read<PlayerProvider>().audioFilePath;
                               getIt<AppRouter>().push(TranscribedListRoute(
-                                path: audioFilePath,
+                                path: Uri.encodeComponent(audioFilePath),
                               ));
                             },
                             color: AppColors.accentGreen,
@@ -106,8 +107,10 @@ class MedicalFormPage extends StatelessWidget implements AutoRouteWrapper {
                             Flexible(
                               flex: 7,
                               child: SearchBarWidget(
-                                controller: TextEditingController(),
-                                onSearch: () {},
+                                  controller: context.read<MedicalFormProvider>().searchController,
+                                  onSearch: () {
+                                    context.read<MedicalFormProvider>().search();
+                                  },
                                 onMicTap: () {},
                               ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
                             ),
@@ -152,7 +155,7 @@ class MedicalFormPage extends StatelessWidget implements AutoRouteWrapper {
                                   borderColor: AppColors.accentBlue,
                                   padding: const EdgeInsets.symmetric(vertical: 12),
                                   onPress: () {
-                                    getIt<AppRouter>().replaceAll([const HomeRoute()]);
+                                    getIt<AppRouter>().popUntil((route) => route.settings.name == HomeRoute.name);
                                   },
                                 ).paddingOnly(right: 20),
                               ],
@@ -166,7 +169,7 @@ class MedicalFormPage extends StatelessWidget implements AutoRouteWrapper {
                                   padding: const EdgeInsets.symmetric(vertical: 12),
                                   textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.white),
                                   onPress: () {
-                                    getIt<AppRouter>().replaceAll([const HomeRoute()]);
+                                      getIt<AppRouter>().popUntil((route) => route.settings.name == HomeRoute.name);
                                   },
                                 ).paddingOnly(bottom: 24),
                               ],

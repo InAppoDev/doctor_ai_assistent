@@ -15,13 +15,15 @@ import 'package:provider/provider.dart';
 @RoutePage()
 class TranscribedListPage extends StatelessWidget implements AutoRouteWrapper {
   final String path;
-  const TranscribedListPage({super.key, required this.path});
+  const TranscribedListPage({super.key, @PathParam('path') required this.path
+});
 
   @override
   Widget wrappedRoute(BuildContext context) {
+    final decodedPath = Uri.decodeComponent(path);
     return ChangeNotifierProvider(
         create: (context) =>
-            PlayerProvider()..initData(url: path),
+            PlayerProvider()..initData(url: decodedPath),
         child: this);
   }
 

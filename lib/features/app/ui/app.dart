@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import '../../../core/navigation/app_route_config.dart';
 
 class MyApp extends StatelessWidget {
+  MyApp({super.key});
+
   final _appRouter = getIt<AppRouter>();
   final _authProvider = getIt<AuthProvider>();
 

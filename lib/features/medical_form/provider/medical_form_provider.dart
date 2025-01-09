@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:ecnx_ambient_listening/features/edit/data/models/pdf_models/edited_text_model.dart';
 import 'package:ecnx_ambient_listening/core/services/export_as_pdf.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/data/models/medical_form_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill/quill_delta.dart';
 
 class MedicalFormProvider extends ChangeNotifier {
   // ---------------------------------------------------------------------------
@@ -32,7 +35,6 @@ class MedicalFormProvider extends ChangeNotifier {
         'Medical Form',
         _medicalFormModel.patientInformation,
       );
-
     } catch (e) {
       debugPrint('Error exporting as PDF: $e');
     }
@@ -42,54 +44,55 @@ class MedicalFormProvider extends ChangeNotifier {
   // Medical Form Model
   // ---------------------------------------------------------------------------
   final MedicalFormModel _medicalFormModel = MedicalFormModel(
-    patientInformation: PatientInformationModel(
-      name: 'John Doe',
-      age: 44,
-      dob: DateTime.now(),
-      dateOfAdmission: DateTime.now(),
-      recordNumber: '12345',
-      admittingPhysician: 'Dr. Smith',
-    ),
-    medicalHistory: const [
-      TitleAndTextModel(
-        title: 'History Taken From',
-        text: 'Information source:60032',
+      patientInformation: PatientInformationModel(
+        name: 'John Doe',
+        age: 44,
+        dob: DateTime.now(),
+        dateOfAdmission: DateTime.now(),
+        recordNumber: '12345',
+        admittingPhysician: 'Dr. Smith',
       ),
-      TitleAndTextModel(
-        title: 'Chief Complaint/Reason for Visit',
-        text: 'Sample what brings you here today/why are you here today',
-      ),
-      TitleAndTextModel(
-        title: 'History of Present Illness',
-        text: 'sample Dr. Modibo Usman is a 48 y/o M with a h/o Great Health and Arthritis presenting with complaint of Having cough, runny nose and sore throat for 3 days. Patient c/o cough productive of whitish sputum associated with sore throat, odynophagia, posterior neck pain, generalized weakness and body aches. Neck pain is ~5/10 intensity, non-radiating and triggered by swallowing. No relieving factors. He denies fever or chills, SOB, chest pain or headache. His son had similar symptoms 3 days ago but recovered fully without testing. He is UpToDate with his COVID vaccine but is unsure if he has received the influenza vaccine. Pt reported prior similar symptoms a few months agoI',
-      ),
-      TitleAndTextModel(
-        title: 'Past Medical History',
-        text: 'sampleArthritis',
-      ),
-      TitleAndTextModel(
-        title: 'Past Surgical History',
-        text: 'sampleAppendectomy',
-      ),
-      TitleAndTextModel(
-        title: 'Allergies',
-        text: 'sampleAzithromycin',
-      ),
-      TitleAndTextModel(
-        title: 'Medications',
-        text: 'sampleAspirin, Vitamin D',
-      ),
-      TitleAndTextModel(
-        title: 'Family History',
-        text: '',
-      ),
-      TitleAndTextModel(
-        title: 'Social History',
-        text: '',
-      ),
-      TitleAndTextModel(
-        title: 'Review of Systems: [pre-populated]',
-        text: '''Constitutional: Denies fevers, chills, weight gain or weight loss.
+      medicalHistory: const [
+        TitleAndTextModel(
+          title: 'History Taken From',
+          text: 'Information source:60032',
+        ),
+        TitleAndTextModel(
+          title: 'Chief Complaint/Reason for Visit',
+          text: 'Sample what brings you here today/why are you here today',
+        ),
+        TitleAndTextModel(
+          title: 'History of Present Illness',
+          text:
+              'sample Dr. Modibo Usman is a 48 y/o M with a h/o Great Health and Arthritis presenting with complaint of Having cough, runny nose and sore throat for 3 days. Patient c/o cough productive of whitish sputum associated with sore throat, odynophagia, posterior neck pain, generalized weakness and body aches. Neck pain is ~5/10 intensity, non-radiating and triggered by swallowing. No relieving factors. He denies fever or chills, SOB, chest pain or headache. His son had similar symptoms 3 days ago but recovered fully without testing. He is UpToDate with his COVID vaccine but is unsure if he has received the influenza vaccine. Pt reported prior similar symptoms a few months agoI',
+        ),
+        TitleAndTextModel(
+          title: 'Past Medical History',
+          text: 'sampleArthritis',
+        ),
+        TitleAndTextModel(
+          title: 'Past Surgical History',
+          text: 'sampleAppendectomy',
+        ),
+        TitleAndTextModel(
+          title: 'Allergies',
+          text: 'sampleAzithromycin',
+        ),
+        TitleAndTextModel(
+          title: 'Medications',
+          text: 'sampleAspirin, Vitamin D',
+        ),
+        TitleAndTextModel(
+          title: 'Family History',
+          text: '',
+        ),
+        TitleAndTextModel(
+          title: 'Social History',
+          text: '',
+        ),
+        TitleAndTextModel(
+          title: 'Review of Systems: [pre-populated]',
+          text: '''Constitutional: Denies fevers, chills, weight gain or weight loss.
 HENT: Denies headache, sore throat or changes in hearing.
 Eyes: Denies changes in vision or double vision.
 Cardiovascular: Denies chest pain or palpitations.
@@ -102,10 +105,10 @@ Psych: Denies depression and anxiety.
 Heme: Denies active bleeding.  Denies ecchymosis.
 Endo: Denies polyuria or polydipsia.
 ''',
-      ),
-      TitleAndTextModel(
-        title: 'Physical Examination: [pre-populated]',
-        text: '''
+        ),
+        TitleAndTextModel(
+          title: 'Physical Examination: [pre-populated]',
+          text: '''
 General: Pleasant and cooperative. No acute distress.
 HENT: Normocephalic and atraumatic.  Oral mucosa moist, no lesions.  Teeth intact.
 Eyes: Anicteric. PERL,EOMI. No conjunctival erythema.
@@ -121,37 +124,36 @@ Heme: No bleeding.  No ecchymosis.
 GU: No Foley catheter. No abnormal discharge.
 Psych: Mood and affect appropriate. No depression or anxiety.
         ''',
-      ),
-      TitleAndTextModel(
-        title: 'Diagnostic Studies',
-        text: '',
-      ),
-      TitleAndTextModel(
-        title: 'EKG',
-        text: '',
-      ),
-      TitleAndTextModel(
-        title: 'Imaging',
-        text: '',
-      ),
-      TitleAndTextModel(
-        title: 'Labs',
-        text: '''
+        ),
+        TitleAndTextModel(
+          title: 'Diagnostic Studies',
+          text: '',
+        ),
+        TitleAndTextModel(
+          title: 'EKG',
+          text: '',
+        ),
+        TitleAndTextModel(
+          title: 'Imaging',
+          text: '',
+        ),
+        TitleAndTextModel(
+          title: 'Labs',
+          text: '''
 @LABRCNT(WBC:2,HGB:2,HCT:2,PLT:2,INR:2)@
 @LABRCNT(Na:2,K:2,Cl:2,CO2:2,BUN:2,CREA:2,GLU:2,Calcium:2,Mg:2,Phos:2,LACTATE:2,TROPONINI:2)@
 @LABRCNT(ALT:2,AST:2,Alkphos:2,Bilitot:2,Albumin:2)@
         ''',
-      ),
-      TitleAndTextModel(
-        title: 'ASSESSMENT/PLAN',
-        text: '',
-      ),
-      TitleAndTextModel(
-        title: 'CODE',
-        text: '',
-      ),
-    ]
-  );
+        ),
+        TitleAndTextModel(
+          title: 'ASSESSMENT/PLAN',
+          text: '',
+        ),
+        TitleAndTextModel(
+          title: 'CODE',
+          text: '',
+        ),
+      ]);
 
   MedicalFormModel get medicalFormModel => _medicalFormModel;
 
@@ -165,11 +167,27 @@ Psych: Mood and affect appropriate. No depression or anxiety.
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // Search Functionality
+  // ---------------------------------------------------------------------------
+
+  final TextEditingController _searchController = TextEditingController();
+
+  TextEditingController get searchController => _searchController;
+
+  /// Search the medical form for the given [searchTerm]
+  void search() {
+    final searchTerm = _searchController.text;
+
+    if (searchTerm.isEmpty) return;
+
+    
+  }
+
   @override
   void dispose() {
-    for (final controller in _quillControllers) {
-      controller.dispose();
-    }
+    _quillControllers.forEach((controller) => controller.dispose());
+    _searchController.dispose();
     super.dispose();
   }
 }

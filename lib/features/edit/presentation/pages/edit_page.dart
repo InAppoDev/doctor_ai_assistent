@@ -19,16 +19,14 @@ import 'package:provider/provider.dart';
 @RoutePage()
 class EditPage extends StatelessWidget implements AutoRouteWrapper {
   final String path;
-  const EditPage({
-    super.key, 
-    required this.path
-  });
+  const EditPage({super.key, @PathParam('path') required this.path});
 
   @override
   Widget wrappedRoute(BuildContext context) {
+    final decodedPath = Uri.decodeComponent(path);
     return MultiProvider(providers: [
       ChangeNotifierProvider(
-        create: (context) => PlayerProvider()..initData(url: path),
+        create: (context) => PlayerProvider()..initData(url: decodedPath),
       ),
       ChangeNotifierProvider(create: (context) => EditState())
     ], child: this);
@@ -93,7 +91,7 @@ class EditPage extends StatelessWidget implements AutoRouteWrapper {
                               onPress: () {
                                 final audioFilePath = context.read<PlayerProvider>().audioFilePath;
                                 getIt<AppRouter>().push(TranscribedListRoute(
-                                  path: audioFilePath,
+                                  path: Uri.encodeComponent(audioFilePath.isEmpty ? path : audioFilePath),
                                 ));
                               },
                               color: AppColors.accentGreen,
@@ -128,8 +126,12 @@ class EditPage extends StatelessWidget implements AutoRouteWrapper {
                                                   Navigator.of(dialogContext).pop();
                                                 },
                                                 onSaveClick: () {
-                                                  final audioFilePath = context.read<PlayerProvider>().audioFilePath;
-                                                  getIt<AppRouter>().push(MedicalFormRoute(path: audioFilePath));
+                                                  var audioFilePath = context.read<PlayerProvider>().audioFilePath;
+                                                  if (audioFilePath.isEmpty) {
+                                                    audioFilePath = Uri.decodeComponent(path);
+                                                  }
+                                                  getIt<AppRouter>()
+                                                      .push(MedicalFormRoute(path: Uri.encodeComponent(audioFilePath)));
                                                 },
                                                 medicalForms: const ['Progress Notes', 'H&P form'],
                                                 selectedFormIndex: selectedFormIndex);
@@ -145,7 +147,7 @@ class EditPage extends StatelessWidget implements AutoRouteWrapper {
                                     borderColor: AppColors.accentBlue,
                                     padding: const EdgeInsets.symmetric(vertical: 12),
                                     onPress: () {
-                                      getIt<AppRouter>().replaceAll([const HomeRoute()]);
+                                      getIt<AppRouter>().popUntil((route) => route.settings.name == HomeRoute.name);
                                     },
                                   )
                                 ],
@@ -169,8 +171,12 @@ class EditPage extends StatelessWidget implements AutoRouteWrapper {
                                                   Navigator.of(dialogContext).pop();
                                                 },
                                                 onSaveClick: () {
-                                                  final audioFilePath = context.read<PlayerProvider>().audioFilePath;
-                                                  getIt<AppRouter>().push(MedicalFormRoute(path: audioFilePath));
+                                                  var audioFilePath = context.read<PlayerProvider>().audioFilePath;
+                                                  if (audioFilePath.isEmpty) {
+                                                    audioFilePath = Uri.decodeComponent(path);
+                                                  }
+                                                  getIt<AppRouter>()
+                                                      .push(MedicalFormRoute(path: Uri.encodeComponent(audioFilePath)));
                                                 },
                                                 medicalForms: const ['Progress Notes', 'H&P form'],
                                                 selectedFormIndex: selectedFormIndex);
@@ -187,7 +193,7 @@ class EditPage extends StatelessWidget implements AutoRouteWrapper {
                                     padding: const EdgeInsets.symmetric(vertical: 12),
                                     textStyle: AppTextStyles.regularPx16,
                                     onPress: () {
-                                      getIt<AppRouter>().replaceAll([const HomeRoute()]);
+                                      getIt<AppRouter>().popUntil((route) => route.settings.name == HomeRoute.name);
                                     },
                                   ).paddingOnly(bottom: 24),
                                 ],
