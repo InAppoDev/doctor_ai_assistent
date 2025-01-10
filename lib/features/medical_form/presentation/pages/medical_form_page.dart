@@ -19,8 +19,10 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class MedicalFormPage extends StatelessWidget implements AutoRouteWrapper {
+  /// Note: need to add the [id] @PathParam('id') to the constructor for further fetching of data
+  // final String id; or final int id;
   final String path;
-  const MedicalFormPage({super.key, @PathParam('path') required this.path});
+  const MedicalFormPage({super.key, @QueryParam() this.path = ''});
 
   @override
   Widget wrappedRoute(BuildContext context) {

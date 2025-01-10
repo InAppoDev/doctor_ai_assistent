@@ -40,6 +40,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: MedicalFormRoute.page, path: AppRoutes.medicalForm),
         AutoRoute(page: TranscribedListRoute.page, path: AppRoutes.transcribedList),
         AutoRoute(page: ScheduleRoute.page, path: AppRoutes.schedule),
-        RedirectRoute(path: "*", redirectTo: AppRoutes.home)
+        RedirectRoute(path: "*", redirectTo: AppRoutes.home),
+        RedirectRoute(path: "/", redirectTo: AppRoutes.home),
   ];
 }

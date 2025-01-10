@@ -19,6 +19,8 @@ import '../../../../core/widgets/responsive/responsive_widget.dart';
 
 @RoutePage()
 class RecordPage extends StatefulWidget implements AutoRouteWrapper {
+
+  /// Note: need to add the [id] of the appointment to send the recording to the correct appointment
   const RecordPage({super.key});
 
   @override

@@ -18,8 +18,9 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class EditPage extends StatelessWidget implements AutoRouteWrapper {
+  /// Note: need to add the [id] parameter to the constructor for fetching the text
   final String path;
-  const EditPage({super.key, @PathParam('path') required this.path});
+  const EditPage({super.key, @QueryParam() this.path = ''});
 
   @override
   Widget wrappedRoute(BuildContext context) {

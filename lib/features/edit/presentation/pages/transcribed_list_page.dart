@@ -14,9 +14,9 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class TranscribedListPage extends StatelessWidget implements AutoRouteWrapper {
+  /// You need to add the [id] parameter to the constructor to fetch the transcribed list
   final String path;
-  const TranscribedListPage({super.key, @PathParam('path') required this.path
-});
+  const TranscribedListPage({super.key, @QueryParam() this.path = ''});
 
   @override
   Widget wrappedRoute(BuildContext context) {
