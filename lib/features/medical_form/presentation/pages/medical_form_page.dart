@@ -112,6 +112,9 @@ class MedicalFormPage extends StatelessWidget implements AutoRouteWrapper {
                                     context.read<MedicalFormProvider>().search();
                                   },
                                 onMicTap: () {},
+                                onClear: () {
+                                  context.read<MedicalFormProvider>().clearSearch();
+                                },
                               ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
                             ),
                             if (Responsive.isDesktop(context))

@@ -9,8 +9,10 @@ class SearchBarWidget extends StatelessWidget {
   final TextEditingController controller;
   final Function() onSearch;
   final Function() onMicTap;
+  final Function()? onClear;
 
-  const SearchBarWidget({super.key, required this.controller, required this.onSearch, required this.onMicTap});
+  const SearchBarWidget(
+      {super.key, required this.controller, required this.onSearch, required this.onMicTap, this.onClear});
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +48,10 @@ class SearchBarWidget extends StatelessWidget {
                     icon: const Icon(Icons.close, color: AppColors.accentBlue),
                     onPressed: () {
                       controller.clear();
-                      debugPrint("clear the controller"); 
+                      onClear?.call();
+                      debugPrint("clear the controller");
                     },
-                  ).paddingOnly(left: 16),
+                  ).paddingOnly(left: Responsive.isDesktop(context) ? 16 : 12),
                 IconButton(
                   icon: const Icon(Icons.mic, color: AppColors.accentBlue),
                   onPressed: () {
@@ -56,7 +59,7 @@ class SearchBarWidget extends StatelessWidget {
                     onMicTap();
                     debugPrint("Mic tapped");
                   },
-                ).paddingSymmetric(horizontal: 16),
+                ).paddingSymmetric(horizontal: Responsive.isDesktop(context) ? 16 : 12),
                 if (Responsive.isDesktop(context))
                   SizedBox(
                     width: 140,

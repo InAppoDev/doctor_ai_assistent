@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:ecnx_ambient_listening/features/edit/data/models/pdf_models/edited_text_model.dart';
 import 'package:ecnx_ambient_listening/core/services/export_as_pdf.dart';
@@ -176,13 +177,31 @@ Psych: Mood and affect appropriate. No depression or anxiety.
   TextEditingController get searchController => _searchController;
 
   /// Search the medical form for the given [searchTerm]
+
   void search() {
     final searchTerm = _searchController.text;
+    for (final controller in _quillControllers) {
+      final offsets = controller.document.search(searchTerm);
 
-    if (searchTerm.isEmpty) return;
-
-    
+      for (final offset in offsets) {
+        controller.updateSelection(TextSelection(baseOffset: offset, extentOffset: offset+searchTerm.length), ChangeSource.local);
+      }
+    }
   }
+  
+  void onMicTap() {
+    // Handle voice input action
+    debugPrint("Mic tapped");
+  }
+
+  void clearSearch() {
+    for (final controller in _quillControllers) {
+      controller.updateSelection(const TextSelection.collapsed(offset: 0), ChangeSource.local);
+    }
+  }
+  
+  /// clear the found search terms
+  /// This method should be called when the search term is cleared
 
   @override
   void dispose() {

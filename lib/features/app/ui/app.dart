@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routerConfig: _appRouter.config(
-        reevaluateListenable: _authProvider,
+        /// uncomment the line below to enable authentication guard
+        // reevaluateListenable: _authProvider,
       ),
     );
   }
