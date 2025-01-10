@@ -1,11 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/navigation/app_routes.dart';
-import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
-import 'package:doctor_ai_assistent/features/auth/presentation/widgets/registration_widget/registration_form.dart';
-import 'package:doctor_ai_assistent/features/auth/provider/registration_provider.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/navigation/app_route_config.dart';
+import 'package:ecnx_ambient_listening/core/services/get_it/get_it_service.dart';
+import 'package:ecnx_ambient_listening/core/widgets/logo_widget.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/features/auth/presentation/widgets/registration_widget/registration_form.dart';
+import 'package:ecnx_ambient_listening/features/auth/provider/registration_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,14 +44,19 @@ class RegistrationPage extends StatelessWidget implements AutoRouteWrapper {
                           create: (context) => context.read<RegisterState>(),
                           child: RegistrationFormWidget(
                             onRegisterTap: () {
+                              /// Validate the form and save the data
+                              /// If the form is valid, post the data to the server and navigate to the home page
+                              /// If the form is invalid, show the error message
                               if (context.read<RegisterState>().formKey.currentState!.validate()) {
                                 context.read<RegisterState>().formKey.currentState!.save();
-                                context.router.pushNamed(AppRoutes.home);
+                                getIt<AppRouter>().replace(const HomeRoute());
+                                // context.read<RegisterState>().register();
                               }
                             },
                             onSignInTap: () {
+                              /// The dispose method is called to clear the form controller
                               context.read<RegisterState>().dispose();
-                              context.router.pushNamed(AppRoutes.login);
+                              getIt<AppRouter>().replace(const LoginRoute());
                             },
                           ),
                         )),

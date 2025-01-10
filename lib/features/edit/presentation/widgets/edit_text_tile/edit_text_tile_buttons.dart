@@ -1,7 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_icons.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_icons.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -32,7 +32,7 @@ class EditTextTileButtons extends StatelessWidget {
                 colorFilter: const ColorFilter.mode(AppColors.disabled, BlendMode.srcIn),
               ),
             ),
-          ).paddingOnly(right: 16),
+          ).paddingOnly(right: onTranslateClick != null ? 16 : 0),
           if (onTranslateClick != null)
             MouseRegion(
               cursor: SystemMouseCursors.click,

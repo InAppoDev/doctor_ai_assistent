@@ -1,10 +1,10 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
-import 'package:doctor_ai_assistent/features/auth/presentation/widgets/auth_textfield_widget.dart';
-import 'package:doctor_ai_assistent/features/auth/provider/registration_provider.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/core/widgets/custom_textfield_widget.dart';
+import 'package:ecnx_ambient_listening/features/auth/provider/registration_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,28 +23,28 @@ class RegistrationFormWidget extends StatelessWidget {
             'Register',
             style: Responsive.isDesktop(context) ? AppTextStyles.mediumPx40 : AppTextStyles.mediumPx24,
           ).paddingOnly(bottom: Responsive.isDesktop(context) ? 56 : 24),
-          AuthTextFieldWidget(
+          CustomTextFieldWidget(
             context: context,
             controller: context.read<RegisterState>().firstNameController,
             label: 'First Name',
             hintText: 'First name',
             labelStyle: Responsive.isDesktop(context) ? AppTextStyles.mediumPx16 : AppTextStyles.mediumPx14,
           ).paddingOnly(bottom: Responsive.isDesktop(context) ? 24 : 20),
-          AuthTextFieldWidget(
+          CustomTextFieldWidget(
             context: context,
             controller: context.read<RegisterState>().lastNameController,
             label: 'Last Name',
             hintText: 'Last name',
             labelStyle: Responsive.isDesktop(context) ? AppTextStyles.mediumPx16 : AppTextStyles.mediumPx14,
           ).paddingOnly(bottom: Responsive.isDesktop(context) ? 24 : 20),
-          AuthTextFieldWidget(
+          CustomTextFieldWidget(
             context: context,
             controller: context.read<RegisterState>().phoneNumberController,
             label: 'Phone Number',
             hintText: 'Phone number',
             labelStyle: Responsive.isDesktop(context) ? AppTextStyles.mediumPx16 : AppTextStyles.mediumPx14,
           ).paddingOnly(bottom: Responsive.isDesktop(context) ? 24 : 20),
-          AuthTextFieldWidget(
+          CustomTextFieldWidget(
             context: context,
             controller: context.read<RegisterState>().emailController,
             label: 'E-mail',
@@ -53,7 +53,7 @@ class RegistrationFormWidget extends StatelessWidget {
           ).paddingOnly(bottom: Responsive.isDesktop(context) ? 24 : 20),
           Consumer<RegisterState>(
             builder: (context, state, _) {
-              return AuthTextFieldWidget(
+              return CustomTextFieldWidget(
                 context: context,
                 controller: state.passwordController,
                 label: 'Password',
@@ -69,7 +69,7 @@ class RegistrationFormWidget extends StatelessWidget {
           ),
           Consumer<RegisterState>(
             builder: (context, state, _) {
-              return AuthTextFieldWidget(
+              return CustomTextFieldWidget(
                 context: context,
                 controller: state.confirmPasswordController,
                 label: 'Password Confirmation',
@@ -119,7 +119,7 @@ class RegistrationFormWidget extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: AuthTextFieldWidget(
+                child: CustomTextFieldWidget(
                   context: context,
                   controller: context.read<RegisterState>().firstNameController,
                   label: 'First Name',
@@ -129,7 +129,7 @@ class RegistrationFormWidget extends StatelessWidget {
               ),
               const SizedBox(width: 20),
               Expanded(
-                child: AuthTextFieldWidget(
+                child: CustomTextFieldWidget(
                   context: context,
                   controller: context.read<RegisterState>().lastNameController,
                   label: 'Last Name',
@@ -142,7 +142,7 @@ class RegistrationFormWidget extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                  child: AuthTextFieldWidget(
+                  child: CustomTextFieldWidget(
                 context: context,
                 controller: context.read<RegisterState>().phoneNumberController,
                 label: 'Phone Number',
@@ -151,7 +151,7 @@ class RegistrationFormWidget extends StatelessWidget {
               )),
               const SizedBox(width: 20),
               Expanded(
-                  child: AuthTextFieldWidget(
+                  child: CustomTextFieldWidget(
                 context: context,
                 controller: context.read<RegisterState>().emailController,
                 label: 'E-mail',
@@ -165,7 +165,7 @@ class RegistrationFormWidget extends StatelessWidget {
               Consumer<RegisterState>(
                 builder: (context, state, _) {
                   return Expanded(
-                      child: AuthTextFieldWidget(
+                      child: CustomTextFieldWidget(
                     context: context,
                     controller: state.passwordController,
                     label: 'Password',
@@ -185,7 +185,7 @@ class RegistrationFormWidget extends StatelessWidget {
               const SizedBox(width: 20),
               Consumer<RegisterState>(builder: (context, state, _) {
                 return Expanded(
-                    child: AuthTextFieldWidget(
+                    child: CustomTextFieldWidget(
                   context: context,
                   controller: state.confirmPasswordController,
                   label: 'Password Confirmation',

@@ -1,29 +1,16 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/widgets/avatar_widget.dart';
-import 'package:doctor_ai_assistent/core/widgets/editable_textfield.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
-import 'package:doctor_ai_assistent/features/edit/presentation/widgets/edit_text_tile/edit_text_tile_buttons.dart';
-import 'package:doctor_ai_assistent/features/edit/provider/edit_text_provider.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/widgets/avatar_widget.dart';
+import 'package:ecnx_ambient_listening/core/widgets/editable_textfield.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/edit_text_tile/edit_text_tile_buttons.dart';
+import 'package:ecnx_ambient_listening/features/edit/provider/edit_text_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class EditTextTile extends StatefulWidget {
+class EditTextTile extends StatelessWidget {
   const EditTextTile({super.key});
-
-  @override
-  State<EditTextTile> createState() => _EditTextTileState();
-}
-
-class _EditTextTileState extends State<EditTextTile> {
-  late EditTextProvider _editProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    _editProvider = context.read<EditTextProvider>();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +46,9 @@ class _EditTextTileState extends State<EditTextTile> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             EditTextTileButtons(
-                              onCopyClick: () {},
+                              onCopyClick: () async {
+                                await context.read<EditTextProvider>().onCopyToClipboard();
+                              },
                               onTranslateClick: () {},
                               onPlayClick: () {},
                             ),
@@ -69,10 +58,7 @@ class _EditTextTileState extends State<EditTextTile> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (Responsive.isMobile(context))
-                            const Expanded(
-                              flex: 1,
-                              child: AvatarWidget(),
-                            ).paddingOnly(right: 12),
+                            const AvatarWidget().paddingOnly(right: 12),
                           Expanded(
                             flex: 2,
                             child: Container(
@@ -87,15 +73,15 @@ class _EditTextTileState extends State<EditTextTile> {
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Text(
-                                'Doctor',
+                              child: Text(
+                                context.read<EditTextProvider>().transcribed.author,
                                 style: AppTextStyles.regularPx16,
                               ),
                             ),
                           ),
                         ],
                       ).paddingOnly(bottom: 16),
-                      EditableTextfield(quillController: _editProvider.quillController),
+                      EditableTextfield(quillController: context.read<EditTextProvider>().quillController),
                     ],
                   ),
                 ),
@@ -109,7 +95,9 @@ class _EditTextTileState extends State<EditTextTile> {
             child: Row(children: [
               const SizedBox(width: 20),
               EditTextTileButtons(
-                onCopyClick: () {},
+                onCopyClick: () async {
+                  await context.read<EditTextProvider>().onCopyToClipboard();
+                },
                 onTranslateClick: () {},
                 onPlayClick: () {},
               ),
@@ -118,5 +106,4 @@ class _EditTextTileState extends State<EditTextTile> {
       ],
     );
   }
-
 }

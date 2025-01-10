@@ -1,11 +1,11 @@
 {
-    "name": "doctor_ai_assistent",
-    "short_name": "doctor_ai_assistent",
+    "name": "ECNX Ambient Listening",
+    "short_name": "ECNX",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "ECNX Ambient Listening",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

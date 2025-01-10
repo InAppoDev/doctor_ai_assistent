@@ -1,6 +1,6 @@
-import 'package:doctor_ai_assistent/core/services/get_it/get_it_service.dart';
-import 'package:doctor_ai_assistent/features/app/ui/app.dart';
-import 'package:doctor_ai_assistent/features/auth/provider/auth_provider.dart';
+import 'package:ecnx_ambient_listening/core/services/get_it/get_it_service.dart';
+import 'package:ecnx_ambient_listening/features/app/ui/app.dart';
+import 'package:ecnx_ambient_listening/features/auth/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -4,8 +4,10 @@ class AppRoutes {
   static const String registration = '/registration';
   static const String record = '/record';
 
-  static const String editRecord = '/editRecord';
-  static const String medicalForm = '/medicalForm';
+  static const String editRecord = '/edit-record';
+  static const String medicalForm = '/medical-form';
 
-  static const String transcribedList = '/transcribedList';
+  static const String transcribedList = '/transcribed-list';
+
+  static const String schedule = '/schedule';
 }

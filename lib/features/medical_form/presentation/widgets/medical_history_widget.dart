@@ -1,16 +1,21 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/widgets/editable_textfield.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
-import 'package:doctor_ai_assistent/features/edit/presentation/widgets/edit_text_tile/edit_text_tile_buttons.dart';
-import 'package:doctor_ai_assistent/features/edit/provider/edit_text_provider.dart';
-import 'package:doctor_ai_assistent/features/medical_form/presentation/widgets/history_log_button_widget.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/widgets/editable_textfield.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/edit_text_tile/edit_text_tile_buttons.dart';
+import 'package:ecnx_ambient_listening/features/edit/provider/edit_text_provider.dart';
+import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/history_log_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MedicalHistoryTile extends StatefulWidget {
-  const MedicalHistoryTile({super.key});
+  const MedicalHistoryTile({ 
+    super.key,
+    required this.onHistoryLogClick,
+  });
+
+  final Function() onHistoryLogClick;
 
   @override
   State<MedicalHistoryTile> createState() => _MedicalHistoryTileState();
@@ -55,17 +60,23 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
                     children: [
                       Responsive(
                         desktop: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          const Text('Medical history', style: AppTextStyles.mediumPx20),
-                          HistoryLogButtonWidget(onTap: () {})
+                          Text(_editProvider.titleAndTextModel.title, style: AppTextStyles.mediumPx20),
+                          HistoryLogButtonWidget(onTap: () {
+                            widget.onHistoryLogClick();
+                          })
                         ]).paddingOnly(bottom: 20),
                         mobile: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          const Text('Medical history', style: AppTextStyles.mediumPx20),
+                          Expanded(child: Text(_editProvider.titleAndTextModel.title, style: AppTextStyles.mediumPx20, overflow: TextOverflow.ellipsis, maxLines: 2,)),
                           EditTextTileButtons(
-                            onCopyClick: () {},
+                            onCopyClick: () async {
+                              await _editProvider.onCopyToClipboard();
+                            },
                           ),
                         ]).paddingOnly(bottom: 16),
                       ),
-                      EditableTextfield(quillController: _editProvider.quillController),
+                      EditableTextfield(quillController: _editProvider.quillController, onHistoryLogClick: () {
+                        widget.onHistoryLogClick();
+                      },),
                     ],
                   ),
                 ),
@@ -79,7 +90,9 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
             child: Row(children: [
               const SizedBox(width: 20),
               EditTextTileButtons(
-                onCopyClick: () {},
+                onCopyClick: () {
+                  _editProvider.onCopyToClipboard();
+                },
               ),
             ]),
           )

@@ -1,13 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/widgets/custom_text_button.dart';
-import 'package:doctor_ai_assistent/core/widgets/logo_widget.dart';
-import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
-import 'package:doctor_ai_assistent/features/auth/presentation/widgets/auth_textfield_widget.dart';
-import 'package:doctor_ai_assistent/features/auth/provider/login_provider.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/navigation/app_route_config.dart';
+import 'package:ecnx_ambient_listening/core/services/get_it/get_it_service.dart';
+import 'package:ecnx_ambient_listening/core/widgets/custom_text_button.dart';
+import 'package:ecnx_ambient_listening/core/widgets/logo_widget.dart';
+import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/core/widgets/custom_textfield_widget.dart';
+import 'package:ecnx_ambient_listening/features/auth/provider/login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +47,9 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                     Text('Log in',
                             style: Responsive.isDesktop(context) ? AppTextStyles.mediumPx40 : AppTextStyles.mediumPx24)
                         .paddingOnly(bottom: Responsive.isDesktop(context) ? 56 : 24),
-                    AuthTextFieldWidget(
+
+                    /// login form fields
+                    CustomTextFieldWidget(
                       context: context,
                       controller: context.read<LoginState>().loginController,
                       label: 'Login',
@@ -53,7 +57,7 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                       labelStyle: Responsive.isDesktop(context) ? AppTextStyles.mediumPx16 : AppTextStyles.mediumPx14,
                     ).paddingOnly(bottom: Responsive.isDesktop(context) ? 24 : 20),
                     Consumer<LoginState>(builder: (context, state, _) {
-                      return AuthTextFieldWidget(
+                      return CustomTextFieldWidget(
                         context: context,
                         controller: state.passwordController,
                         label: 'Password',
@@ -69,6 +73,8 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                         labelStyle: Responsive.isDesktop(context) ? AppTextStyles.mediumPx16 : AppTextStyles.mediumPx14,
                       ).paddingOnly(bottom: Responsive.isDesktop(context) ? 24 : 20);
                     }),
+
+                    /// forgot password button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -79,6 +85,8 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                         )
                       ],
                     ).paddingOnly(bottom: Responsive.isDesktop(context) ? 32 : 24),
+
+                    /// buttons section
                     PrimaryButton(
                       text: 'Sign in',
                       textColor: AppColors.white,
@@ -88,8 +96,12 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                       textStyle: Responsive.isDesktop(context) ? AppTextStyles.regularPx20.copyWith(color: AppColors.white) : AppTextStyles.regularPx16.copyWith(color: AppColors.white),
                       fullWidth: true,
                       onPress: () {
+                        /// validate the form and login
+                        /// if the form is valid, get the token and navigate to the home page
+                        /// if the form is invalid, show the error message
                         if (context.read<LoginState>().formKey.currentState!.validate()) {
                           // context.read<LoginState>().login();
+                          getIt<AppRouter>().replace(const HomeRoute());
                         }
                       },
                     ).paddingOnly(bottom: Responsive.isDesktop(context) ? 24 : 16),
@@ -102,8 +114,12 @@ class LoginPage extends StatelessWidget implements AutoRouteWrapper {
                       textStyle: Responsive.isDesktop(context) ? AppTextStyles.regularPx20 : AppTextStyles.regularPx16,
                       fullWidth: true,
                       onPress: () {
-                        context.read<LoginState>().dispose();
-                        // AutoRouter.of(context).replace(RegisterRoute());
+                        getIt<AppRouter>().replace(const RegistrationRoute()).then((_) {
+                          if (context.mounted) {
+                            context.read<LoginState>().loginController.clear();
+                            context.read<LoginState>().passwordController.clear();
+                          }
+                        });
                       },
                     ).paddingOnly(bottom: Responsive.isDesktop(context) ? 24 : 16),
                   ]),

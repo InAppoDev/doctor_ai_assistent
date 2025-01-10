@@ -1,6 +1,6 @@
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
 import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {
@@ -55,7 +55,7 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: fullWidth == true ? double.infinity : Responsive.isDesktop(context) ? 324 : double.infinity,
+      width: fullWidth == true ? MediaQuery.of(context).size.width : Responsive.isDesktop(context) ? 324 : MediaQuery.of(context).size.width,
       height: height,
       child: MaterialButton(
         elevation: elevation,
@@ -90,11 +90,14 @@ class PrimaryButton extends StatelessWidget {
           Text(
             text,
             textAlign: textAlign,
-            style: textStyle ??
+            style: textStyle ?? (Responsive.isDesktop(context) ?
                 AppTextStyles.regularPx20.copyWith(
                   color: textColor,
                   fontWeight: fontWeight,
-                ),
+                ) : AppTextStyles.regularPx16.copyWith(
+                  color: textColor,
+                  fontWeight: fontWeight,
+                )),
           ),
           const Expanded(child: SizedBox()),
           Image.asset(
@@ -118,11 +121,14 @@ class PrimaryButton extends StatelessWidget {
           Text(
             text,
             textAlign: textAlign,
-            style: textStyle ??
+            style: textStyle ?? (Responsive.isDesktop(context) ?
                 AppTextStyles.regularPx20.copyWith(
                   color: textColor,
                   fontWeight: fontWeight,
-                ),
+                ) : AppTextStyles.regularPx16.copyWith(
+                  color: textColor,
+                  fontWeight: fontWeight,
+                )),
           )
         ],
       );
@@ -135,11 +141,14 @@ class PrimaryButton extends StatelessWidget {
           Text(
             text,
             textAlign: textAlign,
-            style: textStyle ??
+            style: textStyle ?? (Responsive.isDesktop(context) ?
                 AppTextStyles.regularPx20.copyWith(
                   color: textColor,
                   fontWeight: fontWeight,
-                ),
+                ) : AppTextStyles.regularPx16.copyWith(
+                  color: textColor,
+                  fontWeight: fontWeight,
+                )),
           ),
           const Expanded(child: SizedBox()),
           Image.asset(
@@ -154,11 +163,14 @@ class PrimaryButton extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      style: textStyle ??
-          AppTextStyles.regularPx20.copyWith(
-            color: textColor,
-            fontWeight: fontWeight,
-          ),
+      style: textStyle ?? (Responsive.isDesktop(context) ?
+                AppTextStyles.regularPx20.copyWith(
+                  color: textColor,
+                  fontWeight: fontWeight,
+                ) : AppTextStyles.regularPx16.copyWith(
+                  color: textColor,
+                  fontWeight: fontWeight,
+                )),
     );
   }
 }

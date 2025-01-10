@@ -1,21 +1,18 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:doctor_ai_assistent/core/constants/app_colors.dart';
-import 'package:doctor_ai_assistent/core/constants/app_text_styles.dart';
-import 'package:doctor_ai_assistent/core/widgets/primary_button.dart';
-import 'package:doctor_ai_assistent/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
+import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
 import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final TextEditingController controller;
   final Function() onSearch;
   final Function() onMicTap;
+  final Function()? onClear;
 
-  const SearchBarWidget({
-    super.key,
-    required this.controller,
-    required this.onSearch,
-    required this.onMicTap
-  });
+  const SearchBarWidget(
+      {super.key, required this.controller, required this.onSearch, required this.onMicTap, this.onClear});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +38,20 @@ class SearchBarWidget extends StatelessWidget {
                       hintStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.disabled),
                       border: InputBorder.none,
                     ),
+                    onSubmitted: (_) {
+                      onSearch();
+                    },
                   ),
                 ),
+                if (controller.text.isNotEmpty)
+                  IconButton(
+                    icon: const Icon(Icons.close, color: AppColors.accentBlue),
+                    onPressed: () {
+                      controller.clear();
+                      onClear?.call();
+                      debugPrint("clear the controller");
+                    },
+                  ).paddingOnly(left: Responsive.isDesktop(context) ? 16 : 12),
                 IconButton(
                   icon: const Icon(Icons.mic, color: AppColors.accentBlue),
                   onPressed: () {
@@ -50,7 +59,7 @@ class SearchBarWidget extends StatelessWidget {
                     onMicTap();
                     debugPrint("Mic tapped");
                   },
-                ).paddingSymmetric(horizontal: 16),
+                ).paddingSymmetric(horizontal: Responsive.isDesktop(context) ? 16 : 12),
                 if (Responsive.isDesktop(context))
                   SizedBox(
                     width: 140,
