@@ -49,6 +49,7 @@ dependencies:
   # pdf
   pdf: ^3.11.1
   printing: ^5.13.4
+  dartdoc: ^8.1.0
 
 dev_dependencies:
   flutter_test:
