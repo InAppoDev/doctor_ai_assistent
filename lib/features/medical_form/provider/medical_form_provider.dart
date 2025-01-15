@@ -1,12 +1,8 @@
-import 'dart:convert';
-import 'dart:isolate';
-
 import 'package:ecnx_ambient_listening/features/edit/data/models/pdf_models/edited_text_model.dart';
 import 'package:ecnx_ambient_listening/core/services/export_as_pdf.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/data/models/medical_form_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_quill/quill_delta.dart';
 
 class MedicalFormProvider extends ChangeNotifier {
   // ---------------------------------------------------------------------------
