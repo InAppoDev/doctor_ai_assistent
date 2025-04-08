@@ -20,8 +20,6 @@ dependencies:
   # dependency injection
   get_it: ^8.0.3
 
-  # navigation
-  auto_route: ^9.2.2
 
   # design
   flutter_svg: ^2.0.16
@@ -39,7 +37,7 @@ dependencies:
   provider: ^6.1.2
 
   # network
-  dio: ^5.7.0
+  dio: ^5.8.0+1
   
   # path
   path_provider: ^2.1.5
@@ -51,17 +49,31 @@ dependencies:
   printing: ^5.13.4
   dartdoc: ^8.1.0
 
+  hive: ^2.2.3
+
+  go_router: ^14.8.1
+
+  freezed_annotation: ^2.4.4
+
+  logger: ^2.5.0
+
+  fluttertoast: ^8.2.12
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^4.0.0
-  auto_route_generator: ^9.0.0
+  flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.2
-  build_runner: ^2.4.13
+  build_runner: ^2.4.15
+  hive_generator: ^2.0.1
+  go_router_builder: ^2.8.2
+  freezed: ^2.5.7
+  json_serializable: ^6.9.0
 
 
 flutter:
+  generate: true
   uses-material-design: true
 
   assets:

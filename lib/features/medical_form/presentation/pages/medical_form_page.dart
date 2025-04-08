@@ -1,9 +1,7 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
-import 'package:ecnx_ambient_listening/core/navigation/app_route_config.dart';
-import 'package:ecnx_ambient_listening/core/services/get_it/get_it_service.dart';
+import 'package:ecnx_ambient_listening/core/navigation/routes.dart';
 import 'package:ecnx_ambient_listening/core/widgets/custom_text_button.dart';
 import 'package:ecnx_ambient_listening/core/widgets/logo_widget.dart';
 import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
@@ -17,199 +15,187 @@ import 'package:ecnx_ambient_listening/features/medical_form/provider/medical_fo
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-@RoutePage()
-class MedicalFormPage extends StatelessWidget implements AutoRouteWrapper {
-  /// Note: need to add the [id] @PathParam('id') to the constructor for further fetching of data
-  // final String id; or final int id;
+class MedicalFormPage extends StatelessWidget {
   final String path;
-  const MedicalFormPage({super.key, @QueryParam() this.path = ''});
 
-  @override
-  Widget wrappedRoute(BuildContext context) {
-    final decodedPath = Uri.decodeComponent(path);
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => PlayerProvider()..initData(url: decodedPath)),
-        ChangeNotifierProvider(create: (context) => MedicalFormProvider())
-      ],
-      child: this
-    );
-  }
+  const MedicalFormPage({super.key, this.path = ''});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bg,
-      body: SafeArea(
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: ScrollConfiguration(
-                behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                child: SingleChildScrollView(
-                  child: Column(
-                      mainAxisAlignment:
-                          Responsive.isDesktop(context) ? MainAxisAlignment.start : MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            LogoWidget(onTap: () {}).paddingOnly(top: Responsive.isDesktop(context) ? 16 : 8)
-                          ],
-                        ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 26),
-                        Responsive(
-                          desktop: const Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Form for diagnostics',
-                                style: AppTextStyles.mediumPx32,
-                              ),
-                            ],
-                          ),
-                          mobile: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    getIt<AppRouter>().back();
-                                  },
-                                  child: const Icon(Icons.arrow_back, color: AppColors.accentBlue, size: 24),
-                                ),
-                              ),
-                              const Text(
-                                'Form for diagnostics',
-                                style: AppTextStyles.mediumPx24,
-                              ),
-                              Container()
-                            ],
-                          ),
-                        ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
+    final decodedPath = Uri.decodeComponent(path);
 
-                        if (Responsive.isMobile(context))
-                          PrimaryButton(
-                            onPress: () {
-                              final audioFilePath = context.read<PlayerProvider>().audioFilePath;
-                              getIt<AppRouter>().push(TranscribedListRoute(
-                                path: Uri.encodeComponent(audioFilePath),
-                              ));
-                            },
-                            color: AppColors.accentGreen,
-                            textColor: AppColors.white,
-                            text: 'Transcribed Patient Responses',
-                            borderColor: AppColors.accentGreen,
-                          ).paddingOnly(bottom: 24),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (_) => PlayerProvider()..initData(url: decodedPath)),
+        ChangeNotifierProvider(create: (_) => MedicalFormProvider()),
+      ],
+      builder: (context, _) {
+        final medicalProvider = context.read<MedicalFormProvider>();
+        final playerProvider = context.read<PlayerProvider>();
+        final isDesktop = Responsive.isDesktop(context);
+        final isMobile = Responsive.isMobile(context);
 
-                        /// search bar widget
-                        Row(
+        return Scaffold(
+          backgroundColor: AppColors.bg,
+          body: SafeArea(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context)
+                        .copyWith(scrollbars: false),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.all(isDesktop ? 40 : 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Flexible(
-                              flex: 7,
-                              child: SearchBarWidget(
-                                  controller: context.read<MedicalFormProvider>().searchController,
-                                  onSearch: () {
-                                    context.read<MedicalFormProvider>().search();
-                                  },
-                                onMicTap: () {},
-                                onClear: () {
-                                  context.read<MedicalFormProvider>().clearSearch();
+                            LogoWidget(onTap: () {})
+                                .paddingOnly(top: isDesktop ? 16 : 8),
+                            SizedBox(height: isDesktop ? 40 : 26),
+
+                            /// Header
+                            if (isDesktop)
+                              const Text('Form for diagnostics',
+                                  style: AppTextStyles.mediumPx32)
+                            else
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => context.pop(),
+                                    child: const Icon(Icons.arrow_back,
+                                        color: AppColors.accentBlue),
+                                  ),
+                                  const Text('Form for diagnostics',
+                                      style: AppTextStyles.mediumPx24),
+                                  const SizedBox(width: 24),
+                                ],
+                              ),
+                            SizedBox(height: isDesktop ? 40 : 24),
+
+                            /// Mobile button to view transcribed list
+                            if (isMobile)
+                              PrimaryButton(
+                                onPress: () {
+                                  TranscribedListRoute(Uri.encodeComponent(
+                                          playerProvider.audioFilePath))
+                                      .push(context);
                                 },
-                              ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
+                                color: AppColors.accentGreen,
+                                textColor: AppColors.white,
+                                borderColor: AppColors.accentGreen,
+                                text: 'Transcribed Patient Responses',
+                              ).paddingOnly(bottom: 24),
+
+                            /// Search bar
+                            Row(
+                              children: [
+                                Flexible(
+                                  flex: 7,
+                                  child: SearchBarWidget(
+                                    controller:
+                                        medicalProvider.searchController,
+                                    onSearch: medicalProvider.search,
+                                    onMicTap: () {},
+                                    onClear: medicalProvider.clearSearch,
+                                  ).paddingOnly(bottom: isDesktop ? 40 : 24),
+                                ),
+                                if (isDesktop) const Spacer(flex: 1),
+                              ],
                             ),
-                            if (Responsive.isDesktop(context))
-                              Flexible(
-                                flex: 1,
-                                child: Container(),
-                              )
+
+                            /// Patient information
+                            Row(
+                              children: [
+                                Flexible(
+                                  flex: 4,
+                                  child: PatientInformationWidget(
+                                    patientInformation: medicalProvider
+                                        .medicalFormModel.patientInformation,
+                                  ).paddingOnly(bottom: isDesktop ? 40 : 24),
+                                ),
+                                if (isDesktop) const Spacer(flex: 4),
+                              ],
+                            ),
+
+                            /// Medical history list
+                            MedicalFormDetailsBody(
+                                list: medicalProvider
+                                    .medicalFormModel.medicalHistory),
+
+                            /// Submit button
+                            SizedBox(height: 32),
+                            isDesktop
+                                ? Row(
+                                    children: [
+                                      PrimaryButton(
+                                        text: 'Submit',
+                                        textColor: AppColors.white,
+                                        color: AppColors.accentBlue,
+                                        borderColor: AppColors.accentBlue,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12),
+                                        onPress: () =>
+                                            HomeRoute().push(context),
+                                      ),
+                                    ],
+                                  )
+                                : Column(
+                                    children: [
+                                      PrimaryButton(
+                                        text: 'Submit',
+                                        color: AppColors.accentBlue,
+                                        borderColor: AppColors.accentBlue,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12),
+                                        textStyle: AppTextStyles.regularPx16
+                                            .copyWith(color: AppColors.white),
+                                        onPress: () =>
+                                            HomeRoute().push(context),
+                                      ).paddingOnly(bottom: 24),
+                                    ],
+                                  ),
+
+                            /// Export button
+                            isDesktop
+                                ? Row(
+                                    children: [
+                                      CustomTextButton(
+                                        text: 'Export as',
+                                        onPressed: () =>
+                                            medicalProvider.exportAsPDF(),
+                                      ),
+                                    ],
+                                  )
+                                : Column(
+                                    children: [
+                                      CustomTextButton(
+                                        text: 'Export as',
+                                        onPressed: () =>
+                                            medicalProvider.exportAsPDF(),
+                                      ).paddingOnly(bottom: 16),
+                                    ],
+                                  ),
                           ],
                         ),
-
-                        /// patient information section
-                        Row(
-                          children: [
-                            Flexible(
-                              flex: 4,
-                              child: PatientInformationWidget(patientInformation: context.read<MedicalFormProvider>().medicalFormModel.patientInformation)
-                                  .paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
-                            ),
-                            if (Responsive.isDesktop(context))
-                              Flexible(
-                                flex: 4,
-                                child: Container(),
-                              )
-                          ],
-                        ),
-
-                        /// editable medical forms list
-                        MedicalFormDetailsBody(
-                          list: context.read<MedicalFormProvider>().medicalFormModel.medicalHistory,
-                        ),
-
-                        /// buttons section
-                        Responsive(
-                            desktop: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                PrimaryButton(
-                                  text: 'Submit',
-                                  textColor: AppColors.white,
-                                  color: AppColors.accentBlue,
-                                  borderColor: AppColors.accentBlue,
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                  onPress: () {
-                                    getIt<AppRouter>().popUntil((route) => route.settings.name == HomeRoute.name);
-                                  },
-                                ).paddingOnly(right: 20),
-                              ],
-                            ).paddingOnly(bottom: 32),
-                            mobile: Column(
-                              children: [
-                                PrimaryButton(
-                                  text: 'Submit',
-                                  color: AppColors.accentBlue,
-                                  borderColor: AppColors.accentBlue,
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                  textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.white),
-                                  onPress: () {
-                                      getIt<AppRouter>().popUntil((route) => route.settings.name == HomeRoute.name);
-                                  },
-                                ).paddingOnly(bottom: 24),
-                              ],
-                            )),
-
-                        /// export as buttons section
-                        Responsive(
-                            desktop: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                CustomTextButton(text: 'Export as', onPressed: () async {
-                                  await context.read<MedicalFormProvider>().exportAsPDF();
-                                }).paddingOnly(right: 20),
-                              ],
-                            ),
-                            mobile: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomTextButton(
-                                  text: 'Export as',
-                                  onPressed: () async {
-                                    await context.read<MedicalFormProvider>().exportAsPDF();
-                                  },
-                                ).paddingOnly(bottom: 16),
-                              ],
-                            )),
-                      ]).paddingAll(Responsive.isDesktop(context) ? 40 : 16),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
 
-            /// desktop transcribed list widget
-            if (Responsive.isDesktop(context)) const Expanded(flex: 1, child: DesktopTranscribedListWidget())
-          ],
-        ),
-      ));
+                /// Desktop right side panel
+                if (isDesktop)
+                  const Expanded(
+                      flex: 1, child: DesktopTranscribedListWidget()),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

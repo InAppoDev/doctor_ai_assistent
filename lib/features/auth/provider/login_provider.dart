@@ -1,42 +1,36 @@
-import 'package:flutter/material.dart';
+import 'package:ecnx_ambient_listening/core/beckend_service/beckend_service.dart';
+import 'package:flutter/cupertino.dart';
 
-/// Manages the state for the login functionality, including form fields
-/// and password visibility.
 class LoginState extends ChangeNotifier {
-  // ---------------------------------------------------------------------------
-  // Controllers and Form Key
-  // ---------------------------------------------------------------------------
-
-  /// Controller for the login (username or email) input field.
   final TextEditingController loginController = TextEditingController();
-
-  /// Controller for the password input field.
   final TextEditingController passwordController = TextEditingController();
-
-  /// Global key used to manage and validate the login form.
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final _backend = BackendService();
 
-  // ---------------------------------------------------------------------------
-  // Password Visibility
-  // ---------------------------------------------------------------------------
-
-  /// Tracks whether the password field is currently visible.
   bool isPasswordVisible = false;
+  bool isLoading = false;
 
-  /// Toggles the visibility of the password field and notifies listeners.
   void togglePasswordVisibility() {
     isPasswordVisible = !isPasswordVisible;
-    notifyListeners(); // Triggers UI updates for visibility changes.
+    notifyListeners();
   }
 
-  // ---------------------------------------------------------------------------
-  // Cleanup
-  // ---------------------------------------------------------------------------
+  Future<bool> submitLogin() async {
+    if (!formKey.currentState!.validate()) return false;
 
-  /// Disposes of the [TextEditingController]s to free up resources.
-  /// 
-  /// This is called when the [LoginState] is no longer needed to prevent
-  /// memory leaks or dangling references.
+    isLoading = true;
+    notifyListeners();
+
+    final success = await _backend.loginUser(
+      email: loginController.text.trim(),
+      password: passwordController.text,
+    );
+    isLoading = false;
+
+    notifyListeners();
+    return success;
+  }
+
   @override
   void dispose() {
     loginController.dispose();
