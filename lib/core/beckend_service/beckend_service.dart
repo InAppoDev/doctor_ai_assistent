@@ -3,8 +3,14 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:ecnx_ambient_listening/core/hive_service/hive_service.dart';
 import 'package:ecnx_ambient_listening/core/models/user_model/user_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
+
+enum RequestType {
+  get,
+  put,
+  post,
+  delete,
+}
 
 class BackendService {
   final Dio _dio;
@@ -21,107 +27,83 @@ class BackendService {
       responseHeader: false,
       responseBody: true,
       error: true,
-      logPrint: (log) => print("📦 DioLog: $log"),
+      logPrint: (log) => _logger.d("📦 DioLog: $log"),
     ));
     _dio.interceptors.add(InterceptorsWrapper(
-        // onRequest: (options, handle) {
-        //   _logger.d("URL request. token: $_accessToken");
-        //   options.headers["Authorization"] = "Bearer $_accessToken";
-        //   return handle.next(options);
-        // },
-        onResponse: (response, handler) {
-      _logger.d("""
-              "Response auth status code: ${response.statusCode}
-              "Response auth request options: ${response.requestOptions.path}"
-              "Response auth data: ${response.data}"
-              "Response auth data runtimeType: ${response.data.runtimeType}"
-              """);
-      if (response.statusCode != null) {
-        if (response.statusCode! >= 400 && response.statusCode! < 500) {
-          debugPrint("statusMessage: ${response.data}");
+      onRequest: (request, handler) {
+        _logger.d("""
+            Request Path: ${request.path}
+            Request Data: ${request.data} 
+            Request queryParameters: ${request.queryParameters}
+        """);
+        return handler.next(request);
+      },
+      onResponse: (response, handler) {
+        _logger.d("""
+            Response Status Code: ${response.statusCode}
+            Request Path: ${response.requestOptions.path}
+            Response Data: ${response.data}
+        """);
+        if (response.statusCode != null &&
+            response.statusCode! >= 400 &&
+            response.statusCode! < 500) {
+          _logger.e("Client error: ${response.data}");
+        }
+        return handler.next(response);
+      },
+      onError: (error, handler) {
+        _logger.e("""
+            Error: ${error.error}
+            Request Path: ${error.requestOptions.path}
+            Response: ${error.response}
+        """);
+        return handler.next(error);
+      },
+    ));
+  }
+
+  Future<Response?> _makeRequest({
+    required RequestType requestType,
+    required String endpoint,
+    Map<String, dynamic>? data,
+    bool requiresAuth = true,
+  }) async {
+    try {
+      String? accessToken;
+      if (requiresAuth) {
+        accessToken = _storage.getTokens()["access"];
+        accessToken ??= await _refreshToken();
+
+        if (accessToken == null) {
+          _logger.e("Access token is required but missing or expired");
+          return null;
         }
       }
-      return handler.next(response);
-    }, onError: (error, handler) {
-      _logger.d("""
-              "Response error: ${error.error}
-              "Response auth request options: ${error.requestOptions.path}"
-              "Response response: ${error.response}"
-              """);
-      return handler.next(error);
-    }));
-  }
 
-  Future<Response?> getData(String endpoint) async {
-    try {
-      String? accessToken = _storage.getTokens()["access"];
-      accessToken ??= await _refreshToken();
+      final options = accessToken != null
+          ? Options(headers: {"Authorization": "Bearer $accessToken"})
+          : Options();
 
-      if (accessToken == null) return null;
+      Response response;
 
-      final response = await _dio.get(
-        endpoint,
-        options: Options(headers: {"Authorization": "Bearer $accessToken"}),
-      );
+      switch (requestType) {
+        case RequestType.get:
+          response = await _dio.get(endpoint, options: options);
+          break;
+        case RequestType.post:
+          response = await _dio.post(endpoint, data: data, options: options);
+          break;
+        case RequestType.put:
+          response = await _dio.put(endpoint, data: data, options: options);
+          break;
+        case RequestType.delete:
+          response = await _dio.delete(endpoint, options: options);
+          break;
+      }
+
       return response;
     } catch (e) {
-      print("GET request error: $e");
-      return null;
-    }
-  }
-
-  Future<Response?> postData(String endpoint, Map<String, dynamic> data) async {
-    try {
-      String? accessToken = _storage.getTokens()["access"];
-      accessToken ??= await _refreshToken();
-
-      if (accessToken == null) return null;
-
-      final response = await _dio.post(
-        endpoint,
-        data: data,
-        options: Options(headers: {"Authorization": "Bearer $accessToken"}),
-      );
-      return response;
-    } catch (e) {
-      print("POST request error: $e");
-      return null;
-    }
-  }
-
-  Future<Response?> putData(String endpoint, Map<String, dynamic> data) async {
-    try {
-      String? accessToken = _storage.getTokens()["access"];
-      accessToken ??= await _refreshToken();
-
-      if (accessToken == null) return null;
-
-      final response = await _dio.put(
-        endpoint,
-        data: data,
-        options: Options(headers: {"Authorization": "Bearer $accessToken"}),
-      );
-      return response;
-    } catch (e) {
-      print("PUT request error: $e");
-      return null;
-    }
-  }
-
-  Future<Response?> deleteData(String endpoint) async {
-    try {
-      String? accessToken = _storage.getTokens()["access"];
-      accessToken ??= await _refreshToken();
-
-      if (accessToken == null) return null;
-
-      final response = await _dio.delete(
-        endpoint,
-        options: Options(headers: {"Authorization": "Bearer $accessToken"}),
-      );
-      return response;
-    } catch (e) {
-      print("DELETE request error: $e");
+      _logger.e("Request error: $e");
       return null;
     }
   }
@@ -139,7 +121,7 @@ class BackendService {
       _storage.saveTokens(newAccessToken, refreshToken);
       return newAccessToken;
     } catch (e) {
-      print("Token refresh failed: $e");
+      _logger.e("Token refresh failed: $e");
       return null;
     }
   }
@@ -159,13 +141,16 @@ class BackendService {
       "password": password,
     };
 
-    final response = await postData("/users/register/", data);
-
-    if (response != null &&
-        (response.statusCode == 201 || response.statusCode == 200)) {
-      return UserModel.fromJson(response.data);
+    final response = await _makeRequest(
+      requestType: RequestType.post,
+      endpoint: '/users/register/',
+      data: data,
+      requiresAuth: false,
+    );
+    if (response?.statusCode == 201) {
+      return UserModel.fromJson(response!.data);
     } else {
-      print("Registration failed: ${response?.statusCode}");
+      _logger.e("Registration failed: ${response?.data}");
       return null;
     }
   }
@@ -174,38 +159,34 @@ class BackendService {
     required String email,
     required String password,
   }) async {
-    try {
-      final response = await postData(
-        "/users/login/",
-        {
-          "email": email,
-          "password": password,
-        },
-      );
+    final response = await _makeRequest(
+      requestType: RequestType.post,
+      endpoint: '/users/login/',
+      data: {
+        "email": email,
+        "password": password,
+      },
+      requiresAuth: false,
+    );
 
-      if (response?.data != null) {
-        final access = response!.data["access"];
-        final refresh = response.data["refresh"];
+    if (response?.data != null) {
+      final access = response!.data["access"];
+      final refresh = response.data["refresh"];
 
-        if (access != null && refresh != null) {
-          _storage.saveTokens(access, refresh);
-
-          return true;
-        }
+      if (access != null && refresh != null) {
+        _storage.saveTokens(access, refresh);
+        return true;
       }
-      return false;
-    } catch (e) {
-      print("Login failed: $e");
-      return false;
     }
+    return false;
   }
 
   Future<bool> tryAutoLogin() async {
     String? access = _storage.getTokens()["access"];
     String? refresh = _storage.getTokens()["refresh"];
 
-    if (access != null) {
-      return isTokenExpired(access);
+    if (access != null && !isTokenExpired(access)) {
+      return true;
     } else if (refresh != null) {
       final newAccess = await _refreshToken();
       return newAccess != null;
@@ -220,7 +201,6 @@ class BackendService {
     final payload =
         utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
     final payloadMap = json.decode(payload);
-
     final expiry = payloadMap['exp'];
     final expiryDate = DateTime.fromMillisecondsSinceEpoch(expiry * 1000);
     return expiryDate.isBefore(DateTime.now());
