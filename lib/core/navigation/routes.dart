@@ -47,20 +47,26 @@ class RegistrationRoute extends GoRouteData {
 
 @TypedGoRoute<RecordRoute>(path: '/record')
 class RecordRoute extends GoRouteData {
-  const RecordRoute();
+  const RecordRoute(this.appointmentId);
 
+  final int appointmentId;
   @override
-  Widget build(BuildContext context, GoRouterState state) => const RecordPage();
+  Widget build(BuildContext context, GoRouterState state) => RecordPage(
+        appointmentId: appointmentId,
+      );
 }
 
 @TypedGoRoute<EditRoute>(path: '/edit-record')
 class EditRoute extends GoRouteData {
-  const EditRoute(this.path);
-
+  const EditRoute(this.path, this.appointmentId);
+  final int appointmentId;
   final String path;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => const EditPage();
+  Widget build(BuildContext context, GoRouterState state) => EditPage(
+        path: path,
+        appointmentId: appointmentId,
+      );
 }
 
 @TypedGoRoute<TranscribedListRoute>(path: '/transcribed-list')
@@ -76,13 +82,16 @@ class TranscribedListRoute extends GoRouteData {
 
 @TypedGoRoute<MedicalFormRoute>(path: '/medical-form')
 class MedicalFormRoute extends GoRouteData {
-  const MedicalFormRoute(this.path);
+  const MedicalFormRoute(this.path, this.appointmentId);
 
   final String path;
+  final int appointmentId;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      MedicalFormPage(path: path);
+  Widget build(BuildContext context, GoRouterState state) => MedicalFormPage(
+        path: path,
+        appointmentId: appointmentId,
+      );
 }
 
 @TypedGoRoute<ScheduleRoute>(path: '/schedule')

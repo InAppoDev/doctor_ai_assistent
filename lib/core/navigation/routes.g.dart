@@ -90,10 +90,15 @@ RouteBase get $recordRoute => GoRouteData.$route(
     );
 
 extension $RecordRouteExtension on RecordRoute {
-  static RecordRoute _fromState(GoRouterState state) => const RecordRoute();
+  static RecordRoute _fromState(GoRouterState state) => RecordRoute(
+        int.parse(state.uri.queryParameters['appointment-id']!)!,
+      );
 
   String get location => GoRouteData.$location(
         '/record',
+        queryParams: {
+          'appointment-id': appointmentId.toString(),
+        },
       );
 
   void go(BuildContext context) => context.go(location);
@@ -114,12 +119,14 @@ RouteBase get $editRoute => GoRouteData.$route(
 extension $EditRouteExtension on EditRoute {
   static EditRoute _fromState(GoRouterState state) => EditRoute(
         state.uri.queryParameters['path']!,
+        int.parse(state.uri.queryParameters['appointment-id']!)!,
       );
 
   String get location => GoRouteData.$location(
         '/edit-record',
         queryParams: {
           'path': path,
+          'appointment-id': appointmentId.toString(),
         },
       );
 
@@ -169,12 +176,14 @@ RouteBase get $medicalFormRoute => GoRouteData.$route(
 extension $MedicalFormRouteExtension on MedicalFormRoute {
   static MedicalFormRoute _fromState(GoRouterState state) => MedicalFormRoute(
         state.uri.queryParameters['path']!,
+        int.parse(state.uri.queryParameters['appointment-id']!)!,
       );
 
   String get location => GoRouteData.$location(
         '/medical-form',
         queryParams: {
           'path': path,
+          'appointment-id': appointmentId.toString(),
         },
       );
 

@@ -1,6 +1,6 @@
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
-import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/history_log_button_widget.dart';
 import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/history_log_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
@@ -42,8 +42,9 @@ class EditableTextfield extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),
-                            padding: WidgetStateProperty.all(EdgeInsets.zero), 
-                            minimumSize: WidgetStateProperty.all(const Size(32, 32)),
+                            padding: WidgetStateProperty.all(EdgeInsets.zero),
+                            minimumSize:
+                                WidgetStateProperty.all(const Size(32, 32)),
                           ),
                         ),
                       ),
@@ -96,25 +97,35 @@ class EditableTextfield extends StatelessWidget {
                                   iconSize: 24,
                                   color: AppColors.white,
                                   style: ButtonStyle(
-                                    backgroundColor: WidgetStateProperty.all(AppColors.accentBlue),
+                                    backgroundColor: WidgetStateProperty.all(
+                                        AppColors.accentBlue),
                                   ),
                                 ),
                                 iconButtonUnselectedData: IconButtonData(
                                   iconSize: 24,
                                   color: AppColors.text,
                                   style: ButtonStyle(
-                                    backgroundColor: WidgetStateProperty.all(AppColors.white),
+                                    backgroundColor: WidgetStateProperty.all(
+                                        AppColors.white),
                                   ),
                                 ),
                               ),
                               onPressed: () {
-                                final currentSelection = quillController.selection;
+                                final currentSelection =
+                                    quillController.selection;
                                 if (!currentSelection.isCollapsed) {
-                                  final currentAttributes = quillController.getSelectionStyle().attributes;
-                                  if (currentAttributes.containsKey(Attribute.background.key)) {
-                                    quillController.formatSelection(Attribute.clone(Attribute.background, null));
+                                  final currentAttributes = quillController
+                                      .getSelectionStyle()
+                                      .attributes;
+                                  if (currentAttributes
+                                      .containsKey(Attribute.background.key)) {
+                                    quillController.formatSelection(
+                                        Attribute.clone(
+                                            Attribute.background, null));
                                   } else {
-                                    quillController.formatSelection(Attribute.clone(Attribute.background, '#FFFF00'));
+                                    quillController.formatSelection(
+                                        Attribute.clone(
+                                            Attribute.background, '#FFFF00'));
                                   }
                                 }
                               },
@@ -141,9 +152,7 @@ class EditableTextfield extends StatelessWidget {
                 ),
                 child: QuillEditor.basic(
                   controller: quillController,
-                  configurations: QuillEditorConfigurations(
-
-                  ),
+                  configurations: QuillEditorConfigurations(),
                 ),
               ),
             ),

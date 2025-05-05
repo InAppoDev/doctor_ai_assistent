@@ -19,6 +19,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
+      lazy: false,
       create: (context) => LoginState(),
       builder: (context, _) {
         final loginPr = context.read<LoginState>();

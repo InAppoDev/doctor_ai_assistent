@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class ColorCodedTextField extends StatefulWidget {
   const ColorCodedTextField({
     super.key,
-    required this.height
+    required this.height,
+    required this.recordedText,
   });
 
   final double height;
+  final List<String> recordedText;
 
   @override
   State createState() => _ColorCodedTextFieldState();
@@ -17,12 +19,6 @@ class ColorCodedTextField extends StatefulWidget {
 class _ColorCodedTextFieldState extends State<ColorCodedTextField> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _controller = TextEditingController();
-
-  final List<Map<String, dynamic>> _textData = [
-    {'text': 'Speech-to-Text Implementation.Speech Input Indicator .Transcribed Patient Responses. Auto-populate Pre-defined Medical Forms. Speaker Identification: Multi-speaker Display, Dynamic Speaker Switching, Profiles, Timeline. Speech-to-Text Implementation.Speech Input Indicator .Transcribed Patient Responses. Auto-populate Pre-defined Medical Forms. Speaker Identification: Multi-speaker Display, Dynamic Speaker Switching, Profiles, Timeline.\n\n', 'color': Colors.green},
-    {'text': 'Speech-to-Text Implementation.Speech Input Indicator .Transcribed Patient Responses. Auto-populate Pre-defined Medical Forms. Speaker Identification: Multi-speaker Display, Dynamic Speaker Switching, Profiles, Timeline. Speech-to-Text Implementation.Speech.\n\n', 'color': Colors.blue},
-    {'text': 'Speech-to-Text Implementation.Speech Input Indicator .Transcribed Patient Responses. Auto-populate Pre-defined Medical For\n\n', 'color': Colors.red},
-  ];
 
   @override
   void dispose() {
@@ -56,16 +52,8 @@ class _ColorCodedTextFieldState extends State<ColorCodedTextField> {
           child: SingleChildScrollView(
             controller: _scrollController,
             padding: const EdgeInsets.all(10),
-            child: SelectableText.rich(
-              TextSpan(
-                children: _textData.map((data) {
-                  return TextSpan(
-                    text: data['text'],
-                    style: AppTextStyles.regularPx16.copyWith(color: data['color'])
-                  );
-                }).toList(),
-              ),
-            ),
+            child: Text(widget.recordedText.join(),
+                style: AppTextStyles.regularPx16.copyWith(color: Colors.green)),
           ),
         ),
       ),

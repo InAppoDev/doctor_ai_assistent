@@ -17,8 +17,13 @@ import 'package:provider/provider.dart';
 
 class MedicalFormPage extends StatelessWidget {
   final String path;
+  final int appointmentId;
 
-  const MedicalFormPage({super.key, this.path = ''});
+  const MedicalFormPage({
+    super.key,
+    this.path = '',
+    required this.appointmentId,
+  });
 
   @override
   Widget build(BuildContext context) {

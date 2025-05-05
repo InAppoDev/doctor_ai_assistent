@@ -2,6 +2,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_icons.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/constants/consts.dart';
 import 'package:ecnx_ambient_listening/core/navigation/routes.dart';
 import 'package:ecnx_ambient_listening/core/widgets/logo_widget.dart';
 import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
@@ -17,7 +18,9 @@ import '../../../../core/widgets/responsive/responsive_widget.dart';
 
 class RecordPage extends StatefulWidget {
   /// Note: need to add the [id] of the appointment to send the recording to the correct appointment
-  const RecordPage({super.key});
+  final int appointmentId;
+
+  const RecordPage({super.key, required this.appointmentId});
 
   @override
   State<RecordPage> createState() => _RecordPageState();
@@ -39,7 +42,9 @@ class _RecordPageState extends State<RecordPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('ssss appointmentId - ${widget.appointmentId}');
     return ChangeNotifierProvider(
+      lazy: false,
       create: (context) => RecordProvider(),
       builder: (context, _) {
         return PopScope(
@@ -139,6 +144,7 @@ class _RecordPageState extends State<RecordPage> {
                                   Expanded(
                                     flex: 2,
                                     child: ColorCodedTextField(
+                                      recordedText: recordProvider.recordedText,
                                       height: Responsive.isDesktop(context)
                                           ? 330
                                           : 270,
@@ -205,18 +211,19 @@ class _RecordPageState extends State<RecordPage> {
                                                       .stopRecordingAudio()
                                                       .then((_) {
                                                     recordProvider.close();
-                                                    MedicalFormRoute(
-                                                            Uri.encodeComponent(
-                                                                recordProvider
-                                                                        .audioFilePath ??
-                                                                    ''))
-                                                        .push(context);
+                                                    if (context.mounted) {
+                                                      MedicalFormRoute(
+                                                              Uri.encodeComponent(
+                                                                  recordProvider
+                                                                          .audioFilePath ??
+                                                                      ''),
+                                                              widget
+                                                                  .appointmentId)
+                                                          .push(context);
+                                                    }
                                                   });
                                                 },
-                                                medicalForms: const [
-                                                  'Progress Notes',
-                                                  'H&P form'
-                                                ],
+                                                medicalForms: medicalForms,
                                                 selectedFormIndex:
                                                     selectedFormIndex);
                                           });
@@ -230,16 +237,20 @@ class _RecordPageState extends State<RecordPage> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 12),
                                     onPress: () async {
+                                      await recordProvider.saveMedicalForm(
+                                          selectedFormIndex.value ?? 1,
+                                          widget.appointmentId);
                                       await recordProvider
                                           .stopRecordingAudio()
                                           .then((_) {
                                         recordProvider.close();
                                         if (context.mounted) {
-                                          EditRoute(Uri.encodeComponent(
-                                                  recordProvider
-                                                          .audioFilePath ??
-                                                      ''))
-                                              .push(context);
+                                          EditRoute(
+                                            Uri.encodeComponent(
+                                                recordProvider.audioFilePath ??
+                                                    ''),
+                                            widget.appointmentId,
+                                          ).push(context);
                                         }
                                       });
                                     },
@@ -282,18 +293,16 @@ class _RecordPageState extends State<RecordPage> {
                                                   recordProvider.close();
                                                   if (context.mounted) {
                                                     MedicalFormRoute(
-                                                            Uri.encodeComponent(
-                                                                recordProvider
-                                                                        .audioFilePath ??
-                                                                    ''))
-                                                        .push(context);
+                                                      Uri.encodeComponent(
+                                                          recordProvider
+                                                                  .audioFilePath ??
+                                                              ''),
+                                                      widget.appointmentId,
+                                                    ).push(context);
                                                   }
                                                 });
                                               },
-                                              medicalForms: const [
-                                                'Progress Notes',
-                                                'H&P form'
-                                              ],
+                                              medicalForms: medicalForms,
                                               selectedFormIndex:
                                                   selectedFormIndex);
                                         });
@@ -308,15 +317,21 @@ class _RecordPageState extends State<RecordPage> {
                                       const EdgeInsets.symmetric(vertical: 12),
                                   textStyle: AppTextStyles.regularPx16,
                                   onPress: () async {
+                                    await recordProvider.saveMedicalForm(
+                                      selectedFormIndex.value ?? 1,
+                                      widget.appointmentId,
+                                    );
                                     await recordProvider
                                         .stopRecordingAudio()
                                         .then((_) {
-                                      print(recordProvider.audioFilePath);
                                       recordProvider.close();
                                       if (context.mounted) {
-                                        EditRoute(Uri.encodeComponent(
-                                                recordProvider.audioFilePath ??
-                                                    ''))
+                                        EditRoute(
+                                                Uri.encodeComponent(
+                                                    recordProvider
+                                                            .audioFilePath ??
+                                                        ''),
+                                                widget.appointmentId)
                                             .push(context);
                                       }
                                     });

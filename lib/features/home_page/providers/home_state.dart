@@ -1,88 +1,151 @@
-import 'package:ecnx_ambient_listening/features/home_page/data/models/appointment_model.dart';
+import 'package:ecnx_ambient_listening/core/models/appointment_model/appointment_model.dart';
+import 'package:ecnx_ambient_listening/core/network/network.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
-/// Manages the state for the home page, including selected date,
-/// search bar functionality, and appointments list.
 class HomeState extends ChangeNotifier {
-  // ---------------------------------------------------------------------------
-  // Selected Date Section
-  // ---------------------------------------------------------------------------
+  late final Network _backendService;
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
 
-  /// The currently selected date. Defaults to the current date.
-  DateTime _selectedDate = DateTime.now();
-  DateTime get selectedDate => _selectedDate;
+  bool get isListening => _isListening;
 
-  /// Updates the selected date and notifies listeners of the change.
-  /// 
-  /// [date] - The new date selected by the user.
-  /// Need to add also the fetch appointments logic here
-  void onDateSelected(DateTime date) {
-    _selectedDate = date;
-    notifyListeners(); // Notify UI to refresh based on the new date.
+  HomeState() {
+    init();
+    _searchController.addListener(getAppointments);
   }
 
-  // ---------------------------------------------------------------------------
-  // Search Bar Section
-  // ---------------------------------------------------------------------------
+  Future<void> init() async {
+    final prefs = await SharedPreferences.getInstance();
+    _backendService = Network(prefs);
+    _speech = stt.SpeechToText();
+    await _speech.initialize();
+    await getAppointments();
+  }
 
-  /// Controller for the search bar input field.
+  // Selected Date Section
+  DateTime _selectedDate = DateTime.now();
+  DateTime get selectedDate => _selectedDate;
+  bool isLoading = false;
+
+  void onDateSelected(DateTime date) {
+    _selectedDate = date;
+    notifyListeners();
+    getAppointments();
+  }
+
+  // Search Bar Section
   final TextEditingController _searchController = TextEditingController();
   TextEditingController get searchController => _searchController;
 
-  /// Tracks whether the search input is empty.
   bool _isEmpty = true;
   bool get isEmpty => _isEmpty;
 
-  /// Updates the [_isEmpty] state to indicate whether the search field is empty.
-  /// 
-  /// [value] - `true` if the search field is empty; otherwise `false`.
   void setIsEmpty(bool value) {
     _isEmpty = value;
-    notifyListeners(); // Trigger a rebuild for any UI dependent on this value.
+    notifyListeners();
   }
 
-  /// Updates the search query in the controller and notifies listeners.
-  /// 
-  /// [query] - The search query entered by the user.
   void onSearch(String query) {
-    _searchController.text = query; 
-    notifyListeners(); // Notify UI to reflect the updated search query.
+    _searchController.text = query;
+    notifyListeners();
+    getAppointments();
   }
 
-  /// Handles the microphone tap for voice input (currently unimplemented).
-  void onMicTap() {
-    // TODO: Implement microphone functionality (e.g., voice search).
+  void onMicTap() async {
+    if (!_isListening) {
+      final available = await _speech.initialize(
+        onStatus: (status) {
+          if (_isListening && (status == 'done' || status == 'notListening')) {
+            _speech.listen(
+              listenFor: Duration(seconds: 45),
+              pauseFor: Duration(seconds: 15),
+              listenOptions: stt.SpeechListenOptions(
+                listenMode: stt.ListenMode.dictation,
+              ),
+              onResult: (result) {
+                final text = result.recognizedWords;
+                _searchController.text = text;
+                notifyListeners();
+                getAppointments();
+              },
+              localeId: 'en_US',
+            );
+          }
+        },
+      );
+
+      if (available) {
+        _isListening = true;
+        notifyListeners();
+        _speech.listen(
+          listenFor: Duration(seconds: 45),
+          pauseFor: Duration(seconds: 15),
+          listenOptions: stt.SpeechListenOptions(
+            listenMode: stt.ListenMode.dictation,
+          ),
+          onResult: (result) {
+            final text = result.recognizedWords;
+            _searchController.text = text;
+            notifyListeners();
+            getAppointments();
+          },
+          localeId: 'en_US',
+        );
+      }
+    } else {
+      _speech.stop();
+      _isListening = false;
+      notifyListeners();
+    }
   }
 
-  // ---------------------------------------------------------------------------
   // Appointments Section
-  // ---------------------------------------------------------------------------
-
-  /// A predefined list of appointments, each represented as an [AppointmentModel].
-  /// 
-  /// This list could later be fetched from a backend or dynamically updated
-  /// based on user actions.
   final List<AppointmentModel> _appointments = [
     AppointmentModel(
-      name: 'Anna Harney',
-      birthDate: DateTime.now(),
-      isReviewed: false,
-      time: DateTime.now(),
-    ),
-    AppointmentModel(
-      name: 'Anna Harney',
-      birthDate: DateTime.now(),
-      isReviewed: true,
-      time: DateTime.now(),
-      minutes: 14,
+      firstName: 'Anna',
+      lastName: 'Harney',
+      birth: DateTime.now(),
+      id: 0,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      when: DateTime.now(),
+      user: 0,
     ),
   ];
   List<AppointmentModel> get appointments => _appointments;
 
-  // ---------------------------------------------------------------------------
-  // Additional Notes
-  // ---------------------------------------------------------------------------
-  // 1. `_appointments` is currently hardcoded but could be replaced by
-  //    API-driven logic.
-  // 2. The `onMicTap` method needs implementation to make it functional.
+  Future<void> getAppointments() async {
+    isLoading = true;
+    notifyListeners();
+
+    _appointments.clear();
+    final fetchedAppointments = await _backendService.getAppointments();
+
+    final filteredByDate = fetchedAppointments.where((appointment) {
+      return _isSameDay(appointment.createdAt, _selectedDate);
+    });
+
+    final query = _searchController.text.trim().toLowerCase();
+
+    final filtered = query.isEmpty
+        ? filteredByDate.toList()
+        : filteredByDate.where((appointment) {
+            final firstName = appointment.firstName.toLowerCase();
+            final lastName = appointment.lastName.toLowerCase();
+            return firstName.contains(query) || lastName.contains(query);
+          }).toList();
+
+    _appointments.addAll(filtered);
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+  bool _isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
 }

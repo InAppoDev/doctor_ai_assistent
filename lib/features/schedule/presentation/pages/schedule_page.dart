@@ -23,6 +23,7 @@ class SchedulePage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => ScheduleState(),
       builder: (context, _) {
+        final p = context.read<ScheduleState>();
         return Scaffold(
             backgroundColor: AppColors.bg,
             body: SafeArea(
@@ -166,16 +167,19 @@ class SchedulePage extends StatelessWidget {
                       Responsive(
                           mobile: Column(children: [
                             PrimaryButton(
-                              text: 'Submit',
+                              text: 'Save',
                               textColor: AppColors.white,
                               color: AppColors.accentBlue,
                               borderColor: AppColors.accentBlue,
                               padding: const EdgeInsets.symmetric(vertical: 12),
-                              onPress: () {
+                              onPress: () async {
                                 /// call the view model method to submit the form
                                 /// the view model should submit the form and navigate to the home page
                                 /// context.read<MedicalFormState>().submitForm();
-                                context.pop();
+                                await p.savePatientSchedule();
+                                if (context.mounted) {
+                                  context.pop();
+                                }
                               },
                             ).paddingOnly(bottom: 16),
                             PrimaryButton(

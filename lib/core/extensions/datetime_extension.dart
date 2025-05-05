@@ -1,9 +1,8 @@
 /// Extension methods on [DateTime] that provide additional functionality for formatting date and time in human-readable formats.
 ///
-/// This extension adds several methods to the `DateTime` class that convert a `DateTime` object into various formatted strings. 
+/// This extension adds several methods to the `DateTime` class that convert a `DateTime` object into various formatted strings.
 /// These include full and short month names, weekday names, and time formats commonly used in user interfaces or reports.
 extension DateTimeExtension on DateTime {
-  
   /// Returns the full month name and the day of the month as a string.
   ///
   /// Example:
@@ -24,7 +23,7 @@ extension DateTimeExtension on DateTime {
   /// ```dart
   /// DateTime.now().toHourAndMinute(); // "14:30"
   /// ```
-  String toHourAndMinute() { 
+  String toHourAndMinute() {
     return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
   }
 
@@ -157,5 +156,16 @@ extension DateTimeExtension on DateTime {
     final hour = this.hour > 12 ? this.hour - 12 : this.hour;
     final minute = this.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
+  }
+
+  String getFormattedBirth() {
+    final now = DateTime.now();
+    final age = now.year -
+        year -
+        (now.isBefore(DateTime(now.year, month, day)) ? 1 : 0);
+
+    final formattedDate = '${getShortMonthName()} $day, $year';
+
+    return '$age yo, $formattedDate';
   }
 }

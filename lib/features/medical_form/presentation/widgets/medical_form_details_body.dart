@@ -19,10 +19,18 @@ class MedicalFormDetailsBody extends StatelessWidget {
         itemCount: list.length,
         itemBuilder: (context, index) {
           return ChangeNotifierProvider(
-            create: (context) => EditTextProvider()..initData(context.read<MedicalFormProvider>().quillControllers[index], null, list[index]), 
+            create: (context) => EditTextProvider()
+              ..initData(
+                  context.read<MedicalFormProvider>().quillControllers[index],
+                  'tttt'),
             child: MedicalHistoryTile(
               onHistoryLogClick: () {
-                showDialog(context: context, builder: (context) => HistoryLogModal(before: 'Before the Symptop', after: 'After the Symptop', onCloseClick: () {}));
+                showDialog(
+                    context: context,
+                    builder: (context) => HistoryLogModal(
+                        before: 'Before the Symptop',
+                        after: 'After the Symptop',
+                        onCloseClick: () {}));
               },
             ),
           ).paddingOnly(bottom: 20);

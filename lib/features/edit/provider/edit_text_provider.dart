@@ -9,22 +9,16 @@ import 'package:flutter_quill/flutter_quill.dart';
 class EditTextProvider extends ChangeNotifier {
   /// title and text model should be updated to accept the medical form model
   /// NOTE: The text should be replaced with the actual data
-  void initData(QuillController controller, TranscribedTextModel? transcribed, TitleAndTextModel? titleAndTextModel) {
+  void initData(QuillController controller, String text) {
     _quillController = controller;
-    if (transcribed != null) {
-      _quillController?.document.insert(0, transcribed.text);
-      _transcribed = transcribed;
-    } else {
-      _quillController?.document.insert(0, titleAndTextModel!.text);
-      _titleAndTextModel = titleAndTextModel;
-    }
+    _quillController?.document.insert(0, text);
   }
+
   /// if it is used in medical form, the method should be updated to accept the medical form model
   /// and the quill controller should be updated to accept the medical form model
   TitleAndTextModel? _titleAndTextModel;
 
   TitleAndTextModel get titleAndTextModel => _titleAndTextModel!;
-
 
   // ---------------------------------------------------------------------------
   // Transcribed Text
@@ -45,7 +39,8 @@ class EditTextProvider extends ChangeNotifier {
 
   /// Exposes the [QuillController] to external widgets for interacting with
   /// the rich text editor.
-  QuillController get quillController => _quillController ?? QuillController.basic();
+  QuillController get quillController =>
+      _quillController ?? QuillController.basic();
 
   // ---------------------------------------------------------------------------
   // Clipboard Functionality
@@ -56,7 +51,8 @@ class EditTextProvider extends ChangeNotifier {
   /// This converts the formatted Quill document to plain text before copying it.
   Future<void> onCopyToClipboard() async {
     final text = _quillController?.document.toPlainText();
-    await Clipboard.setData(ClipboardData(text: text ?? '')); // Copies text to system clipboard.
+    await Clipboard.setData(
+        ClipboardData(text: text ?? '')); // Copies text to system clipboard.
   }
 
   ///TODO: The method for translation need be implemented

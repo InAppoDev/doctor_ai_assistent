@@ -9,12 +9,12 @@ class AvatarWidget extends StatelessWidget {
   final double iconSize;
 
   const AvatarWidget({
-    super.key, 
-    this.color = AppColors.accentBlue, 
+    super.key,
+    this.color = AppColors.accentBlue,
     this.height = 32,
     this.width = 32,
     this.borderRadius = 8,
-    this.iconSize = 24
+    this.iconSize = 24,
   });
 
   @override
