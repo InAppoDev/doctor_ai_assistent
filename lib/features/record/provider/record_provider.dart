@@ -2,188 +2,132 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:ecnx_ambient_listening/core/network/network.dart';
-import 'package:ecnx_ambient_listening/core/prefs.dart';
 import 'package:ecnx_ambient_listening/core/speech_to_text/speech_to_text_service.dart';
 import 'package:ecnx_ambient_listening/core/web_socket/web_socket_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
 
 class RecordProvider extends ChangeNotifier {
+  final SpeechToTextService _speechService = SpeechToTextService();
+  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  final StreamController<Uint8List> _audioStreamController =
+      StreamController<Uint8List>();
+  final List<String> recordedText = [];
+
+  late final SharedPreferences _prefs;
+  late final WebSocketService _socketService;
+  late final Network _network;
+
+  String? _audioFilePath;
+  int _status = 0;
+  bool _showTextField = true;
+  Timer? _timer;
+  int seconds = 0;
+  int minutes = 0;
+
+  String? get audioFilePath => _audioFilePath;
+  int get status => _status;
+  bool get showTextField => _showTextField;
+  Timer? get timer => _timer;
+
   RecordProvider() {
     _init();
   }
 
-  final SpeechToTextService _speechService = SpeechToTextService();
-  final WebSocketService _socketService = WebSocketService();
-  late final SharedPreferences _prefs;
-
-  late final Network network;
-
-  bool _showTextField = true;
-  String? _audioFilePath;
-  int _status = 0;
-  Timer? _timer;
-  int seconds = 0;
-  int minutes = 0;
-  final List<String> recordedText = [];
-
-  String? get audioFilePath => _audioFilePath;
-
-  int get status => _status;
-
-  bool get showTextField => _showTextField;
-
-  Timer? get timer => _timer;
-
   Future<void> _init() async {
     _prefs = await SharedPreferences.getInstance();
-    network = Network(_prefs); // In
-    await _speechService.init();
+    _network = Network(_prefs);
+    _socketService = WebSocketService(prefs: _prefs);
   }
 
-  Future<String> _getDirectoryPath() async {
-    if (kIsWeb) return '/web_recordings';
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
+  Future<String> _generateFilePath() async {
+    final basePath = kIsWeb
+        ? '/web_recordings'
+        : (await getApplicationDocumentsDirectory()).path;
+    final fileName = List.generate(10, (_) => _randomChar()).join();
+    return p.join(basePath, '$fileName.wav');
   }
 
-  String _generateRandomId() {
+  String _randomChar() {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    final random = Random();
-    return List.generate(10, (index) => chars[random.nextInt(chars.length)])
-        .join();
+    return chars[Random().nextInt(chars.length)];
   }
 
-  Future<void> saveMedicalForm(int form, int appointment) async {
-    await network.createLog(
-      speaker: '1',
-      transcription: 'some text',
-      form: form,
-      appointment: appointment,
-    );
-  }
-
-  Future<bool> _hasPermission() async {
+  Future<bool> _hasMicrophonePermission() async {
     final status = await Permission.microphone.status;
-    if (status.isGranted) return true;
-    return (await Permission.microphone.request()).isGranted;
+    return status.isGranted ||
+        (await Permission.microphone.request()).isGranted;
   }
 
-  Future<void> startRecordingAudio() async {
-    final accessToken = _prefs.getString(PreferencesKeys.accessToken);
-
-    if (!await _hasPermission()) {
-      debugPrint('Microphone permission denied');
+  Future<void> startRecording() async {
+    if (!await _hasMicrophonePermission()) {
+      debugPrint('🎤 Microphone permission denied');
       return;
     }
 
     try {
+      _audioFilePath = await _generateFilePath();
+      recordedText.clear();
       seconds = 0;
       minutes = 0;
       notifyListeners();
 
-      final directory = await _getDirectoryPath();
-      _audioFilePath = p.join(directory, '${_generateRandomId()}.wav');
-
-      if (accessToken != null) {
-        await _socketService.connect(accessToken);
-      } else {
-        debugPrint('No access token found');
-        return;
-      }
-
-      await _speechService.startListening((SpeechRecognitionResult result) {
-        final text = result.recognizedWords;
-        if (text.isNotEmpty) {
-          recordedText.add(text);
-        }
+      await _socketService.connect((text) {
+        recordedText.add(text);
+        notifyListeners();
       });
-    } catch (e) {
-      debugPrint('Error starting recording: $e');
-    }
-  }
 
-  Future<void> stopRecordingAudio() async {
-    try {
-      stopTimer();
-      _speechService.stopListening();
-      _socketService.close();
-    } catch (e) {
-      debugPrint('Error stopping recording: $e');
-    }
-  }
+      await _recorder.openRecorder();
+      await _recorder.startRecorder(
+        toStream: _audioStreamController,
+        codec: Codec.pcm16WAV,
+      );
 
-  Future<void> pauseRecordingAudio() async {
-    try {
-      stopTimer();
-      _socketService.sendText(recordedText.join());
-      _speechService.stopListening();
-      _socketService.close();
-    } catch (e) {
-      debugPrint('Error pausing recording: $e');
-    }
-  }
-
-  Future<void> resumeRecordingAudio() async {
-    try {
-      await _speechService.startListening((result) {
-        final text = result.recognizedWords;
-        if (text.isNotEmpty) {
-          recordedText.add(text);
-          _socketService.sendText(text);
-        }
+      _audioStreamController.stream.listen((data) {
+        _socketService.sendText(data);
       });
+
+      _setStatus(1);
+      _startTimer();
     } catch (e) {
-      debugPrint('Error resuming recording: $e');
+      debugPrint('❌ Error during recording start: $e');
     }
   }
 
-  void startRecording() {
-    if (_status == 0) {
-      startRecordingAudio();
-    } else if (_status == 2) {
-      resumeRecordingAudio();
-    }
-    setStatus(1);
-    startTimer();
-  }
+  Future<void> stopRecording() async {
+    try {
+      await _recorder.stopRecorder();
+      await _recorder.closeRecorder();
+      await _audioStreamController.close();
+      _socketService.close();
+      _speechService.stopListening();
 
-  void stopRecording() {
-    pauseRecordingAudio();
-    setStatus(2);
-    stopTimer();
+      _stopTimer();
+      _setStatus(2);
+    } catch (e) {
+      debugPrint('❌ Error during recording stop: $e');
+    }
   }
 
   void reset() {
-    setStatus(0);
+    _setStatus(0);
     recordedText.clear();
     seconds = 0;
     minutes = 0;
     notifyListeners();
   }
 
-  void setStatus(int newStatus) {
-    _status = newStatus;
-    notifyListeners();
-  }
-
-  void startTimer() {
-    _timer ??= Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (++seconds >= 60) {
-        seconds = 0;
-        minutes++;
-      }
-      notifyListeners();
-    });
-  }
-
-  void stopTimer() {
-    _timer?.cancel();
-    _timer = null;
+  Future<void> saveMedicalForm(int form, int appointment) async {
+    await _network.createLog(
+      speaker: '1',
+      transcription: 'some text',
+      form: form,
+      appointment: appointment,
+    );
   }
 
   void toggleTextField() {
@@ -199,15 +143,36 @@ class RecordProvider extends ChangeNotifier {
   void close() {
     _speechService.cancelListening();
     _socketService.close();
-    _status = 3;
-    stopTimer();
+    _recorder.closeRecorder();
+    _stopTimer();
+    _setStatus(3);
     notifyListeners();
   }
 
   @override
   void dispose() {
-    debugPrint('Disposing RecordProvider');
+    debugPrint('🧹 Disposing RecordProvider');
     close();
     super.dispose();
+  }
+
+  void _setStatus(int newStatus) {
+    _status = newStatus;
+    notifyListeners();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (++seconds >= 60) {
+        seconds = 0;
+        minutes++;
+      }
+      notifyListeners();
+    });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+    _timer = null;
   }
 }

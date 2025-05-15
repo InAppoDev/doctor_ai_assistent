@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MedicalHistoryTile extends StatefulWidget {
-  const MedicalHistoryTile({ 
+  const MedicalHistoryTile({
     super.key,
     required this.onHistoryLogClick,
   });
@@ -44,7 +44,7 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.accentBlue.withOpacity(0.4),
+                  color: AppColors.accentBlue.withValues(alpha: 0.4),
                   offset: const Offset(4, 4),
                   blurRadius: 4,
                   spreadRadius: 0,
@@ -59,24 +59,38 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Responsive(
-                        desktop: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          Text(_editProvider.titleAndTextModel.title, style: AppTextStyles.mediumPx20),
-                          HistoryLogButtonWidget(onTap: () {
-                            widget.onHistoryLogClick();
-                          })
-                        ]).paddingOnly(bottom: 20),
-                        mobile: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          Expanded(child: Text(_editProvider.titleAndTextModel.title, style: AppTextStyles.mediumPx20, overflow: TextOverflow.ellipsis, maxLines: 2,)),
-                          EditTextTileButtons(
-                            onCopyClick: () async {
-                              await _editProvider.onCopyToClipboard();
-                            },
-                          ),
-                        ]).paddingOnly(bottom: 16),
+                        desktop: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(_editProvider.titleAndTextModel?.title ?? '',
+                                  style: AppTextStyles.mediumPx20),
+                              HistoryLogButtonWidget(onTap: () {
+                                widget.onHistoryLogClick();
+                              })
+                            ]).paddingOnly(bottom: 20),
+                        mobile: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                  child: Text(
+                                _editProvider.titleAndTextModel?.title ?? '',
+                                style: AppTextStyles.mediumPx20,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              )),
+                              EditTextTileButtons(
+                                onCopyClick: () async {
+                                  await _editProvider.onCopyToClipboard();
+                                },
+                              ),
+                            ]).paddingOnly(bottom: 16),
                       ),
-                      EditableTextfield(quillController: _editProvider.quillController, onHistoryLogClick: () {
-                        widget.onHistoryLogClick();
-                      },),
+                      EditableTextfield(
+                        quillController: _editProvider.quillController,
+                        onHistoryLogClick: () {
+                          widget.onHistoryLogClick();
+                        },
+                      ),
                     ],
                   ),
                 ),

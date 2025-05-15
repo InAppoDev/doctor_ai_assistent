@@ -18,7 +18,7 @@ class EditTextProvider extends ChangeNotifier {
   /// and the quill controller should be updated to accept the medical form model
   TitleAndTextModel? _titleAndTextModel;
 
-  TitleAndTextModel get titleAndTextModel => _titleAndTextModel!;
+  TitleAndTextModel? get titleAndTextModel => _titleAndTextModel;
 
   // ---------------------------------------------------------------------------
   // Transcribed Text

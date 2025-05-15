@@ -123,10 +123,8 @@ class _RecordPageState extends State<RecordPage> {
                                   onPressed: () {
                                     if (recordProvider.status == 1) {
                                       recordProvider.stopRecording();
-                                      recordProvider.stopTimer();
                                     } else if (recordProvider.status != 3) {
                                       recordProvider.startRecording();
-                                      recordProvider.startTimer();
                                     }
                                   })
                               .paddingOnly(
@@ -208,7 +206,7 @@ class _RecordPageState extends State<RecordPage> {
                                                 },
                                                 onSaveClick: () async {
                                                   await recordProvider
-                                                      .stopRecordingAudio()
+                                                      .stopRecording()
                                                       .then((_) {
                                                     recordProvider.close();
                                                     if (context.mounted) {
@@ -241,7 +239,7 @@ class _RecordPageState extends State<RecordPage> {
                                           selectedFormIndex.value ?? 1,
                                           widget.appointmentId);
                                       await recordProvider
-                                          .stopRecordingAudio()
+                                          .stopRecording()
                                           .then((_) {
                                         recordProvider.close();
                                         if (context.mounted) {
@@ -288,7 +286,7 @@ class _RecordPageState extends State<RecordPage> {
                                               },
                                               onSaveClick: () async {
                                                 await recordProvider
-                                                    .stopRecordingAudio()
+                                                    .stopRecording()
                                                     .then((_) {
                                                   recordProvider.close();
                                                   if (context.mounted) {
@@ -322,7 +320,7 @@ class _RecordPageState extends State<RecordPage> {
                                       widget.appointmentId,
                                     );
                                     await recordProvider
-                                        .stopRecordingAudio()
+                                        .stopRecording()
                                         .then((_) {
                                       recordProvider.close();
                                       if (context.mounted) {

@@ -1,13 +1,12 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
+import 'package:ecnx_ambient_listening/core/constants/consts.dart';
 import 'package:ecnx_ambient_listening/core/models/appointment_model/appointment_model.dart';
 import 'package:ecnx_ambient_listening/core/models/form_model/form_model.dart';
 import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/core/models/user_model/user_model.dart';
-import 'package:ecnx_ambient_listening/core/navigation/app_router.dart';
+import 'package:ecnx_ambient_listening/core/navigation/routes.dart';
 import 'package:ecnx_ambient_listening/core/prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
@@ -33,10 +32,6 @@ class Network {
   static final _logger = Logger();
 
   Network(this._prefs) : _dio = Dio(BaseOptions(baseUrl: Endpoints.baseUrl)) {
-    (_dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () =>
-        HttpClient()
-          ..badCertificateCallback =
-              (X509Certificate cert, String host, int port) => true;
     addInterceptor();
   }
 
@@ -44,25 +39,32 @@ class Network {
     required RequestType requestType,
     required String endpoint,
     Map<String, dynamic>? data,
+    Map<String, dynamic>? queryParameters,
+    Map<String, String>? headers,
   }) async {
     try {
       late Response response;
-
+      final options = Options(headers: headers);
       switch (requestType) {
         case RequestType.get:
-          response = await _dio.get(endpoint);
+          response = await _dio.get(endpoint,
+              queryParameters: queryParameters, options: options);
           break;
         case RequestType.post:
-          response = await _dio.post(endpoint, data: data);
+          response = await _dio.post(endpoint,
+              queryParameters: queryParameters, options: options, data: data);
           break;
         case RequestType.put:
-          response = await _dio.put(endpoint, data: data);
+          response = await _dio.put(endpoint,
+              queryParameters: queryParameters, options: options, data: data);
           break;
         case RequestType.patch:
-          response = await _dio.patch(endpoint, data: data);
+          response = await _dio.patch(endpoint,
+              queryParameters: queryParameters, options: options, data: data);
           break;
         case RequestType.delete:
-          response = await _dio.delete(endpoint);
+          response = await _dio.delete(endpoint,
+              queryParameters: queryParameters, options: options);
           break;
       }
 
@@ -509,35 +511,6 @@ class Network {
   }
 
   void addInterceptor() {
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          final token = _prefs.getString(PreferencesKeys.accessToken);
-          print('tokentokentokentokentoken - $token');
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-          handler.next(options);
-        },
-        onError: (DioException e, handler) async {
-          if (e.response?.statusCode == 401) {
-            final refreshToken = _prefs.getString(PreferencesKeys.refreshToken);
-            final refreshed =
-                await refreshTokens(refreshToken: refreshToken ?? '');
-            if (refreshed) {
-              final newAccessToken =
-                  _prefs.getString(PreferencesKeys.accessToken);
-              final newRequest = e.requestOptions;
-              newRequest.headers['Authorization'] = 'Bearer $newAccessToken';
-
-              final cloneReq = await _dio.fetch(newRequest);
-              return handler.resolve(cloneReq);
-            }
-          }
-          return handler.next(e);
-        },
-      ),
-    );
     _dio
       ..interceptors.add(RefreshTokenInterceptor(_prefs))
       ..interceptors.add(PrettyLoggerInterceptor());

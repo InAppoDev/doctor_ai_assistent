@@ -1,7 +1,7 @@
 part of 'network.dart';
 
 abstract class Endpoints {
-  static const String baseUrl = 'https://44.223.62.35/api/v1';
+  static const String baseUrl = 'https://ecnx.org/api/v1';
 
   // Forms
   static const String forms = '$baseUrl/forms/';
