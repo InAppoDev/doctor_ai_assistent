@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:ecnx_ambient_listening/core/extensions/string_extension.dart';
 import 'package:ecnx_ambient_listening/core/network/network.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Manages the state for scheduling, including user input fields, date and time selection,
 /// and available time slots. Notifies listeners of any changes.
 class ScheduleState extends ChangeNotifier {
-  late final Network backendService;
+  late final Network _networkService;
 
   ScheduleState() {
     init();
@@ -15,7 +17,7 @@ class ScheduleState extends ChangeNotifier {
   /// Initializes the backend service and any necessary setup.
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    backendService = Network(prefs);
+    _networkService = Network(prefs);
     await fetchAvailableTimeSlots();
   }
 
@@ -82,13 +84,26 @@ class ScheduleState extends ChangeNotifier {
     }
   }
 
-  Future<void> savePatientSchedule() async {
-    await backendService.createAppointment(
+  Future<void> savePatientScheduleAndCreateForm() async {
+    await _networkService.createAppointment(
       firstName: firstNameController.text.trim(),
       lastName: lastNameController.text.trim(),
       birth: dateOfBirthController.text.toDateTime(),
       when: scheduleDateTime,
+      physician: 'Lucas Cooper',
+      record: _getRandom7DigitNumber().toString(),
     );
+    await _createForm();
+  }
+
+  int _getRandom7DigitNumber() {
+    final random = Random();
+    return 1000000 + random.nextInt(9000000);
+  }
+
+  Future<void> _createForm() async {
+    await _networkService.createForm(
+        name: firstNameController.text.trim() + lastNameController.text.trim());
   }
 
   /// Disposes of the controllers to free up resources when no longer needed.

@@ -1,4 +1,5 @@
 import 'package:ecnx_ambient_listening/core/models/appointment_model/appointment_model.dart';
+import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/core/network/network.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,9 +23,21 @@ class HomeState extends ChangeNotifier {
     _speech = stt.SpeechToText();
     await _speech.initialize();
     await getAppointments();
+    await _getLogs();
+    await _backendService.getForms();
   }
 
-  // Selected Date Section
+  List<LogModel> logs = [];
+
+  Future<void> _getLogs() async {
+    isLoading = true;
+    notifyListeners();
+
+    logs = await _backendService.getLogs();
+    isLoading = false;
+    notifyListeners();
+  }
+
   DateTime _selectedDate = DateTime.now();
   DateTime get selectedDate => _selectedDate;
   bool isLoading = false;
@@ -33,6 +46,18 @@ class HomeState extends ChangeNotifier {
     _selectedDate = date;
     notifyListeners();
     getAppointments();
+  }
+
+  LogModel? getLogByAppointment(int appointmentId) {
+    if (logs.isEmpty) return null;
+    for (final log in logs) {
+      if (log.appointment == appointmentId) {
+        return log;
+      } else {
+        return null;
+      }
+    }
+    return null;
   }
 
   // Search Bar Section
@@ -101,19 +126,7 @@ class HomeState extends ChangeNotifier {
     }
   }
 
-  // Appointments Section
-  final List<AppointmentModel> _appointments = [
-    AppointmentModel(
-      firstName: 'Anna',
-      lastName: 'Harney',
-      birth: DateTime.now(),
-      id: 0,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      when: DateTime.now(),
-      user: 0,
-    ),
-  ];
+  final List<AppointmentModel> _appointments = [];
   List<AppointmentModel> get appointments => _appointments;
 
   Future<void> getAppointments() async {

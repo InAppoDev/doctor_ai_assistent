@@ -29,11 +29,15 @@ mixin _$AppointmentModel {
   String get firstName => throw _privateConstructorUsedError;
   @JsonKey(name: 'last_name')
   String get lastName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'record')
+  String? get record => throw _privateConstructorUsedError;
+  @JsonKey(name: 'physician')
+  String? get physician => throw _privateConstructorUsedError;
   @JsonKey(fromJson: DateTime.parse, toJson: _toIso)
   DateTime get birth => throw _privateConstructorUsedError;
   @JsonKey(fromJson: DateTime.parse, toJson: _toIso)
   DateTime get when => throw _privateConstructorUsedError;
-  int get user => throw _privateConstructorUsedError;
+  int? get user => throw _privateConstructorUsedError;
 
   /// Serializes this AppointmentModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -59,9 +63,11 @@ abstract class $AppointmentModelCopyWith<$Res> {
       DateTime updatedAt,
       @JsonKey(name: 'first_name') String firstName,
       @JsonKey(name: 'last_name') String lastName,
+      @JsonKey(name: 'record') String? record,
+      @JsonKey(name: 'physician') String? physician,
       @JsonKey(fromJson: DateTime.parse, toJson: _toIso) DateTime birth,
       @JsonKey(fromJson: DateTime.parse, toJson: _toIso) DateTime when,
-      int user});
+      int? user});
 }
 
 /// @nodoc
@@ -84,9 +90,11 @@ class _$AppointmentModelCopyWithImpl<$Res, $Val extends AppointmentModel>
     Object? updatedAt = null,
     Object? firstName = null,
     Object? lastName = null,
+    Object? record = freezed,
+    Object? physician = freezed,
     Object? birth = null,
     Object? when = null,
-    Object? user = null,
+    Object? user = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -109,6 +117,14 @@ class _$AppointmentModelCopyWithImpl<$Res, $Val extends AppointmentModel>
           ? _value.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
               as String,
+      record: freezed == record
+          ? _value.record
+          : record // ignore: cast_nullable_to_non_nullable
+              as String?,
+      physician: freezed == physician
+          ? _value.physician
+          : physician // ignore: cast_nullable_to_non_nullable
+              as String?,
       birth: null == birth
           ? _value.birth
           : birth // ignore: cast_nullable_to_non_nullable
@@ -117,10 +133,10 @@ class _$AppointmentModelCopyWithImpl<$Res, $Val extends AppointmentModel>
           ? _value.when
           : when // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      user: null == user
+      user: freezed == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
     ) as $Val);
   }
 }
@@ -141,9 +157,11 @@ abstract class _$$AppointmentModelImplCopyWith<$Res>
       DateTime updatedAt,
       @JsonKey(name: 'first_name') String firstName,
       @JsonKey(name: 'last_name') String lastName,
+      @JsonKey(name: 'record') String? record,
+      @JsonKey(name: 'physician') String? physician,
       @JsonKey(fromJson: DateTime.parse, toJson: _toIso) DateTime birth,
       @JsonKey(fromJson: DateTime.parse, toJson: _toIso) DateTime when,
-      int user});
+      int? user});
 }
 
 /// @nodoc
@@ -164,9 +182,11 @@ class __$$AppointmentModelImplCopyWithImpl<$Res>
     Object? updatedAt = null,
     Object? firstName = null,
     Object? lastName = null,
+    Object? record = freezed,
+    Object? physician = freezed,
     Object? birth = null,
     Object? when = null,
-    Object? user = null,
+    Object? user = freezed,
   }) {
     return _then(_$AppointmentModelImpl(
       id: null == id
@@ -189,6 +209,14 @@ class __$$AppointmentModelImplCopyWithImpl<$Res>
           ? _value.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
               as String,
+      record: freezed == record
+          ? _value.record
+          : record // ignore: cast_nullable_to_non_nullable
+              as String?,
+      physician: freezed == physician
+          ? _value.physician
+          : physician // ignore: cast_nullable_to_non_nullable
+              as String?,
       birth: null == birth
           ? _value.birth
           : birth // ignore: cast_nullable_to_non_nullable
@@ -197,10 +225,10 @@ class __$$AppointmentModelImplCopyWithImpl<$Res>
           ? _value.when
           : when // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      user: null == user
+      user: freezed == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
     ));
   }
 }
@@ -216,9 +244,11 @@ class _$AppointmentModelImpl implements _AppointmentModel {
       required this.updatedAt,
       @JsonKey(name: 'first_name') required this.firstName,
       @JsonKey(name: 'last_name') required this.lastName,
+      @JsonKey(name: 'record') this.record,
+      @JsonKey(name: 'physician') this.physician,
       @JsonKey(fromJson: DateTime.parse, toJson: _toIso) required this.birth,
       @JsonKey(fromJson: DateTime.parse, toJson: _toIso) required this.when,
-      required this.user});
+      this.user});
 
   factory _$AppointmentModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$AppointmentModelImplFromJson(json);
@@ -238,17 +268,23 @@ class _$AppointmentModelImpl implements _AppointmentModel {
   @JsonKey(name: 'last_name')
   final String lastName;
   @override
+  @JsonKey(name: 'record')
+  final String? record;
+  @override
+  @JsonKey(name: 'physician')
+  final String? physician;
+  @override
   @JsonKey(fromJson: DateTime.parse, toJson: _toIso)
   final DateTime birth;
   @override
   @JsonKey(fromJson: DateTime.parse, toJson: _toIso)
   final DateTime when;
   @override
-  final int user;
+  final int? user;
 
   @override
   String toString() {
-    return 'AppointmentModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, firstName: $firstName, lastName: $lastName, birth: $birth, when: $when, user: $user)';
+    return 'AppointmentModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, firstName: $firstName, lastName: $lastName, record: $record, physician: $physician, birth: $birth, when: $when, user: $user)';
   }
 
   @override
@@ -265,6 +301,9 @@ class _$AppointmentModelImpl implements _AppointmentModel {
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
+            (identical(other.record, record) || other.record == record) &&
+            (identical(other.physician, physician) ||
+                other.physician == physician) &&
             (identical(other.birth, birth) || other.birth == birth) &&
             (identical(other.when, when) || other.when == when) &&
             (identical(other.user, user) || other.user == user));
@@ -273,7 +312,7 @@ class _$AppointmentModelImpl implements _AppointmentModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, createdAt, updatedAt,
-      firstName, lastName, birth, when, user);
+      firstName, lastName, record, physician, birth, when, user);
 
   /// Create a copy of AppointmentModel
   /// with the given fields replaced by the non-null parameter values.
@@ -301,11 +340,13 @@ abstract class _AppointmentModel implements AppointmentModel {
       required final DateTime updatedAt,
       @JsonKey(name: 'first_name') required final String firstName,
       @JsonKey(name: 'last_name') required final String lastName,
+      @JsonKey(name: 'record') final String? record,
+      @JsonKey(name: 'physician') final String? physician,
       @JsonKey(fromJson: DateTime.parse, toJson: _toIso)
       required final DateTime birth,
       @JsonKey(fromJson: DateTime.parse, toJson: _toIso)
       required final DateTime when,
-      required final int user}) = _$AppointmentModelImpl;
+      final int? user}) = _$AppointmentModelImpl;
 
   factory _AppointmentModel.fromJson(Map<String, dynamic> json) =
       _$AppointmentModelImpl.fromJson;
@@ -325,13 +366,19 @@ abstract class _AppointmentModel implements AppointmentModel {
   @JsonKey(name: 'last_name')
   String get lastName;
   @override
+  @JsonKey(name: 'record')
+  String? get record;
+  @override
+  @JsonKey(name: 'physician')
+  String? get physician;
+  @override
   @JsonKey(fromJson: DateTime.parse, toJson: _toIso)
   DateTime get birth;
   @override
   @JsonKey(fromJson: DateTime.parse, toJson: _toIso)
   DateTime get when;
   @override
-  int get user;
+  int? get user;
 
   /// Create a copy of AppointmentModel
   /// with the given fields replaced by the non-null parameter values.

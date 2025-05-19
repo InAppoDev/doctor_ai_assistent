@@ -3,19 +3,28 @@ import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
 import 'package:ecnx_ambient_listening/core/extensions/datetime_extension.dart';
 import 'package:ecnx_ambient_listening/core/models/appointment_model/appointment_model.dart';
+import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/core/navigation/routes.dart';
 import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
 import 'package:ecnx_ambient_listening/features/home_page/presentation/widgets/review_checkbox.dart';
 import 'package:ecnx_ambient_listening/features/home_page/presentation/widgets/start_recording_button.dart';
 import 'package:ecnx_ambient_listening/features/home_page/presentation/widgets/time_with_icon_widget.dart';
+import 'package:ecnx_ambient_listening/features/record/presentation/pages/record_page.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentTileWidget extends StatelessWidget {
   final AppointmentModel appointment;
-  const AppointmentTileWidget({super.key, required this.appointment});
+  final LogModel? log;
+
+  const AppointmentTileWidget({
+    super.key,
+    required this.appointment,
+    required this.log,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isLogNotNull = log != null;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -43,19 +52,33 @@ class AppointmentTileWidget extends StatelessWidget {
                   : MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TimeWithIconWidget(
-                      time: appointment
-                          .when, //TODO   // minutes: appointment.minutes,
-                    ),
-                    if (Responsive.isMobile(context)) ...[
-                      const SizedBox(height: 24),
-                      ReviewCheckboxWidget(isReviewed: false)
-                      //TODO   //  appointment.isReviewed,
-                    ]
-                  ],
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TimeWithIconWidget(
+                        time: appointment
+                            .when, //TODO   // minutes: appointment.minutes,
+                      ),
+                      if (isLogNotNull) ...[
+                        SizedBox(
+                          height: Responsive.isMobile(context) ? 8 : 12,
+                        ),
+                        Text(
+                          '${log!.duration} min',
+                          style: context.textTheme.bodyMedium!.copyWith(
+                            color: AppColors.disabled,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ).paddingOnly(left: 32, right: 8),
+                      ],
+                      if (Responsive.isMobile(context)) ...[
+                        const SizedBox(height: 24),
+                        ReviewCheckboxWidget(isReviewed: isLogNotNull)
+                        //TODO   //  appointment.isReviewed,
+                      ]
+                    ],
+                  ),
                 ),
                 if (Responsive.isDesktop(context)) const SizedBox(width: 20),
                 Column(
@@ -73,10 +96,10 @@ class AppointmentTileWidget extends StatelessWidget {
                     if (Responsive.isMobile(context)) ...[
                       const SizedBox(height: 16),
                       StartRecordingButton(
-                        isReviewed: false,
-                        //TODO   //  appointment.isReviewed,
+                        isReviewed: isLogNotNull,
                         onPressed: () {
-                          RecordRoute(appointment.id).push(context);
+                          RecordRoute(RecordPageArgs(appointment: appointment))
+                              .push(context);
                         },
                       ),
                     ]
@@ -90,15 +113,14 @@ class AppointmentTileWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 StartRecordingButton(
-                    isReviewed: false, //TODO   //  appointment.isReviewed,
-
+                    isReviewed: isLogNotNull,
                     onPressed: () {
-                      RecordRoute(appointment.id).push(context);
+                      RecordRoute(RecordPageArgs(appointment: appointment))
+                          .push(context);
                     }).paddingOnly(bottom: 8),
                 ReviewCheckboxWidget(
-                    isReviewed: false //TODO   //  appointment.isReviewed,
-
-                    )
+                  isReviewed: isLogNotNull,
+                )
               ],
             )
         ],

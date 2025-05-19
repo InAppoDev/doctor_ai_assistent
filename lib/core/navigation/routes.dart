@@ -47,25 +47,23 @@ class RegistrationRoute extends GoRouteData {
 
 @TypedGoRoute<RecordRoute>(path: '/record')
 class RecordRoute extends GoRouteData {
-  const RecordRoute(this.appointmentId);
+  const RecordRoute(this.$extra);
 
-  final int appointmentId;
+  final RecordPageArgs $extra;
   @override
   Widget build(BuildContext context, GoRouterState state) => RecordPage(
-        appointmentId: appointmentId,
+        appointment: $extra.appointment,
       );
 }
 
 @TypedGoRoute<EditRoute>(path: '/edit-record')
 class EditRoute extends GoRouteData {
-  const EditRoute(this.path, this.appointmentId);
-  final int appointmentId;
-  final String path;
+  const EditRoute({required this.$extra});
+  final EditPageArgs $extra;
 
   @override
   Widget build(BuildContext context, GoRouterState state) => EditPage(
-        path: path,
-        appointmentId: appointmentId,
+        args: $extra,
       );
 }
 

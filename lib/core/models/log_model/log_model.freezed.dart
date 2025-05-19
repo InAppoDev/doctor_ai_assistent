@@ -21,14 +21,16 @@ LogModel _$LogModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$LogModel {
   int get id => throw _privateConstructorUsedError;
+  String get audio => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
   DateTime get updatedAt => throw _privateConstructorUsedError;
-  String get transcription => throw _privateConstructorUsedError;
-  String get speaker => throw _privateConstructorUsedError;
-  int get appointment => throw _privateConstructorUsedError;
+  String get key => throw _privateConstructorUsedError;
+  double get duration => throw _privateConstructorUsedError;
   int get form => throw _privateConstructorUsedError;
+  int get appointment => throw _privateConstructorUsedError;
+  List<ChunkModel> get chunks => throw _privateConstructorUsedError;
 
   /// Serializes this LogModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -47,12 +49,14 @@ abstract class $LogModelCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
+      String audio,
       @JsonKey(name: 'created_at') DateTime createdAt,
       @JsonKey(name: 'updated_at') DateTime updatedAt,
-      String transcription,
-      String speaker,
+      String key,
+      double duration,
+      int form,
       int appointment,
-      int form});
+      List<ChunkModel> chunks});
 }
 
 /// @nodoc
@@ -71,18 +75,24 @@ class _$LogModelCopyWithImpl<$Res, $Val extends LogModel>
   @override
   $Res call({
     Object? id = null,
+    Object? audio = null,
     Object? createdAt = null,
     Object? updatedAt = null,
-    Object? transcription = null,
-    Object? speaker = null,
-    Object? appointment = null,
+    Object? key = null,
+    Object? duration = null,
     Object? form = null,
+    Object? appointment = null,
+    Object? chunks = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      audio: null == audio
+          ? _value.audio
+          : audio // ignore: cast_nullable_to_non_nullable
+              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -91,22 +101,26 @@ class _$LogModelCopyWithImpl<$Res, $Val extends LogModel>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      transcription: null == transcription
-          ? _value.transcription
-          : transcription // ignore: cast_nullable_to_non_nullable
+      key: null == key
+          ? _value.key
+          : key // ignore: cast_nullable_to_non_nullable
               as String,
-      speaker: null == speaker
-          ? _value.speaker
-          : speaker // ignore: cast_nullable_to_non_nullable
-              as String,
-      appointment: null == appointment
-          ? _value.appointment
-          : appointment // ignore: cast_nullable_to_non_nullable
-              as int,
+      duration: null == duration
+          ? _value.duration
+          : duration // ignore: cast_nullable_to_non_nullable
+              as double,
       form: null == form
           ? _value.form
           : form // ignore: cast_nullable_to_non_nullable
               as int,
+      appointment: null == appointment
+          ? _value.appointment
+          : appointment // ignore: cast_nullable_to_non_nullable
+              as int,
+      chunks: null == chunks
+          ? _value.chunks
+          : chunks // ignore: cast_nullable_to_non_nullable
+              as List<ChunkModel>,
     ) as $Val);
   }
 }
@@ -121,12 +135,14 @@ abstract class _$$LogModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
+      String audio,
       @JsonKey(name: 'created_at') DateTime createdAt,
       @JsonKey(name: 'updated_at') DateTime updatedAt,
-      String transcription,
-      String speaker,
+      String key,
+      double duration,
+      int form,
       int appointment,
-      int form});
+      List<ChunkModel> chunks});
 }
 
 /// @nodoc
@@ -143,18 +159,24 @@ class __$$LogModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? audio = null,
     Object? createdAt = null,
     Object? updatedAt = null,
-    Object? transcription = null,
-    Object? speaker = null,
-    Object? appointment = null,
+    Object? key = null,
+    Object? duration = null,
     Object? form = null,
+    Object? appointment = null,
+    Object? chunks = null,
   }) {
     return _then(_$LogModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      audio: null == audio
+          ? _value.audio
+          : audio // ignore: cast_nullable_to_non_nullable
+              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -163,22 +185,26 @@ class __$$LogModelImplCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      transcription: null == transcription
-          ? _value.transcription
-          : transcription // ignore: cast_nullable_to_non_nullable
+      key: null == key
+          ? _value.key
+          : key // ignore: cast_nullable_to_non_nullable
               as String,
-      speaker: null == speaker
-          ? _value.speaker
-          : speaker // ignore: cast_nullable_to_non_nullable
-              as String,
-      appointment: null == appointment
-          ? _value.appointment
-          : appointment // ignore: cast_nullable_to_non_nullable
-              as int,
+      duration: null == duration
+          ? _value.duration
+          : duration // ignore: cast_nullable_to_non_nullable
+              as double,
       form: null == form
           ? _value.form
           : form // ignore: cast_nullable_to_non_nullable
               as int,
+      appointment: null == appointment
+          ? _value.appointment
+          : appointment // ignore: cast_nullable_to_non_nullable
+              as int,
+      chunks: null == chunks
+          ? _value._chunks
+          : chunks // ignore: cast_nullable_to_non_nullable
+              as List<ChunkModel>,
     ));
   }
 }
@@ -188,12 +214,15 @@ class __$$LogModelImplCopyWithImpl<$Res>
 class _$LogModelImpl implements _LogModel {
   const _$LogModelImpl(
       {required this.id,
+      required this.audio,
       @JsonKey(name: 'created_at') required this.createdAt,
       @JsonKey(name: 'updated_at') required this.updatedAt,
-      required this.transcription,
-      required this.speaker,
+      required this.key,
+      required this.duration,
+      required this.form,
       required this.appointment,
-      required this.form});
+      required final List<ChunkModel> chunks})
+      : _chunks = chunks;
 
   factory _$LogModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$LogModelImplFromJson(json);
@@ -201,23 +230,32 @@ class _$LogModelImpl implements _LogModel {
   @override
   final int id;
   @override
+  final String audio;
+  @override
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @override
   @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
   @override
-  final String transcription;
+  final String key;
   @override
-  final String speaker;
-  @override
-  final int appointment;
+  final double duration;
   @override
   final int form;
+  @override
+  final int appointment;
+  final List<ChunkModel> _chunks;
+  @override
+  List<ChunkModel> get chunks {
+    if (_chunks is EqualUnmodifiableListView) return _chunks;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_chunks);
+  }
 
   @override
   String toString() {
-    return 'LogModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, transcription: $transcription, speaker: $speaker, appointment: $appointment, form: $form)';
+    return 'LogModel(id: $id, audio: $audio, createdAt: $createdAt, updatedAt: $updatedAt, key: $key, duration: $duration, form: $form, appointment: $appointment, chunks: $chunks)';
   }
 
   @override
@@ -226,22 +264,33 @@ class _$LogModelImpl implements _LogModel {
         (other.runtimeType == runtimeType &&
             other is _$LogModelImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.audio, audio) || other.audio == audio) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
-            (identical(other.transcription, transcription) ||
-                other.transcription == transcription) &&
-            (identical(other.speaker, speaker) || other.speaker == speaker) &&
+            (identical(other.key, key) || other.key == key) &&
+            (identical(other.duration, duration) ||
+                other.duration == duration) &&
+            (identical(other.form, form) || other.form == form) &&
             (identical(other.appointment, appointment) ||
                 other.appointment == appointment) &&
-            (identical(other.form, form) || other.form == form));
+            const DeepCollectionEquality().equals(other._chunks, _chunks));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, createdAt, updatedAt,
-      transcription, speaker, appointment, form);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      audio,
+      createdAt,
+      updatedAt,
+      key,
+      duration,
+      form,
+      appointment,
+      const DeepCollectionEquality().hash(_chunks));
 
   /// Create a copy of LogModel
   /// with the given fields replaced by the non-null parameter values.
@@ -262,12 +311,14 @@ class _$LogModelImpl implements _LogModel {
 abstract class _LogModel implements LogModel {
   const factory _LogModel(
       {required final int id,
+      required final String audio,
       @JsonKey(name: 'created_at') required final DateTime createdAt,
       @JsonKey(name: 'updated_at') required final DateTime updatedAt,
-      required final String transcription,
-      required final String speaker,
+      required final String key,
+      required final double duration,
+      required final int form,
       required final int appointment,
-      required final int form}) = _$LogModelImpl;
+      required final List<ChunkModel> chunks}) = _$LogModelImpl;
 
   factory _LogModel.fromJson(Map<String, dynamic> json) =
       _$LogModelImpl.fromJson;
@@ -275,19 +326,23 @@ abstract class _LogModel implements LogModel {
   @override
   int get id;
   @override
+  String get audio;
+  @override
   @JsonKey(name: 'created_at')
   DateTime get createdAt;
   @override
   @JsonKey(name: 'updated_at')
   DateTime get updatedAt;
   @override
-  String get transcription;
+  String get key;
   @override
-  String get speaker;
+  double get duration;
+  @override
+  int get form;
   @override
   int get appointment;
   @override
-  int get form;
+  List<ChunkModel> get chunks;
 
   /// Create a copy of LogModel
   /// with the given fields replaced by the non-null parameter values.

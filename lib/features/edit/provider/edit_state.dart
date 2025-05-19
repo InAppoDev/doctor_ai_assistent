@@ -14,7 +14,7 @@ class EditState extends ChangeNotifier {
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
     _network = Network(prefs);
-    await fetchTranscribedTexts();
+    // await fetchTranscribedTexts();
     _setUpQuillControllerData();
   }
 

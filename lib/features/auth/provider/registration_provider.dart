@@ -12,7 +12,9 @@ class RegisterState extends ChangeNotifier {
 
   late final Network _backendService;
 
-  RegisterState();
+  RegisterState() {
+    init();
+  }
 
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();

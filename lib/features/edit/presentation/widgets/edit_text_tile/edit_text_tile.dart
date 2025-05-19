@@ -2,7 +2,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
 import 'package:ecnx_ambient_listening/core/constants/consts.dart';
-import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
+import 'package:ecnx_ambient_listening/core/models/chunk_model/chunk_model.dart';
 import 'package:ecnx_ambient_listening/core/widgets/avatar_widget.dart';
 import 'package:ecnx_ambient_listening/core/widgets/editable_textfield.dart';
 import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
@@ -14,10 +14,10 @@ import 'package:provider/provider.dart';
 class EditTextTile extends StatelessWidget {
   const EditTextTile({
     super.key,
-    required this.log,
+    required this.chunkModel,
   });
 
-  final LogModel log;
+  final ChunkModel chunkModel;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,9 @@ class EditTextTile extends StatelessWidget {
                         children: [
                           if (Responsive.isMobile(context))
                             AvatarWidget(
-                              color: avatarColors[int.parse(log.speaker) % avatarColors.length],
+                              color: avatarColors[
+                                  int.parse(chunkModel.speaker) %
+                                      avatarColors.length],
                             ).paddingOnly(right: 12),
                           Expanded(
                             flex: 2,
@@ -86,7 +88,7 @@ class EditTextTile extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(
-                                'Speaker ${log.speaker}',
+                                'Speaker ${chunkModel.speaker}',
                                 style: AppTextStyles.regularPx16,
                               ),
                             ),

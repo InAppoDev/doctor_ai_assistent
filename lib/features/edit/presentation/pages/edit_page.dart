@@ -1,6 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/core/navigation/routes.dart';
 import 'package:ecnx_ambient_listening/core/widgets/custom_text_button.dart';
 import 'package:ecnx_ambient_listening/core/widgets/logo_widget.dart';
@@ -14,16 +15,30 @@ import 'package:ecnx_ambient_listening/features/medical_form/presentation/widget
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class EditPage extends StatelessWidget {
-  /// Note: need to add the [id] parameter to the constructor for fetching the text
+class EditPageArgs {
+  const EditPageArgs({
+    required this.path,
+    required this.appointmentId,
+    required this.log,
+  });
+
   final String path;
   final int appointmentId;
+  final LogModel log;
+}
 
-  const EditPage({super.key, this.path = '', required this.appointmentId});
+class EditPage extends StatelessWidget {
+  final EditPageArgs args;
+
+  const EditPage({
+    super.key,
+    required this.args,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final decodedPath = Uri.decodeComponent(path);
+    print('rrrrrrrrrrrr log - ${args.log}');
+    final decodedPath = Uri.decodeComponent(args.path);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -120,7 +135,7 @@ class EditPage extends StatelessWidget {
                                             TranscribedListRoute(
                                               Uri.encodeComponent(
                                                   audioFilePath.isEmpty
-                                                      ? path
+                                                      ? args.path
                                                       : audioFilePath),
                                             ).push(context);
                                           },
@@ -132,7 +147,7 @@ class EditPage extends StatelessWidget {
 
                                       /// editable textfield list
                                       EditTextsListWidget(
-                                        logList: editState.logs,
+                                        chunks: args.log.chunks,
                                       ).paddingOnly(
                                           bottom: Responsive.isDesktop(context)
                                               ? 40
@@ -175,13 +190,13 @@ class EditPage extends StatelessWidget {
                                                                   .isEmpty) {
                                                                 audioFilePath =
                                                                     Uri.decodeComponent(
-                                                                        path);
+                                                                        args.path);
                                                               }
                                                               MedicalFormRoute(
                                                                       Uri.encodeComponent(
                                                                         audioFilePath,
                                                                       ),
-                                                                      appointmentId)
+                                                                      args.appointmentId)
                                                                   .push(context);
                                                             },
                                                             medicalForms: const [
@@ -247,12 +262,13 @@ class EditPage extends StatelessWidget {
                                                                   .isEmpty) {
                                                                 audioFilePath =
                                                                     Uri.decodeComponent(
-                                                                        path);
+                                                                        args.path);
                                                               }
                                                               MedicalFormRoute(
                                                                       Uri.encodeComponent(
                                                                           audioFilePath),
-                                                                      appointmentId)
+                                                                      args
+                                                                          .appointmentId)
                                                                   .push(
                                                                       context);
                                                             },

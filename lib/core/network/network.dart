@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:ecnx_ambient_listening/core/constants/consts.dart';
 import 'package:ecnx_ambient_listening/core/models/appointment_model/appointment_model.dart';
+import 'package:ecnx_ambient_listening/core/models/chunk_model/chunk_model.dart';
 import 'package:ecnx_ambient_listening/core/models/form_model/form_model.dart';
 import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/core/models/user_model/user_model.dart';
@@ -195,12 +196,16 @@ class Network {
   Future<AppointmentModel?> createAppointment({
     required String firstName,
     required String lastName,
+    required String physician,
+    required String record,
     required DateTime birth,
     required DateTime when,
   }) async {
     final data = {
       "first_name": firstName,
       "last_name": lastName,
+      "physician": physician,
+      "record": record,
       "birth": birth.toIso8601String(),
       "when": when.toIso8601String(),
     };
@@ -219,14 +224,14 @@ class Network {
     }
   }
 
-  Future<Map<String, dynamic>?> getAppointmentById(int id) async {
+  Future<AppointmentModel?> getAppointmentById(int id) async {
     final response = await _makeRequest(
       requestType: RequestType.get,
       endpoint: Endpoints.getAppointment(id),
     );
 
     if (response?.statusCode == 200) {
-      return response!.data;
+      return AppointmentModel.fromJson(response?.data);
     } else {
       _logger.e("Failed to fetch appointment: ${response?.data}");
       return null;
@@ -293,14 +298,14 @@ class Network {
   }
 
   Future<LogModel?> createLog({
-    required String speaker,
-    required String transcription,
+    required String key,
+    required double duration,
     required int form,
     required int appointment,
   }) async {
     final data = {
-      "speaker": speaker,
-      "transcription": transcription,
+      "key": key,
+      "duration": duration,
       "form": form,
       "appointment": appointment,
     };
@@ -459,6 +464,102 @@ class Network {
       return true;
     } else {
       _logger.e("Failed to delete form: ${response?.data}");
+      return false;
+    }
+  }
+
+  // --- Chunk Methods ---
+  Future<List<ChunkModel>> getChunks() async {
+    final response = await _makeRequest(
+      requestType: RequestType.get,
+      endpoint: Endpoints.logChunks,
+    );
+
+    if (response?.statusCode == 200 && response?.data is List) {
+      return (response!.data as List)
+          .map((item) => ChunkModel.fromJson(item))
+          .toList();
+    } else {
+      _logger.e("Failed to fetch chunks: ${response?.data}");
+      return [];
+    }
+  }
+
+  Future<ChunkModel?> createChunk({
+    required int speaker,
+    required String transcription,
+    required double time,
+    required int logId,
+  }) async {
+    final data = {
+      "speaker": speaker,
+      "transcription": transcription,
+      "time": time,
+      "log": logId,
+    };
+
+    final response = await _makeRequest(
+      requestType: RequestType.post,
+      endpoint: Endpoints.createLogChunk,
+      data: data,
+    );
+
+    if (response?.statusCode == 201) {
+      return ChunkModel.fromJson(response!.data);
+    } else {
+      _logger.e("Failed to create chunk: ${response?.data}");
+      return null;
+    }
+  }
+
+  Future<ChunkModel?> getChunkById(int id) async {
+    final response = await _makeRequest(
+      requestType: RequestType.get,
+      endpoint: Endpoints.getLogChunk(id),
+    );
+
+    if (response?.statusCode == 200) {
+      return ChunkModel.fromJson(response!.data);
+    } else {
+      _logger.e("Failed to fetch chunk: ${response?.data}");
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> updateChunk({
+    required int id,
+    required String name,
+    required String filePath,
+  }) async {
+    final data = {
+      "name": name,
+      "file_path": filePath,
+    };
+
+    final response = await _makeRequest(
+      requestType: RequestType.put,
+      endpoint: Endpoints.updateLogChunk(id),
+      data: data,
+    );
+
+    if (response?.statusCode == 200) {
+      return response!.data;
+    } else {
+      _logger.e("Failed to update chunk: ${response?.data}");
+      return null;
+    }
+  }
+
+  Future<bool> deleteChunk(int id) async {
+    final response = await _makeRequest(
+      requestType: RequestType.delete,
+      endpoint: Endpoints.deleteLogChunk(id),
+    );
+
+    if (response?.statusCode == 204) {
+      return true;
+    } else {
+      _logger.e("Failed to delete chunk: ${response?.data}");
       return false;
     }
   }

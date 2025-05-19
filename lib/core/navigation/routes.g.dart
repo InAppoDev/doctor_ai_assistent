@@ -91,24 +91,23 @@ RouteBase get $recordRoute => GoRouteData.$route(
 
 extension $RecordRouteExtension on RecordRoute {
   static RecordRoute _fromState(GoRouterState state) => RecordRoute(
-        int.parse(state.uri.queryParameters['appointment-id']!)!,
+        state.extra as RecordPageArgs,
       );
 
   String get location => GoRouteData.$location(
         '/record',
-        queryParams: {
-          'appointment-id': appointmentId.toString(),
-        },
       );
 
-  void go(BuildContext context) => context.go(location);
+  void go(BuildContext context) => context.go(location, extra: $extra);
 
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: $extra);
 
   void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
+      context.pushReplacement(location, extra: $extra);
 
-  void replace(BuildContext context) => context.replace(location);
+  void replace(BuildContext context) =>
+      context.replace(location, extra: $extra);
 }
 
 RouteBase get $editRoute => GoRouteData.$route(
@@ -118,26 +117,23 @@ RouteBase get $editRoute => GoRouteData.$route(
 
 extension $EditRouteExtension on EditRoute {
   static EditRoute _fromState(GoRouterState state) => EditRoute(
-        state.uri.queryParameters['path']!,
-        int.parse(state.uri.queryParameters['appointment-id']!)!,
+        $extra: state.extra as EditPageArgs,
       );
 
   String get location => GoRouteData.$location(
         '/edit-record',
-        queryParams: {
-          'path': path,
-          'appointment-id': appointmentId.toString(),
-        },
       );
 
-  void go(BuildContext context) => context.go(location);
+  void go(BuildContext context) => context.go(location, extra: $extra);
 
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: $extra);
 
   void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
+      context.pushReplacement(location, extra: $extra);
 
-  void replace(BuildContext context) => context.replace(location);
+  void replace(BuildContext context) =>
+      context.replace(location, extra: $extra);
 }
 
 RouteBase get $transcribedListRoute => GoRouteData.$route(
@@ -176,7 +172,7 @@ RouteBase get $medicalFormRoute => GoRouteData.$route(
 extension $MedicalFormRouteExtension on MedicalFormRoute {
   static MedicalFormRoute _fromState(GoRouterState state) => MedicalFormRoute(
         state.uri.queryParameters['path']!,
-        int.parse(state.uri.queryParameters['appointment-id']!)!,
+        int.parse(state.uri.queryParameters['appointment-id']!),
       );
 
   String get location => GoRouteData.$location(

@@ -14,9 +14,11 @@ _$AppointmentModelImpl _$$AppointmentModelImplFromJson(
       updatedAt: DateTime.parse(json['updated_at'] as String),
       firstName: json['first_name'] as String,
       lastName: json['last_name'] as String,
+      record: json['record'] as String?,
+      physician: json['physician'] as String?,
       birth: DateTime.parse(json['birth'] as String),
       when: DateTime.parse(json['when'] as String),
-      user: (json['user'] as num).toInt(),
+      user: (json['user'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$AppointmentModelImplToJson(
@@ -27,6 +29,8 @@ Map<String, dynamic> _$$AppointmentModelImplToJson(
       'updated_at': _toIso(instance.updatedAt),
       'first_name': instance.firstName,
       'last_name': instance.lastName,
+      'record': instance.record,
+      'physician': instance.physician,
       'birth': _toIso(instance.birth),
       'when': _toIso(instance.when),
       'user': instance.user,

@@ -1,16 +1,46 @@
-import 'package:ecnx_ambient_listening/features/edit/data/models/pdf_models/edited_text_model.dart';
+import 'package:ecnx_ambient_listening/core/models/appointment_model/appointment_model.dart';
+import 'package:ecnx_ambient_listening/core/network/network.dart';
 import 'package:ecnx_ambient_listening/core/services/export_as_pdf.dart';
+import 'package:ecnx_ambient_listening/features/edit/data/models/pdf_models/edited_text_model.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/data/models/medical_form_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MedicalFormProvider extends ChangeNotifier {
+  MedicalFormProvider(this.appointmentId);
+  final int appointmentId;
+
+  Future<void> init() async {
+    final prefs = await SharedPreferences.getInstance();
+    _backendService = Network(prefs);
+    await getAppointment();
+  }
+
+  late final Network _backendService;
+  bool isLoading = false;
+
+  AppointmentModel? appointment;
+
+  final TextEditingController _searchController = TextEditingController();
+  TextEditingController get searchController => _searchController;
+
+  Future<void> getAppointment() async {
+    isLoading = true;
+    notifyListeners();
+
+    appointment = await _backendService.getAppointmentById(appointmentId);
+    isLoading = false;
+    notifyListeners();
+  }
+
   // ---------------------------------------------------------------------------
   // Quill Controllers
   // ---------------------------------------------------------------------------
   /// Quill controllers for the text editors
   /// Note: This is just a dummy data. This should be replaced with the actual data
-  final List<QuillController> _quillControllers = List.generate(17, (index) => QuillController.basic());
+  final List<QuillController> _quillControllers =
+      List.generate(17, (index) => QuillController.basic());
 
   List<QuillController> get quillControllers => _quillControllers;
 
@@ -89,7 +119,8 @@ class MedicalFormProvider extends ChangeNotifier {
         ),
         TitleAndTextModel(
           title: 'Review of Systems: [pre-populated]',
-          text: '''Constitutional: Denies fevers, chills, weight gain or weight loss.
+          text:
+              '''Constitutional: Denies fevers, chills, weight gain or weight loss.
 HENT: Denies headache, sore throat or changes in hearing.
 Eyes: Denies changes in vision or double vision.
 Cardiovascular: Denies chest pain or palpitations.
@@ -168,10 +199,6 @@ Psych: Mood and affect appropriate. No depression or anxiety.
   // Search Functionality
   // ---------------------------------------------------------------------------
 
-  final TextEditingController _searchController = TextEditingController();
-
-  TextEditingController get searchController => _searchController;
-
   /// Search the medical form for the given [searchTerm]
 
   void search() {
@@ -180,11 +207,14 @@ Psych: Mood and affect appropriate. No depression or anxiety.
       final offsets = controller.document.search(searchTerm);
 
       for (final offset in offsets) {
-        controller.updateSelection(TextSelection(baseOffset: offset, extentOffset: offset+searchTerm.length), ChangeSource.local);
+        controller.updateSelection(
+            TextSelection(
+                baseOffset: offset, extentOffset: offset + searchTerm.length),
+            ChangeSource.local);
       }
     }
   }
-  
+
   void onMicTap() {
     // Handle voice input action
     debugPrint("Mic tapped");
@@ -192,10 +222,11 @@ Psych: Mood and affect appropriate. No depression or anxiety.
 
   void clearSearch() {
     for (final controller in _quillControllers) {
-      controller.updateSelection(const TextSelection.collapsed(offset: 0), ChangeSource.local);
+      controller.updateSelection(
+          const TextSelection.collapsed(offset: 0), ChangeSource.local);
     }
   }
-  
+
   /// clear the found search terms
   /// This method should be called when the search term is cleared
 

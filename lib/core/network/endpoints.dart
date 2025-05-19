@@ -27,6 +27,14 @@ abstract class Endpoints {
   static String partialUpdateLog(int id) => '$logs$id/';
   static String deleteLog(int id) => '$logs$id/';
 
+  // Log Chunks
+  static const String logChunks = '${logs}chunks/';
+  static String getLogChunk(int id) => '$logChunks$id/';
+  static String createLogChunk = logChunks;
+  static String updateLogChunk(int id) => '$logChunks$id/';
+  static String partialUpdateLogChunk(int id) => '$logChunks$id/';
+  static String deleteLogChunk(int id) => '$logChunks$id/';
+
   // Users
   static const String users = '$baseUrl/users/';
   static const String login = '${users}login/';

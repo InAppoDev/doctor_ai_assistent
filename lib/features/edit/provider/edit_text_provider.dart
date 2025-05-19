@@ -1,3 +1,4 @@
+import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/features/edit/data/models/transcribed_text_model.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/data/models/medical_form_model.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import 'package:flutter_quill/flutter_quill.dart';
 /// Provides editing functionality using the Quill rich text editor.
 /// This class includes a Quill controller, clipboard interaction, and proper resource cleanup.
 class EditTextProvider extends ChangeNotifier {
+  late final LogModel log;
+
   /// title and text model should be updated to accept the medical form model
   /// NOTE: The text should be replaced with the actual data
   void initData(QuillController controller, String text) {
@@ -14,11 +17,23 @@ class EditTextProvider extends ChangeNotifier {
     _quillController?.document.insert(0, text);
   }
 
+  //  void initData(QuillController controller, TranscribedTextModel? transcribed,
+  //       TitleAndTextModel? titleAndTextModel) {
+  //     _quillController = controller;
+  //     if (transcribed != null) {
+  //       _quillController?.document.insert(0, transcribed.text);
+  //       _transcribed = transcribed;
+  //     } else {
+  //       _quillController?.document.insert(0, titleAndTextModel!.text);
+  //       _titleAndTextModel = titleAndTextModel;
+  //     }
+  //   }
+
   /// if it is used in medical form, the method should be updated to accept the medical form model
   /// and the quill controller should be updated to accept the medical form model
   TitleAndTextModel? _titleAndTextModel;
 
-  TitleAndTextModel? get titleAndTextModel => _titleAndTextModel;
+  TitleAndTextModel get titleAndTextModel => _titleAndTextModel!;
 
   // ---------------------------------------------------------------------------
   // Transcribed Text

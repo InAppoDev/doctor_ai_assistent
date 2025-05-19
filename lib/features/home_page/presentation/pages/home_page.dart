@@ -23,6 +23,7 @@ class HomePage extends StatelessWidget {
       create: (context) => HomeState(),
       builder: (context, _) {
         return Consumer<HomeState>(builder: (context, state, _) {
+          final homeProvider = context.read<HomeState>();
           return Scaffold(
               backgroundColor: AppColors.bg,
               body: SafeArea(
@@ -102,7 +103,7 @@ class HomePage extends StatelessWidget {
                                 // context.read<HomeState>().searchPatient();
                               },
                               onMicTap: () {
-                                context.read<HomeState>().onMicTap();
+                                homeProvider.onMicTap();
                               },
                             ).paddingOnly(bottom: 24),
                             SchedulePatientButton(
@@ -123,9 +124,9 @@ class HomePage extends StatelessWidget {
                                   )
                                 : Expanded(
                                     child: AppointmentsListWidget(
-                                      appointments: context
-                                          .read<HomeState>()
-                                          .appointments,
+                                      appointments: homeProvider.appointments,
+                                      getLogByAppointment:
+                                          homeProvider.getLogByAppointment,
                                     ),
                                   )
                           ],
@@ -137,9 +138,12 @@ class HomePage extends StatelessWidget {
                               child: Expanded(
                                 child: Row(
                                   children: [
-                                    const Flexible(
+                                    Flexible(
                                         flex: 4,
-                                        child: AppointmentsContainerWidget()),
+                                        child: AppointmentsContainerWidget(
+                                          getLogByAppointment:
+                                              homeProvider.getLogByAppointment,
+                                        )),
                                     Flexible(flex: 1, child: Container())
                                   ],
                                 ),

@@ -176,7 +176,7 @@ class SchedulePage extends StatelessWidget {
                                 /// call the view model method to submit the form
                                 /// the view model should submit the form and navigate to the home page
                                 /// context.read<MedicalFormState>().submitForm();
-                                await p.savePatientSchedule();
+                                await p.savePatientScheduleAndCreateForm();
                                 if (context.mounted) {
                                   context.pop();
                                 }

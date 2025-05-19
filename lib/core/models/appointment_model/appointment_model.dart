@@ -13,9 +13,11 @@ class AppointmentModel with _$AppointmentModel {
     required DateTime updatedAt,
     @JsonKey(name: 'first_name') required String firstName,
     @JsonKey(name: 'last_name') required String lastName,
+    @JsonKey(name: 'record') String? record,
+    @JsonKey(name: 'physician') String? physician,
     @JsonKey(fromJson: DateTime.parse, toJson: _toIso) required DateTime birth,
     @JsonKey(fromJson: DateTime.parse, toJson: _toIso) required DateTime when,
-    required int user,
+    int? user,
   }) = _AppointmentModel;
 
   factory AppointmentModel.fromJson(Map<String, dynamic> json) =>

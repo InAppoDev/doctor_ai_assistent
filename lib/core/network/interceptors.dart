@@ -44,6 +44,7 @@ class RefreshTokenInterceptor extends Interceptor {
 
   Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {
     final token = _prefs.getString(PreferencesKeys.accessToken);
+    print('accessToken in _retry - $token');
     if (token == null) throw Exception("No access token after refresh");
 
     final options = Options(
