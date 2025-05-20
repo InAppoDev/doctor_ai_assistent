@@ -69,13 +69,13 @@ class EditRoute extends GoRouteData {
 
 @TypedGoRoute<TranscribedListRoute>(path: '/transcribed-list')
 class TranscribedListRoute extends GoRouteData {
-  const TranscribedListRoute(this.path);
+  const TranscribedListRoute(this.$extra);
 
-  final String path;
+  final TranscribedListArgs $extra;
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      TranscribedListPage(path: path);
+      TranscribedListPage(log: $extra.log);
 }
 
 @TypedGoRoute<MedicalFormRoute>(path: '/medical-form')

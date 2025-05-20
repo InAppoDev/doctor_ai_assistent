@@ -27,7 +27,7 @@ mixin _$ChunkModel {
   DateTime get updatedAt => throw _privateConstructorUsedError;
   String get speaker => throw _privateConstructorUsedError;
   String get transcription => throw _privateConstructorUsedError;
-  int get time => throw _privateConstructorUsedError;
+  double get time => throw _privateConstructorUsedError;
   int get log => throw _privateConstructorUsedError;
 
   /// Serializes this ChunkModel to a JSON map.
@@ -52,7 +52,7 @@ abstract class $ChunkModelCopyWith<$Res> {
       @JsonKey(name: 'updated_at') DateTime updatedAt,
       String speaker,
       String transcription,
-      int time,
+      double time,
       int log});
 }
 
@@ -103,7 +103,7 @@ class _$ChunkModelCopyWithImpl<$Res, $Val extends ChunkModel>
       time: null == time
           ? _value.time
           : time // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       log: null == log
           ? _value.log
           : log // ignore: cast_nullable_to_non_nullable
@@ -126,7 +126,7 @@ abstract class _$$ChunkModelImplCopyWith<$Res>
       @JsonKey(name: 'updated_at') DateTime updatedAt,
       String speaker,
       String transcription,
-      int time,
+      double time,
       int log});
 }
 
@@ -175,7 +175,7 @@ class __$$ChunkModelImplCopyWithImpl<$Res>
       time: null == time
           ? _value.time
           : time // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       log: null == log
           ? _value.log
           : log // ignore: cast_nullable_to_non_nullable
@@ -212,7 +212,7 @@ class _$ChunkModelImpl implements _ChunkModel {
   @override
   final String transcription;
   @override
-  final int time;
+  final double time;
   @override
   final int log;
 
@@ -266,7 +266,7 @@ abstract class _ChunkModel implements ChunkModel {
       @JsonKey(name: 'updated_at') required final DateTime updatedAt,
       required final String speaker,
       required final String transcription,
-      required final int time,
+      required final double time,
       required final int log}) = _$ChunkModelImpl;
 
   factory _ChunkModel.fromJson(Map<String, dynamic> json) =
@@ -285,7 +285,7 @@ abstract class _ChunkModel implements ChunkModel {
   @override
   String get transcription;
   @override
-  int get time;
+  double get time;
   @override
   int get log;
 

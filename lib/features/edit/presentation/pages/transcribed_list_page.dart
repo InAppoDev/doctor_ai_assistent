@@ -2,6 +2,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_icons.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/audio_progress_bar.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/transcribed_list/transcribed_list_widget.dart';
 import 'package:ecnx_ambient_listening/features/edit/provider/player_provider.dart';
@@ -9,16 +10,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
+class TranscribedListArgs {
+  TranscribedListArgs({required this.log});
+
+  final LogModel log;
+}
+
 class TranscribedListPage extends StatelessWidget {
   /// You need to add the [id] parameter to the constructor to fetch the transcribed list
-  final String path;
-  const TranscribedListPage({super.key, this.path = ''});
+  final LogModel log;
+
+  const TranscribedListPage({super.key, required this.log});
 
   @override
   Widget build(BuildContext context) {
-    final decodedPath = Uri.decodeComponent(path);
     return ChangeNotifierProvider(
-        create: (context) => PlayerProvider()..initData(url: decodedPath),
+        create: (context) => PlayerProvider()..initData(url: log.audio),
         builder: (context, _) {
           return Scaffold(
               backgroundColor: AppColors.bg,
@@ -52,7 +59,7 @@ class TranscribedListPage extends StatelessWidget {
                     /// The list should be replaced with the actual data model list from the provider
                     Expanded(
                       child: TranscribedList(
-                        list: List.generate(5, (index) => index),
+                        chunks: log.chunks,
                       ).paddingSymmetric(horizontal: 13),
                     ),
 

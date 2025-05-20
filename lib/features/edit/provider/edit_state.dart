@@ -6,20 +6,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class EditState extends ChangeNotifier {
   late final Network _network;
+  final LogModel log;
 
-  EditState() {
+  EditState({required this.log}) {
     init();
   }
 
   Future<void> init() async {
+    print('tttttttttttttttttttttt');
     final prefs = await SharedPreferences.getInstance();
     _network = Network(prefs);
-    // await fetchTranscribedTexts();
+    await fetchTranscribedTexts();
     _setUpQuillControllerData();
   }
 
-  final List<LogModel> logs = [];
   bool isLoading = false;
+
+  LogModel? fetchedLog;
 
   // Future<void> getLog
 
@@ -31,7 +34,8 @@ class EditState extends ChangeNotifier {
   final List<QuillController> _quillControllers = [];
 
   void _setUpQuillControllerData() {
-    for (final log in logs) {
+    if (fetchedLog == null) return;
+    for (final chunk in fetchedLog!.chunks) {
       _quillControllers.add(QuillController.basic(
           configurations: QuillControllerConfigurations()));
     }
@@ -46,18 +50,17 @@ class EditState extends ChangeNotifier {
   /// Fetch the Transcribed texts from the API
   /// This method should be replaced with the actual API call
   Future<void> fetchTranscribedTexts() async {
+    print('_log.id - ${log.id}');
     isLoading = true;
     notifyListeners();
     try {
-      final fetchedLogs = await _network.getLogs();
-
-      logs.addAll(fetchedLogs);
+      fetchedLog = await _network.getLogById(log.id);
+      print('fetchedLog - ${fetchedLog}');
     } catch (e) {
       debugPrint('Error fetching transcribed texts: $e');
     }
     isLoading = false;
     notifyListeners();
-    print('logsssss - $logs');
   }
 
   /// export the edited text as the PDF file

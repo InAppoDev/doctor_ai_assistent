@@ -11,7 +11,7 @@ class ChunkModel with _$ChunkModel {
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
     required String speaker,
     required String transcription,
-    required int time,
+    required double time,
     required int log,
   }) = _ChunkModel;
 

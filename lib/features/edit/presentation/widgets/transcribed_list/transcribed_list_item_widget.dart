@@ -11,11 +11,19 @@ class TranscribedListItemWidget extends StatelessWidget {
   /// The text and date should be changed to the actual data model
   final String text;
   final DateTime date;
-  final int id; 
-
+  final int id;
+  final int speaker;
 
   final Function() onTap;
-  const TranscribedListItemWidget({super.key, required this.text, required this.id, required this.date, required this.onTap});
+
+  const TranscribedListItemWidget({
+    super.key,
+    required this.text,
+    required this.id,
+    required this.date,
+    required this.onTap,
+    required this.speaker,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,32 +34,67 @@ class TranscribedListItemWidget extends StatelessWidget {
         child: Consumer<PlayerProvider>(
           builder: (context, state, _) {
             return Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color:
-                            state.transcribedId == id ? AppColors.accentBlue : Colors.transparent,
-                        width: 1),
-                    borderRadius: BorderRadius.circular(10)
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const AvatarWidget().paddingOnly(right: 12),
-                    Expanded(
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
-                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          Text(date.toUSAtimeWithoutPeriod(), style: AppTextStyles.mediumPx16),
-                          Text(date.toNameOfMonthAndDay(), style: AppTextStyles.regularPx12.copyWith(color: AppColors.disabled))
-                        ]).paddingOnly(bottom: 8),
-                        Text(text, style: AppTextStyles.regularPx16, maxLines: 2, overflow: TextOverflow.ellipsis)
-                      ]),
-                    )
-                  ],
-                ));
-          }
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: state.transcribedId == id
+                        ? AppColors.accentBlue
+                        : Colors.transparent,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(10)),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AvatarWidget(
+                    color: getTranscribeColor(speaker),
+                  ).paddingOnly(right: 12),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              date.toUSAtimeWithoutPeriod(),
+                              style: AppTextStyles.mediumPx16,
+                            ),
+                            Text(
+                              date.toNameOfMonthAndDay(),
+                              style: AppTextStyles.regularPx12
+                                  .copyWith(color: AppColors.disabled),
+                            )
+                          ],
+                        ).paddingOnly(bottom: 8),
+                        Text(
+                          text,
+                          style: AppTextStyles.regularPx16,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
+  }
+
+  Color getTranscribeColor(int id) {
+    switch (id) {
+      case 0:
+        return AppColors.accentGreen;
+      case 1:
+        return AppColors.accentBlue;
+      case 2:
+        return AppColors.accentPink;
+    }
+    return AppColors.accentGreen;
   }
 }

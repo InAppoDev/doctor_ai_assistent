@@ -1,11 +1,13 @@
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/audio_progress_bar.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/transcribed_list/transcribed_list_widget.dart';
 import 'package:flutter/material.dart';
 
 class DesktopTranscribedListWidget extends StatelessWidget {
-  const DesktopTranscribedListWidget({super.key});
+  const DesktopTranscribedListWidget({super.key, required this.log});
+  final LogModel log;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,11 @@ class DesktopTranscribedListWidget extends StatelessWidget {
           decoration: const BoxDecoration(
             color: AppColors.accentBlue,
             boxShadow: [
-              BoxShadow(color: AppColors.accentBlue, blurRadius: 2, offset: Offset(-3, 3), spreadRadius: 0),
+              BoxShadow(
+                  color: AppColors.accentBlue,
+                  blurRadius: 2,
+                  offset: Offset(-3, 3),
+                  spreadRadius: 0),
             ],
           ),
         ),
@@ -36,11 +42,11 @@ class DesktopTranscribedListWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 32),
-            
-            /// transcribed tiles list should be changed with the list created in the view model± 
+
+            /// transcribed tiles list should be changed with the list created in the view model±
             Expanded(
                 child: TranscribedList(
-              list: List.generate(5, (index) => index),
+              chunks: log.chunks,
             )),
             const SizedBox(height: 32),
             const Row(

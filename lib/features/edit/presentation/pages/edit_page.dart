@@ -7,6 +7,7 @@ import 'package:ecnx_ambient_listening/core/widgets/custom_text_button.dart';
 import 'package:ecnx_ambient_listening/core/widgets/logo_widget.dart';
 import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
 import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/features/edit/presentation/pages/transcribed_list_page.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/desktop_transcribed_list_widget.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/edit_text_tile/edit_texts_list_widget.dart';
 import 'package:ecnx_ambient_listening/features/edit/provider/edit_state.dart';
@@ -17,12 +18,10 @@ import 'package:provider/provider.dart';
 
 class EditPageArgs {
   const EditPageArgs({
-    required this.path,
     required this.appointmentId,
     required this.log,
   });
 
-  final String path;
   final int appointmentId;
   final LogModel log;
 }
@@ -37,16 +36,14 @@ class EditPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('rrrrrrrrrrrr log - ${args.log}');
-    final decodedPath = Uri.decodeComponent(args.path);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => PlayerProvider()..initData(url: decodedPath),
+          create: (context) => PlayerProvider()..initData(url: args.log.audio),
         ),
         ChangeNotifierProvider(
           lazy: false,
-          create: (context) => EditState(),
+          create: (context) => EditState(log: args.log),
         ),
       ],
       builder: (context, _) {
@@ -126,17 +123,13 @@ class EditPage extends StatelessWidget {
                                               : 24),
 
                                       /// transcribed list button for navigation to transcribed list
-                                      if (Responsive.isMobile(context))
+                                      if (Responsive.isMobile(context) &&
+                                          editState.fetchedLog != null)
                                         PrimaryButton(
                                           onPress: () {
-                                            final audioFilePath = context
-                                                .read<PlayerProvider>()
-                                                .audioFilePath;
                                             TranscribedListRoute(
-                                              Uri.encodeComponent(
-                                                  audioFilePath.isEmpty
-                                                      ? args.path
-                                                      : audioFilePath),
+                                              TranscribedListArgs(
+                                                  log: editState.fetchedLog!),
                                             ).push(context);
                                           },
                                           color: AppColors.accentGreen,
@@ -146,12 +139,14 @@ class EditPage extends StatelessWidget {
                                         ).paddingOnly(bottom: 24),
 
                                       /// editable textfield list
-                                      EditTextsListWidget(
-                                        chunks: args.log.chunks,
-                                      ).paddingOnly(
-                                          bottom: Responsive.isDesktop(context)
-                                              ? 40
-                                              : 24),
+                                      if (editState.fetchedLog != null)
+                                        EditTextsListWidget(
+                                          chunks: editState.fetchedLog!.chunks,
+                                        ).paddingOnly(
+                                            bottom:
+                                                Responsive.isDesktop(context)
+                                                    ? 40
+                                                    : 24),
 
                                       /// responsive buttons section
                                       Responsive(
@@ -182,22 +177,18 @@ class EditPage extends StatelessWidget {
                                                                   .pop();
                                                             },
                                                             onSaveClick: () {
-                                                              var audioFilePath = context
-                                                                  .read<
-                                                                      PlayerProvider>()
-                                                                  .audioFilePath;
-                                                              if (audioFilePath
-                                                                  .isEmpty) {
-                                                                audioFilePath =
-                                                                    Uri.decodeComponent(
-                                                                        args.path);
+                                                              if (editState
+                                                                      .fetchedLog !=
+                                                                  null) {
+                                                                MedicalFormRoute(
+                                                                        editState
+                                                                            .fetchedLog!
+                                                                            .audio,
+                                                                        args
+                                                                            .appointmentId)
+                                                                    .push(
+                                                                        context);
                                                               }
-                                                              MedicalFormRoute(
-                                                                      Uri.encodeComponent(
-                                                                        audioFilePath,
-                                                                      ),
-                                                                      args.appointmentId)
-                                                                  .push(context);
                                                             },
                                                             medicalForms: const [
                                                               'Progress Notes',
@@ -254,23 +245,16 @@ class EditPage extends StatelessWidget {
                                                                   .pop();
                                                             },
                                                             onSaveClick: () {
-                                                              var audioFilePath = context
-                                                                  .read<
-                                                                      PlayerProvider>()
-                                                                  .audioFilePath;
-                                                              if (audioFilePath
-                                                                  .isEmpty) {
-                                                                audioFilePath =
-                                                                    Uri.decodeComponent(
-                                                                        args.path);
+                                                              if (editState
+                                                                      .fetchedLog !=
+                                                                  null) {
+                                                                MedicalFormRoute(
+                                                                  editState
+                                                                      .fetchedLog!
+                                                                      .audio,
+                                                                  args.appointmentId,
+                                                                ).push(context);
                                                               }
-                                                              MedicalFormRoute(
-                                                                      Uri.encodeComponent(
-                                                                          audioFilePath),
-                                                                      args
-                                                                          .appointmentId)
-                                                                  .push(
-                                                                      context);
                                                             },
                                                             medicalForms: const [
                                                               'Progress Notes',
@@ -337,9 +321,13 @@ class EditPage extends StatelessWidget {
                           ),
 
                           /// desktop transcribed list
-                          if (Responsive.isDesktop(context))
-                            const Expanded(
-                                flex: 1, child: DesktopTranscribedListWidget())
+                          if (Responsive.isDesktop(context) &&
+                              editState.fetchedLog != null)
+                            Expanded(
+                                flex: 1,
+                                child: DesktopTranscribedListWidget(
+                                  log: editState.fetchedLog!,
+                                ))
                         ],
                       ),
               ));

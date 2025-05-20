@@ -26,6 +26,13 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
     playerProvider = context.read<PlayerProvider>();
     _player = playerProvider.player;
 
+    _player.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        _player.seek(Duration.zero);
+        _player.play();
+      }
+    });
+
     // Listen to position updates
     _player.positionStream.listen((p) {
       playerProvider.setPosition(p);
@@ -43,33 +50,36 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
   }
 
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
     playerProvider = context.watch<PlayerProvider>();
     return SizedBox(
-      width: MediaQuery.of(context).size.width, 
+      width: MediaQuery.of(context).size.width,
       child: Row(
-      children: [
+        children: [
           // Play/Pause Button
-        MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            onTap: () {
-              playerProvider.isPlaying ? _player.pause() : _player.play();
-              playerProvider.setIsPlaying(!playerProvider.isPlaying);
-            },
-            child: SvgPicture.asset(
-              playerProvider.isPlaying ? AppIcons.pauseIcon : AppIcons.playIcon,
-              height: 32,
-              width: 32,
-              colorFilter: const ColorFilter.mode(AppColors.text, BlendMode.srcIn),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                playerProvider.isPlaying ? _player.pause() : _player.play();
+                playerProvider.setIsPlaying(!playerProvider.isPlaying);
+              },
+              child: SvgPicture.asset(
+                playerProvider.isPlaying
+                    ? AppIcons.pauseIcon
+                    : AppIcons.playIcon,
+                height: 32,
+                width: 32,
+                colorFilter:
+                    const ColorFilter.mode(AppColors.text, BlendMode.srcIn),
+              ),
             ),
-          ),
           ).paddingOnly(right: 16),
 
           // Current Position Text
-        Text(
-          playerProvider.position.toMinuteAndSecond(),
-          style: AppTextStyles.regularPx14,
+          Text(
+            playerProvider.position.toMinuteAndSecond(),
+            style: AppTextStyles.regularPx14,
           ).paddingOnly(right: 8),
 
           // Expanded Slider
@@ -77,8 +87,9 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
             child: Slider(
               min: 0,
               max: playerProvider.duration.inSeconds.toDouble(),
-              value:
-                  playerProvider.position.inSeconds.toDouble().clamp(0, playerProvider.duration.inSeconds.toDouble()),
+              value: playerProvider.position.inSeconds
+                  .toDouble()
+                  .clamp(0, playerProvider.duration.inSeconds.toDouble()),
               thumbColor: AppColors.accentBlue,
               activeColor: AppColors.accentBlue,
               onChanged: (value) {
@@ -88,13 +99,12 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
           ),
 
           // Total Duration Text
-        Text(
-          playerProvider.duration.toMinuteAndSecond(),
-          style: AppTextStyles.regularPx14,
+          Text(
+            playerProvider.duration.toMinuteAndSecond(),
+            style: AppTextStyles.regularPx14,
           ).paddingOnly(left: 8),
         ],
       ),
     );
   }
-
 }

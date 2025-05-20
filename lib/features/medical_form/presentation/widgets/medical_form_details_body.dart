@@ -4,7 +4,6 @@ import 'package:ecnx_ambient_listening/features/edit/provider/edit_text_provider
 import 'package:ecnx_ambient_listening/features/medical_form/data/models/medical_form_model.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/history_log_modal.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/medical_history_widget.dart';
-import 'package:ecnx_ambient_listening/features/medical_form/provider/medical_form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,10 +18,7 @@ class MedicalFormDetailsBody extends StatelessWidget {
         itemCount: list.length,
         itemBuilder: (context, index) {
           return ChangeNotifierProvider(
-            create: (context) => EditTextProvider()
-              ..initData(
-                  context.read<MedicalFormProvider>().quillControllers[index],
-                  'tttt'),
+            create: (context) => EditTextProvider()..initData(list[index]),
             child: MedicalHistoryTile(
               onHistoryLogClick: () {
                 showDialog(

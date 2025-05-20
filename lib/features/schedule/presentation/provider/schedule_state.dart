@@ -103,7 +103,8 @@ class ScheduleState extends ChangeNotifier {
 
   Future<void> _createForm() async {
     await _networkService.createForm(
-        name: firstNameController.text.trim() + lastNameController.text.trim());
+        name:
+            '${firstNameController.text.trim()} ${lastNameController.text.trim()}');
   }
 
   /// Disposes of the controllers to free up resources when no longer needed.

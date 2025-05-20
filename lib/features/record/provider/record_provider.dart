@@ -10,6 +10,7 @@ import 'package:ecnx_ambient_listening/core/network/network.dart';
 import 'package:ecnx_ambient_listening/core/web_socket/web_socket_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -239,7 +240,16 @@ class RecordProvider extends ChangeNotifier {
     debugPrint('audioKey - $key');
     final duration = await _getFormattedDuration();
     final forms = await _network.getForms();
-    form = forms.firstWhere((f) => f.user == appointment.user);
+    form = forms.firstWhere((f) =>
+        f.user == appointment.user &&
+        DateFormat('yyyy-mm-dd').format(f.createdAt) ==
+            DateFormat('yyyy-mm-dd').format(appointment.createdAt));
+    print(
+        'check form date  - ${DateFormat('yyyy-mm-dd').format(form.createdAt)}');
+    print(
+        'check appointment date - ${DateFormat('yyyy-mm-dd').format(appointment.createdAt)}');
+    print('check form   - $form');
+    print('check appointment  - $appointment');
     log = await _network.createLog(
       key: key,
       duration: duration,

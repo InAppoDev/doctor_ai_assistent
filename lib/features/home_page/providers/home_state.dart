@@ -34,6 +34,7 @@ class HomeState extends ChangeNotifier {
     notifyListeners();
 
     logs = await _backendService.getLogs();
+    print('sdsdsdsdsds - ${logs.last}');
     isLoading = false;
     notifyListeners();
   }
@@ -50,17 +51,16 @@ class HomeState extends ChangeNotifier {
 
   LogModel? getLogByAppointment(int appointmentId) {
     if (logs.isEmpty) return null;
+
     for (final log in logs) {
       if (log.appointment == appointmentId) {
         return log;
-      } else {
-        return null;
       }
     }
+
     return null;
   }
 
-  // Search Bar Section
   final TextEditingController _searchController = TextEditingController();
   TextEditingController get searchController => _searchController;
 

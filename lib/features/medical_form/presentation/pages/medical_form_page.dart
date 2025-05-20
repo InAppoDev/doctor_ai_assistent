@@ -6,7 +6,6 @@ import 'package:ecnx_ambient_listening/core/widgets/custom_text_button.dart';
 import 'package:ecnx_ambient_listening/core/widgets/logo_widget.dart';
 import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
 import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
-import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/desktop_transcribed_list_widget.dart';
 import 'package:ecnx_ambient_listening/features/edit/provider/player_provider.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/medical_form_details_body.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/patient_information_widget.dart';
@@ -27,13 +26,10 @@ class MedicalFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final decodedPath = Uri.decodeComponent(path);
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            lazy: false,
-            create: (_) => PlayerProvider()..initData(url: decodedPath)),
+            lazy: false, create: (_) => PlayerProvider()..initData(url: path)),
         ChangeNotifierProvider(
             create: (_) => MedicalFormProvider(appointmentId)..init()),
       ],
@@ -91,20 +87,18 @@ class MedicalFormPage extends StatelessWidget {
                                     SizedBox(height: isDesktop ? 40 : 24),
 
                                     /// Mobile button to view transcribed list
-                                    if (isMobile)
-                                      PrimaryButton(
-                                        onPress: () {
-                                          TranscribedListRoute(
-                                                  Uri.encodeComponent(
-                                                      playerProvider
-                                                          .audioFilePath))
-                                              .push(context);
-                                        },
-                                        color: AppColors.accentGreen,
-                                        textColor: AppColors.white,
-                                        borderColor: AppColors.accentGreen,
-                                        text: 'Transcribed Patient Responses',
-                                      ).paddingOnly(bottom: 24),
+                                    // if (isMobile)
+                                    //   PrimaryButton(
+                                    //     onPress: () {
+                                    //       TranscribedListRoute(
+                                    //           TranscribedListArgs(log:  args.log),
+                                    //       ).push(context);
+                                    //     },
+                                    //     color: AppColors.accentGreen,
+                                    //     textColor: AppColors.white,
+                                    //     borderColor: AppColors.accentGreen,
+                                    //     text: 'Transcribed Patient Responses',
+                                    //   ).paddingOnly(bottom: 24),
 
                                     /// Search bar
                                     Row(
@@ -212,9 +206,9 @@ class MedicalFormPage extends StatelessWidget {
                         ),
 
                         /// Desktop right side panel
-                        if (isDesktop)
-                          const Expanded(
-                              flex: 1, child: DesktopTranscribedListWidget()),
+                        // if (isDesktop)
+                        //   const Expanded(
+                        //       flex: 1, child: DesktopTranscribedListWidget()),
                       ],
                     );
             }),

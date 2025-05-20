@@ -144,24 +144,23 @@ RouteBase get $transcribedListRoute => GoRouteData.$route(
 extension $TranscribedListRouteExtension on TranscribedListRoute {
   static TranscribedListRoute _fromState(GoRouterState state) =>
       TranscribedListRoute(
-        state.uri.queryParameters['path']!,
+        state.extra as TranscribedListArgs,
       );
 
   String get location => GoRouteData.$location(
         '/transcribed-list',
-        queryParams: {
-          'path': path,
-        },
       );
 
-  void go(BuildContext context) => context.go(location);
+  void go(BuildContext context) => context.go(location, extra: $extra);
 
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: $extra);
 
   void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
+      context.pushReplacement(location, extra: $extra);
 
-  void replace(BuildContext context) => context.replace(location);
+  void replace(BuildContext context) =>
+      context.replace(location, extra: $extra);
 }
 
 RouteBase get $medicalFormRoute => GoRouteData.$route(
@@ -172,7 +171,7 @@ RouteBase get $medicalFormRoute => GoRouteData.$route(
 extension $MedicalFormRouteExtension on MedicalFormRoute {
   static MedicalFormRoute _fromState(GoRouterState state) => MedicalFormRoute(
         state.uri.queryParameters['path']!,
-        int.parse(state.uri.queryParameters['appointment-id']!),
+        int.parse(state.uri.queryParameters['appointment-id']!)!,
       );
 
   String get location => GoRouteData.$location(

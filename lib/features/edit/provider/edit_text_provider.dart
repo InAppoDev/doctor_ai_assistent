@@ -12,9 +12,10 @@ class EditTextProvider extends ChangeNotifier {
 
   /// title and text model should be updated to accept the medical form model
   /// NOTE: The text should be replaced with the actual data
-  void initData(QuillController controller, String text) {
-    _quillController = controller;
-    _quillController?.document.insert(0, text);
+  void initData(TitleAndTextModel titleAndTextModel) {
+    _titleAndTextModel = titleAndTextModel;
+    _quillController = QuillController.basic();
+    _quillController?.document.insert(0, titleAndTextModel.text);
   }
 
   //  void initData(QuillController controller, TranscribedTextModel? transcribed,

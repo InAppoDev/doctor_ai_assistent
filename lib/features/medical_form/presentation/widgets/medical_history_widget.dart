@@ -32,6 +32,7 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
 
   @override
   Widget build(BuildContext context) {
+    // final isTitleNotEmpty = _editProvider.titleAndTextModel.title.isNotEmpty;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -62,7 +63,7 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
                         desktop: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(_editProvider.titleAndTextModel?.title ?? '',
+                              Text(_editProvider.titleAndTextModel.title,
                                   style: AppTextStyles.mediumPx20),
                               HistoryLogButtonWidget(onTap: () {
                                 widget.onHistoryLogClick();
@@ -73,7 +74,7 @@ class _MedicalHistoryTileState extends State<MedicalHistoryTile> {
                             children: [
                               Expanded(
                                   child: Text(
-                                _editProvider.titleAndTextModel?.title ?? '',
+                                _editProvider.titleAndTextModel.title,
                                 style: AppTextStyles.mediumPx20,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,

@@ -262,10 +262,6 @@ class _RecordPageState extends State<RecordPage> {
                                           if (recordProvider.log != null) {
                                             EditRoute(
                                                 $extra: EditPageArgs(
-                                              path: Uri.encodeComponent(
-                                                  recordProvider
-                                                          .audioFilePath ??
-                                                      ''),
                                               appointmentId:
                                                   widget.appointment.id,
                                               log: recordProvider.log!,
@@ -356,9 +352,6 @@ class _RecordPageState extends State<RecordPage> {
                                         if (recordProvider.log != null) {
                                           EditRoute(
                                               $extra: EditPageArgs(
-                                            path: Uri.encodeComponent(
-                                                recordProvider.audioFilePath ??
-                                                    ''),
                                             appointmentId:
                                                 widget.appointment.id,
                                             log: recordProvider.log!,

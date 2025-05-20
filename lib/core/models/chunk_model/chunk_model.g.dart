@@ -13,7 +13,7 @@ _$ChunkModelImpl _$$ChunkModelImplFromJson(Map<String, dynamic> json) =>
       updatedAt: DateTime.parse(json['updated_at'] as String),
       speaker: json['speaker'] as String,
       transcription: json['transcription'] as String,
-      time: (json['time'] as num).toInt(),
+      time: (json['time'] as num).toDouble(),
       log: (json['log'] as num).toInt(),
     );
 
