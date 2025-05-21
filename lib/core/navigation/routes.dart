@@ -19,7 +19,7 @@ class HomeRoute extends GoRouteData {
   const HomeRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => const HomePage();
+  Widget build(BuildContext context, GoRouterState state) => HomePage();
 
   @override
   String? redirect(BuildContext context, GoRouterState state) {
@@ -80,15 +80,13 @@ class TranscribedListRoute extends GoRouteData {
 
 @TypedGoRoute<MedicalFormRoute>(path: '/medical-form')
 class MedicalFormRoute extends GoRouteData {
-  const MedicalFormRoute(this.path, this.appointmentId);
+  const MedicalFormRoute(this.$extra);
 
-  final String path;
-  final int appointmentId;
+  final MedicalFormPageArgs $extra;
 
   @override
   Widget build(BuildContext context, GoRouterState state) => MedicalFormPage(
-        path: path,
-        appointmentId: appointmentId,
+        log: $extra.log,
       );
 }
 

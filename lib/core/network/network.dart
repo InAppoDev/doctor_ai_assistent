@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -433,11 +434,11 @@ class Network {
   Future<Map<String, dynamic>?> updateForm({
     required int id,
     required String name,
-    required String description,
+    required String conclusion,
   }) async {
     final data = {
       "name": name,
-      "description": description,
+      "conclusion": conclusion,
     };
 
     final response = await _makeRequest(
@@ -528,12 +529,16 @@ class Network {
 
   Future<Map<String, dynamic>?> updateChunk({
     required int id,
-    required String name,
-    required String filePath,
+    required String speaker,
+    required String transcription,
+    required double time,
+    required int log,
   }) async {
     final data = {
-      "name": name,
-      "file_path": filePath,
+      "speaker": speaker,
+      "transcription": transcription,
+      "time": time,
+      "log": log,
     };
 
     final response = await _makeRequest(

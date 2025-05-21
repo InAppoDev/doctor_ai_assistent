@@ -25,6 +25,8 @@ mixin _$ChunkModel {
   DateTime get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
   DateTime get updatedAt => throw _privateConstructorUsedError;
+  @JsonKey(includeFromJson: false, includeToJson: true)
+  String? get translatedTranscription => throw _privateConstructorUsedError;
   String get speaker => throw _privateConstructorUsedError;
   String get transcription => throw _privateConstructorUsedError;
   double get time => throw _privateConstructorUsedError;
@@ -50,6 +52,8 @@ abstract class $ChunkModelCopyWith<$Res> {
       {int id,
       @JsonKey(name: 'created_at') DateTime createdAt,
       @JsonKey(name: 'updated_at') DateTime updatedAt,
+      @JsonKey(includeFromJson: false, includeToJson: true)
+      String? translatedTranscription,
       String speaker,
       String transcription,
       double time,
@@ -74,6 +78,7 @@ class _$ChunkModelCopyWithImpl<$Res, $Val extends ChunkModel>
     Object? id = null,
     Object? createdAt = null,
     Object? updatedAt = null,
+    Object? translatedTranscription = freezed,
     Object? speaker = null,
     Object? transcription = null,
     Object? time = null,
@@ -92,6 +97,10 @@ class _$ChunkModelCopyWithImpl<$Res, $Val extends ChunkModel>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      translatedTranscription: freezed == translatedTranscription
+          ? _value.translatedTranscription
+          : translatedTranscription // ignore: cast_nullable_to_non_nullable
+              as String?,
       speaker: null == speaker
           ? _value.speaker
           : speaker // ignore: cast_nullable_to_non_nullable
@@ -124,6 +133,8 @@ abstract class _$$ChunkModelImplCopyWith<$Res>
       {int id,
       @JsonKey(name: 'created_at') DateTime createdAt,
       @JsonKey(name: 'updated_at') DateTime updatedAt,
+      @JsonKey(includeFromJson: false, includeToJson: true)
+      String? translatedTranscription,
       String speaker,
       String transcription,
       double time,
@@ -146,6 +157,7 @@ class __$$ChunkModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? createdAt = null,
     Object? updatedAt = null,
+    Object? translatedTranscription = freezed,
     Object? speaker = null,
     Object? transcription = null,
     Object? time = null,
@@ -164,6 +176,10 @@ class __$$ChunkModelImplCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      translatedTranscription: freezed == translatedTranscription
+          ? _value.translatedTranscription
+          : translatedTranscription // ignore: cast_nullable_to_non_nullable
+              as String?,
       speaker: null == speaker
           ? _value.speaker
           : speaker // ignore: cast_nullable_to_non_nullable
@@ -191,6 +207,8 @@ class _$ChunkModelImpl implements _ChunkModel {
       {required this.id,
       @JsonKey(name: 'created_at') required this.createdAt,
       @JsonKey(name: 'updated_at') required this.updatedAt,
+      @JsonKey(includeFromJson: false, includeToJson: true)
+      this.translatedTranscription,
       required this.speaker,
       required this.transcription,
       required this.time,
@@ -208,6 +226,9 @@ class _$ChunkModelImpl implements _ChunkModel {
   @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
   @override
+  @JsonKey(includeFromJson: false, includeToJson: true)
+  final String? translatedTranscription;
+  @override
   final String speaker;
   @override
   final String transcription;
@@ -218,7 +239,7 @@ class _$ChunkModelImpl implements _ChunkModel {
 
   @override
   String toString() {
-    return 'ChunkModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, speaker: $speaker, transcription: $transcription, time: $time, log: $log)';
+    return 'ChunkModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, translatedTranscription: $translatedTranscription, speaker: $speaker, transcription: $transcription, time: $time, log: $log)';
   }
 
   @override
@@ -231,6 +252,9 @@ class _$ChunkModelImpl implements _ChunkModel {
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
+            (identical(
+                    other.translatedTranscription, translatedTranscription) ||
+                other.translatedTranscription == translatedTranscription) &&
             (identical(other.speaker, speaker) || other.speaker == speaker) &&
             (identical(other.transcription, transcription) ||
                 other.transcription == transcription) &&
@@ -240,8 +264,8 @@ class _$ChunkModelImpl implements _ChunkModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, createdAt, updatedAt, speaker, transcription, time, log);
+  int get hashCode => Object.hash(runtimeType, id, createdAt, updatedAt,
+      translatedTranscription, speaker, transcription, time, log);
 
   /// Create a copy of ChunkModel
   /// with the given fields replaced by the non-null parameter values.
@@ -264,6 +288,8 @@ abstract class _ChunkModel implements ChunkModel {
       {required final int id,
       @JsonKey(name: 'created_at') required final DateTime createdAt,
       @JsonKey(name: 'updated_at') required final DateTime updatedAt,
+      @JsonKey(includeFromJson: false, includeToJson: true)
+      final String? translatedTranscription,
       required final String speaker,
       required final String transcription,
       required final double time,
@@ -280,6 +306,9 @@ abstract class _ChunkModel implements ChunkModel {
   @override
   @JsonKey(name: 'updated_at')
   DateTime get updatedAt;
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: true)
+  String? get translatedTranscription;
   @override
   String get speaker;
   @override

@@ -7,7 +7,9 @@ import 'package:ecnx_ambient_listening/core/widgets/avatar_widget.dart';
 import 'package:ecnx_ambient_listening/core/widgets/editable_textfield.dart';
 import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/edit_text_tile/edit_text_tile_buttons.dart';
+import 'package:ecnx_ambient_listening/features/edit/provider/edit_state.dart';
 import 'package:ecnx_ambient_listening/features/edit/provider/edit_text_provider.dart';
+import 'package:ecnx_ambient_listening/features/edit/provider/player_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,9 +17,11 @@ class EditTextTile extends StatelessWidget {
   const EditTextTile({
     super.key,
     required this.chunkModel,
+    required this.onChunkTextChanged,
   });
 
   final ChunkModel chunkModel;
+  final void Function(int chunkId, String updatedText) onChunkTextChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +63,16 @@ class EditTextTile extends StatelessWidget {
                                       .read<EditTextProvider>()
                                       .onCopyToClipboard();
                                 },
-                                onTranslateClick: () {},
-                                onPlayClick: () {},
+                                onTranslateClick: () {
+                                  context.read<EditState>().translate(
+                                      chunkModel,
+                                      context
+                                          .read<EditTextProvider>()
+                                          .descriptionQuillController);
+                                },
+                                onPlayClick: () {
+                                  context.read<PlayerProvider>().playPause();
+                                },
                               ),
                             ]).paddingOnly(bottom: 16),
                       Row(
@@ -96,8 +108,12 @@ class EditTextTile extends StatelessWidget {
                         ],
                       ).paddingOnly(bottom: 16),
                       EditableTextfield(
-                        quillController:
-                            context.read<EditTextProvider>().quillController,
+                        quillController: context
+                            .read<EditTextProvider>()
+                            .descriptionQuillController,
+                        onChunkTextChanged: (updatedText) {
+                          onChunkTextChanged(chunkModel.id, updatedText);
+                        },
                       ),
                     ],
                   ),

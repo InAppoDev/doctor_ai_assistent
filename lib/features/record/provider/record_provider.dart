@@ -244,12 +244,6 @@ class RecordProvider extends ChangeNotifier {
         f.user == appointment.user &&
         DateFormat('yyyy-mm-dd').format(f.createdAt) ==
             DateFormat('yyyy-mm-dd').format(appointment.createdAt));
-    print(
-        'check form date  - ${DateFormat('yyyy-mm-dd').format(form.createdAt)}');
-    print(
-        'check appointment date - ${DateFormat('yyyy-mm-dd').format(appointment.createdAt)}');
-    print('check form   - $form');
-    print('check appointment  - $appointment');
     log = await _network.createLog(
       key: key,
       duration: duration,

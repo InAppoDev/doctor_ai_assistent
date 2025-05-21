@@ -26,6 +26,7 @@ mixin _$FormModel {
   @JsonKey(name: 'updated_at')
   DateTime get updatedAt => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  String? get conclusion => throw _privateConstructorUsedError;
   int get user => throw _privateConstructorUsedError;
 
   /// Serializes this FormModel to a JSON map.
@@ -48,6 +49,7 @@ abstract class $FormModelCopyWith<$Res> {
       @JsonKey(name: 'created_at') DateTime createdAt,
       @JsonKey(name: 'updated_at') DateTime updatedAt,
       String name,
+      String? conclusion,
       int user});
 }
 
@@ -70,6 +72,7 @@ class _$FormModelCopyWithImpl<$Res, $Val extends FormModel>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? name = null,
+    Object? conclusion = freezed,
     Object? user = null,
   }) {
     return _then(_value.copyWith(
@@ -89,6 +92,10 @@ class _$FormModelCopyWithImpl<$Res, $Val extends FormModel>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      conclusion: freezed == conclusion
+          ? _value.conclusion
+          : conclusion // ignore: cast_nullable_to_non_nullable
+              as String?,
       user: null == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -110,6 +117,7 @@ abstract class _$$FormModelImplCopyWith<$Res>
       @JsonKey(name: 'created_at') DateTime createdAt,
       @JsonKey(name: 'updated_at') DateTime updatedAt,
       String name,
+      String? conclusion,
       int user});
 }
 
@@ -130,6 +138,7 @@ class __$$FormModelImplCopyWithImpl<$Res>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? name = null,
+    Object? conclusion = freezed,
     Object? user = null,
   }) {
     return _then(_$FormModelImpl(
@@ -149,6 +158,10 @@ class __$$FormModelImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      conclusion: freezed == conclusion
+          ? _value.conclusion
+          : conclusion // ignore: cast_nullable_to_non_nullable
+              as String?,
       user: null == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -165,6 +178,7 @@ class _$FormModelImpl implements _FormModel {
       @JsonKey(name: 'created_at') required this.createdAt,
       @JsonKey(name: 'updated_at') required this.updatedAt,
       required this.name,
+      this.conclusion,
       required this.user});
 
   factory _$FormModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -181,11 +195,13 @@ class _$FormModelImpl implements _FormModel {
   @override
   final String name;
   @override
+  final String? conclusion;
+  @override
   final int user;
 
   @override
   String toString() {
-    return 'FormModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, name: $name, user: $user)';
+    return 'FormModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, name: $name, conclusion: $conclusion, user: $user)';
   }
 
   @override
@@ -199,13 +215,15 @@ class _$FormModelImpl implements _FormModel {
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.conclusion, conclusion) ||
+                other.conclusion == conclusion) &&
             (identical(other.user, user) || other.user == user));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, createdAt, updatedAt, name, user);
+  int get hashCode => Object.hash(
+      runtimeType, id, createdAt, updatedAt, name, conclusion, user);
 
   /// Create a copy of FormModel
   /// with the given fields replaced by the non-null parameter values.
@@ -229,6 +247,7 @@ abstract class _FormModel implements FormModel {
       @JsonKey(name: 'created_at') required final DateTime createdAt,
       @JsonKey(name: 'updated_at') required final DateTime updatedAt,
       required final String name,
+      final String? conclusion,
       required final int user}) = _$FormModelImpl;
 
   factory _FormModel.fromJson(Map<String, dynamic> json) =
@@ -244,6 +263,8 @@ abstract class _FormModel implements FormModel {
   DateTime get updatedAt;
   @override
   String get name;
+  @override
+  String? get conclusion;
   @override
   int get user;
 

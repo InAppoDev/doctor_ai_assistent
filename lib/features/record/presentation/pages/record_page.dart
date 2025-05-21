@@ -9,6 +9,7 @@ import 'package:ecnx_ambient_listening/core/utils/ui_utils.dart';
 import 'package:ecnx_ambient_listening/core/widgets/logo_widget.dart';
 import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/pages/edit_page.dart';
+import 'package:ecnx_ambient_listening/features/medical_form/presentation/pages/medical_form_page.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/medical_form_dialog_widget.dart';
 import 'package:ecnx_ambient_listening/features/record/presentation/widgets/record_button.dart';
 import 'package:ecnx_ambient_listening/features/record/presentation/widgets/recorded_text.dart';
@@ -222,18 +223,21 @@ class _RecordPageState extends State<RecordPage> {
                                                 },
                                                 onSaveClick: () async {
                                                   await recordProvider
+                                                      .saveMedicalForm(
+                                                    widget.appointment,
+                                                  );
+                                                  await recordProvider
                                                       .stopRecording()
                                                       .then((_) {
                                                     recordProvider.close();
-                                                    if (context.mounted) {
+                                                    if (context.mounted &&
+                                                        recordProvider.log !=
+                                                            null) {
                                                       MedicalFormRoute(
-                                                              Uri.encodeComponent(
-                                                                  recordProvider
-                                                                          .audioFilePath ??
-                                                                      ''),
-                                                              widget.appointment
-                                                                  .id)
-                                                          .push(context);
+                                                        MedicalFormPageArgs(
+                                                            log: recordProvider
+                                                                .log!),
+                                                      ).push(context);
                                                     }
                                                   });
                                                 },
@@ -311,16 +315,18 @@ class _RecordPageState extends State<RecordPage> {
                                           },
                                           onSaveClick: () async {
                                             await recordProvider
+                                                .saveMedicalForm(
+                                              widget.appointment,
+                                            );
+                                            await recordProvider
                                                 .stopRecording()
                                                 .then((_) {
                                               recordProvider.close();
-                                              if (context.mounted) {
+                                              if (context.mounted &&
+                                                  recordProvider.log != null) {
                                                 MedicalFormRoute(
-                                                  Uri.encodeComponent(
-                                                      recordProvider
-                                                              .audioFilePath ??
-                                                          ''),
-                                                  widget.appointment.id,
+                                                  MedicalFormPageArgs(
+                                                      log: recordProvider.log!),
                                                 ).push(context);
                                               }
                                             });

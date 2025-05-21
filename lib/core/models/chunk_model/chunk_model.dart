@@ -9,6 +9,8 @@ class ChunkModel with _$ChunkModel {
     required int id,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
+    @JsonKey(includeFromJson: false, includeToJson: true)
+    String? translatedTranscription,
     required String speaker,
     required String transcription,
     required double time,

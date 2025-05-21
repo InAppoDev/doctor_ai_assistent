@@ -1,9 +1,9 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_icons.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
 import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/core/navigation/routes.dart';
-import 'package:ecnx_ambient_listening/core/widgets/custom_text_button.dart';
 import 'package:ecnx_ambient_listening/core/widgets/logo_widget.dart';
 import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
 import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
@@ -12,8 +12,10 @@ import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/deskto
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/edit_text_tile/edit_texts_list_widget.dart';
 import 'package:ecnx_ambient_listening/features/edit/provider/edit_state.dart';
 import 'package:ecnx_ambient_listening/features/edit/provider/player_provider.dart';
+import 'package:ecnx_ambient_listening/features/medical_form/presentation/pages/medical_form_page.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/medical_form_dialog_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class EditPageArgs {
@@ -102,7 +104,7 @@ class EditPage extends StatelessWidget {
                                               cursor: SystemMouseCursors.click,
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  context.pop();
+                                                  HomeRoute().go(context);
                                                 },
                                                 child: const Icon(
                                                     Icons.arrow_back,
@@ -138,15 +140,12 @@ class EditPage extends StatelessWidget {
                                           borderColor: AppColors.accentGreen,
                                         ).paddingOnly(bottom: 24),
 
-                                      /// editable textfield list
-                                      if (editState.fetchedLog != null)
-                                        EditTextsListWidget(
-                                          chunks: editState.fetchedLog!.chunks,
-                                        ).paddingOnly(
-                                            bottom:
-                                                Responsive.isDesktop(context)
-                                                    ? 40
-                                                    : 24),
+                                      EditTextsListWidget(
+                                        chunks: editState.unitedSpeakerChunks,
+                                      ).paddingOnly(
+                                          bottom: Responsive.isDesktop(context)
+                                              ? 40
+                                              : 24),
 
                                       /// responsive buttons section
                                       Responsive(
@@ -163,42 +162,47 @@ class EditPage extends StatelessWidget {
                                                 padding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 12),
-                                                onPress: () {
+                                                onPress: () async {
                                                   final ValueNotifier<int?>
                                                       selectedFormIndex =
-                                                      ValueNotifier(null);
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (dialogContext) {
-                                                        return MedicalFormDialogWidget(
-                                                            onCloseClick: () {
-                                                              Navigator.of(
-                                                                      dialogContext)
-                                                                  .pop();
-                                                            },
-                                                            onSaveClick: () {
-                                                              if (editState
-                                                                      .fetchedLog !=
-                                                                  null) {
-                                                                MedicalFormRoute(
-                                                                        editState
-                                                                            .fetchedLog!
-                                                                            .audio,
-                                                                        args
-                                                                            .appointmentId)
-                                                                    .push(
-                                                                        context);
-                                                              }
-                                                            },
-                                                            medicalForms: const [
-                                                              'Progress Notes',
-                                                              'H&P form'
-                                                            ],
-                                                            selectedFormIndex:
-                                                                selectedFormIndex);
-                                                      }).then((_) {
-                                                    selectedFormIndex.dispose();
-                                                  });
+                                                      ValueNotifier(0);
+                                                  await context
+                                                      .read<EditState>()
+                                                      .saveEditedChunks();
+                                                  if (context.mounted) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder:
+                                                            (dialogContext) {
+                                                          return MedicalFormDialogWidget(
+                                                              onCloseClick: () {
+                                                                Navigator.of(
+                                                                        dialogContext)
+                                                                    .pop();
+                                                              },
+                                                              onSaveClick: () {
+                                                                if (editState
+                                                                        .fetchedLog !=
+                                                                    null) {
+                                                                  MedicalFormRoute(
+                                                                    MedicalFormPageArgs(
+                                                                        log: editState
+                                                                            .fetchedLog!),
+                                                                  ).push(
+                                                                      context);
+                                                                }
+                                                              },
+                                                              medicalForms: const [
+                                                                'Progress Notes',
+                                                                'H&P form'
+                                                              ],
+                                                              selectedFormIndex:
+                                                                  selectedFormIndex);
+                                                        }).then((_) {
+                                                      selectedFormIndex
+                                                          .dispose();
+                                                    });
+                                                  }
                                                 },
                                               ).paddingOnly(right: 20),
                                               PrimaryButton(
@@ -210,8 +214,14 @@ class EditPage extends StatelessWidget {
                                                 padding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 12),
-                                                onPress: () {
-                                                  const HomeRoute().go(context);
+                                                onPress: () async {
+                                                  await context
+                                                      .read<EditState>()
+                                                      .saveEditedChunks();
+                                                  if (context.mounted) {
+                                                    const HomeRoute()
+                                                        .go(context);
+                                                  }
                                                 },
                                               )
                                             ],
@@ -231,40 +241,47 @@ class EditPage extends StatelessWidget {
                                                     .regularPx16
                                                     .copyWith(
                                                         color: AppColors.white),
-                                                onPress: () {
+                                                onPress: () async {
                                                   final ValueNotifier<int?>
                                                       selectedFormIndex =
-                                                      ValueNotifier(null);
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (dialogContext) {
-                                                        return MedicalFormDialogWidget(
-                                                            onCloseClick: () {
-                                                              Navigator.of(
-                                                                      dialogContext)
-                                                                  .pop();
-                                                            },
-                                                            onSaveClick: () {
-                                                              if (editState
-                                                                      .fetchedLog !=
-                                                                  null) {
-                                                                MedicalFormRoute(
-                                                                  editState
-                                                                      .fetchedLog!
-                                                                      .audio,
-                                                                  args.appointmentId,
-                                                                ).push(context);
-                                                              }
-                                                            },
-                                                            medicalForms: const [
-                                                              'Progress Notes',
-                                                              'H&P form'
-                                                            ],
-                                                            selectedFormIndex:
-                                                                selectedFormIndex);
-                                                      }).then((_) {
-                                                    selectedFormIndex.dispose();
-                                                  });
+                                                      ValueNotifier(0);
+                                                  await context
+                                                      .read<EditState>()
+                                                      .saveEditedChunks();
+                                                  if (context.mounted) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder:
+                                                            (dialogContext) {
+                                                          return MedicalFormDialogWidget(
+                                                              onCloseClick: () {
+                                                                Navigator.of(
+                                                                        dialogContext)
+                                                                    .pop();
+                                                              },
+                                                              onSaveClick: () {
+                                                                if (editState
+                                                                        .fetchedLog !=
+                                                                    null) {
+                                                                  MedicalFormRoute(
+                                                                    MedicalFormPageArgs(
+                                                                        log: editState
+                                                                            .fetchedLog!),
+                                                                  ).push(
+                                                                      context);
+                                                                }
+                                                              },
+                                                              medicalForms: const [
+                                                                'Progress Notes',
+                                                                'H&P form'
+                                                              ],
+                                                              selectedFormIndex:
+                                                                  selectedFormIndex);
+                                                        }).then((_) {
+                                                      selectedFormIndex
+                                                          .dispose();
+                                                    });
+                                                  }
                                                 },
                                               ).paddingOnly(bottom: 16),
                                               PrimaryButton(
@@ -278,8 +295,13 @@ class EditPage extends StatelessWidget {
                                                         vertical: 12),
                                                 textStyle:
                                                     AppTextStyles.regularPx16,
-                                                onPress: () {
-                                                  const HomeRoute().go(context);
+                                                onPress: () async {
+                                                  await context
+                                                      .read<EditState>()
+                                                      .saveEditedChunks();
+                                                  if (context.mounted) {
+                                                    HomeRoute().go(context);
+                                                  }
                                                 },
                                               ).paddingOnly(bottom: 24),
                                             ],
@@ -287,33 +309,122 @@ class EditPage extends StatelessWidget {
 
                                       /// export as buttons
                                       Responsive(
-                                          desktop: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              CustomTextButton(
-                                                  text: 'Export as',
-                                                  onPressed: () async {
-                                                    await context
-                                                        .read<EditState>()
-                                                        .exportAsPDF();
-                                                  }).paddingOnly(right: 20),
-                                            ],
-                                          ),
-                                          mobile: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              CustomTextButton(
-                                                text: 'Export as',
-                                                onPressed: () async {
-                                                  await context
-                                                      .read<EditState>()
-                                                      .exportAsPDF();
-                                                },
-                                              ).paddingOnly(bottom: 16),
-                                            ],
-                                          )),
+                                        desktop: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () async {
+                                                await context
+                                                    .read<EditState>()
+                                                    .exportAsPDF();
+                                              },
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      WidgetStatePropertyAll(
+                                                          Colors.transparent)),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    'Export as as document',
+                                                    style: AppTextStyles
+                                                        .mediumPx16
+                                                        .copyWith(
+                                                      color: AppColors.text,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                    ),
+                                                  ).paddingOnly(right: 18),
+                                                  SvgPicture.asset(
+                                                    AppIcons.pdfIcon,
+                                                  ),
+                                                ],
+                                              ),
+                                            ).paddingOnly(right: 20),
+                                            TextButton(
+                                              onPressed: () async {
+                                                await context
+                                                    .read<EditState>()
+                                                    .exportAsCSV();
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    'Export as as document',
+                                                    style: AppTextStyles
+                                                        .mediumPx16
+                                                        .copyWith(
+                                                      color: AppColors.text,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                    ),
+                                                  ).paddingOnly(right: 18),
+                                                  SvgPicture.asset(
+                                                    AppIcons.csvIcon,
+                                                  ),
+                                                ],
+                                              ),
+                                            ).paddingOnly(right: 20),
+                                          ],
+                                        ),
+                                        mobile: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () async {
+                                                await context
+                                                    .read<EditState>()
+                                                    .exportAsPDF();
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Export as document',
+                                                    style: AppTextStyles
+                                                        .mediumPx16
+                                                        .copyWith(
+                                                      color: AppColors.text,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                    ),
+                                                  ).paddingOnly(right: 18),
+                                                  SvgPicture.asset(
+                                                    AppIcons.pdfIcon,
+                                                  ),
+                                                ],
+                                              ),
+                                            ).paddingOnly(bottom: 16),
+                                            TextButton(
+                                              onPressed: () async {
+                                                await context
+                                                    .read<EditState>()
+                                                    .exportAsCSV();
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Export as document',
+                                                    style: AppTextStyles
+                                                        .mediumPx16
+                                                        .copyWith(
+                                                      color: AppColors.text,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                    ),
+                                                  ).paddingOnly(right: 18),
+                                                  SvgPicture.asset(
+                                                      AppIcons.csvIcon),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ]).paddingAll(
                                     Responsive.isDesktop(context) ? 40 : 16),
                               ),

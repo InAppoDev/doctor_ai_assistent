@@ -10,6 +10,7 @@ class FormModel with _$FormModel {
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
     required String name,
+    String? conclusion,
     required int user,
   }) = _FormModel;
 

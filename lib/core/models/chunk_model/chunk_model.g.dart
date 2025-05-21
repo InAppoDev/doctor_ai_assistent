@@ -22,6 +22,7 @@ Map<String, dynamic> _$$ChunkModelImplToJson(_$ChunkModelImpl instance) =>
       'id': instance.id,
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
+      'translatedTranscription': instance.translatedTranscription,
       'speaker': instance.speaker,
       'transcription': instance.transcription,
       'time': instance.time,

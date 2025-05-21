@@ -12,6 +12,7 @@ _$FormModelImpl _$$FormModelImplFromJson(Map<String, dynamic> json) =>
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
       name: json['name'] as String,
+      conclusion: json['conclusion'] as String?,
       user: (json['user'] as num).toInt(),
     );
 
@@ -21,5 +22,6 @@ Map<String, dynamic> _$$FormModelImplToJson(_$FormModelImpl instance) =>
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
       'name': instance.name,
+      'conclusion': instance.conclusion,
       'user': instance.user,
     };

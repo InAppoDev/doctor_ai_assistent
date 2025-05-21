@@ -34,7 +34,6 @@ class HomeState extends ChangeNotifier {
     notifyListeners();
 
     logs = await _backendService.getLogs();
-    print('sdsdsdsdsds - ${logs.last}');
     isLoading = false;
     notifyListeners();
   }

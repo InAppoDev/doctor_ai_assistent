@@ -48,6 +48,16 @@ class PlayerProvider extends ChangeNotifier {
     notifyListeners(); // Notify UI of the updated playing state.
   }
 
+  void playPause() {
+    if (_player.playing) {
+      _player.pause();
+      setIsPlaying(false);
+    } else {
+      _player.play();
+      setIsPlaying(true);
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Audio Duration and Position
   // ---------------------------------------------------------------------------

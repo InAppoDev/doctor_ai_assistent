@@ -10,51 +10,64 @@ class RefreshTokenInterceptor extends Interceptor {
   final SharedPreferences _prefs;
   final Dio _dio;
 
+  Completer<void>? _tokenRefreshing;
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final token = _prefs.getString(PreferencesKeys.accessToken);
-    if (token != null) {
-      options.headers['Authorization'] = 'Bearer $token';
-    }
-    super.onRequest(options, handler);
+    options.headers.addAll(_authHeaders());
+    handler.next(options);
   }
 
   @override
   Future<void> onError(
-      DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
-      try {
-        final didRefresh = await _refreshToken();
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
+    final is401 = err.response?.statusCode == 401;
+    final isRefreshEndpoint = err.requestOptions.path.contains('refreshToken');
+    final alreadyRetried = err.requestOptions.headers['x-retried'] == 'true';
 
-        if (didRefresh) {
-          final retryResponse = await _retry(err.requestOptions);
-          return handler.resolve(retryResponse);
-        } else {
-          _handleTokenExpiration();
-          return super.onError(err, handler);
-        }
-      } catch (e) {
-        _handleTokenExpiration();
-        return super.onError(err, handler);
+    if (!is401 || isRefreshEndpoint || alreadyRetried) {
+      return super.onError(err, handler);
+    }
+
+    if (_tokenRefreshing != null) {
+      await _tokenRefreshing!.future;
+    } else {
+      _tokenRefreshing = Completer<void>();
+      final success = await _refreshToken();
+      _tokenRefreshing!.complete();
+      _tokenRefreshing = null;
+
+      if (!success) {
+        await _prefs.clear();
+        super.onError(err, handler);
+        _redirectToLogin();
+        return;
       }
     }
 
-    return super.onError(err, handler);
+    try {
+      final response = await _retry(err.requestOptions);
+      handler.resolve(response);
+    } catch (_) {
+      return super.onError(err, handler);
+    }
   }
 
   Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {
-    final token = _prefs.getString(PreferencesKeys.accessToken);
-    print('accessToken in _retry - $token');
-    if (token == null) throw Exception("No access token after refresh");
-
     final options = Options(
       method: requestOptions.method,
       headers: {
         ...requestOptions.headers,
-        'Authorization': 'Bearer $token',
+        ..._authHeaders(),
+        'x-retried': 'true',
       },
     );
 
+    debugPrint(
+      '🔁 Retrying request: ${requestOptions.method} ${requestOptions.path}',
+    );
     return _dio.request<dynamic>(
       requestOptions.path,
       data: requestOptions.data,
@@ -65,9 +78,7 @@ class RefreshTokenInterceptor extends Interceptor {
 
   Future<bool> _refreshToken() async {
     final refreshToken = _prefs.getString(PreferencesKeys.refreshToken);
-    print('refreshToken - $refreshToken');
     if (refreshToken == null) {
-      _redirectToLogin();
       return false;
     }
 
@@ -99,9 +110,9 @@ class RefreshTokenInterceptor extends Interceptor {
       await _prefs.remove(PreferencesKeys.accessToken);
       await _prefs.remove(PreferencesKeys.refreshToken);
     }
+
     await _prefs.remove(PreferencesKeys.accessToken);
     await _prefs.remove(PreferencesKeys.refreshToken);
-    _redirectToLogin();
     return false;
   }
 
@@ -114,16 +125,9 @@ class RefreshTokenInterceptor extends Interceptor {
     }
   }
 
-  void _handleTokenExpiration() async {
-    final context = navigatorKey.currentContext;
-    await _prefs.remove(PreferencesKeys.accessToken);
-    await _prefs.remove(PreferencesKeys.refreshToken);
-
-    if (context != null && context.mounted) {
-      LoginRoute().go(context);
-    } else {
-      debugPrint('Navigator context is null, cannot redirect to login.');
-    }
+  Map<String, String> _authHeaders() {
+    final token = _prefs.getString(PreferencesKeys.accessToken);
+    return token != null ? {'Authorization': 'Bearer $token'} : {};
   }
 }
 
