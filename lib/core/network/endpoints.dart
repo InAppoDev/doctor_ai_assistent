@@ -41,4 +41,5 @@ abstract class Endpoints {
   static const String refresh = '${users}refresh/';
   static const String register = '${users}register/';
   static const String verify = '${users}verify/';
+  static const String me = '${users}me/';
 }

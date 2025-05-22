@@ -3,12 +3,19 @@ import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
 import 'package:ecnx_ambient_listening/core/extensions/datetime_extension.dart';
 import 'package:ecnx_ambient_listening/core/models/appointment_model/appointment_model.dart';
+import 'package:ecnx_ambient_listening/core/models/user_model/user_model.dart';
 import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
 import 'package:flutter/material.dart';
 
 class PatientInformationWidget extends StatelessWidget {
   final AppointmentModel? patientInformation;
-  const PatientInformationWidget({super.key, required this.patientInformation});
+  final UserModel? user;
+
+  const PatientInformationWidget({
+    super.key,
+    required this.patientInformation,
+    required this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +45,9 @@ class PatientInformationWidget extends StatelessWidget {
       ).paddingOnly(bottom: 12),
       TitleAndSubtitle(
         title: 'Admitting Physician:',
-        subtitle: patientInformation?.physician ?? '',
+        subtitle: user != null
+            ? '${user!.firstName} ${user!.lastName}'
+            : patientInformation?.physician ?? '',
       ),
     ]);
   }

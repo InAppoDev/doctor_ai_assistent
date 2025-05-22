@@ -160,12 +160,13 @@ extension DateTimeExtension on DateTime {
 
   String getFormattedBirth() {
     final now = DateTime.now();
-    final age = now.year -
-        year -
-        (now.isBefore(DateTime(now.year, month, day)) ? 1 : 0);
+    int age = now.year - year;
 
-    final formattedDate = '${getShortMonthName()} $day, $year';
+    if (now.month < month || (now.month == month && now.day < day)) {
+      age--;
+    }
 
-    return '$age yo, $formattedDate';
+    final shortMonth = getShortMonthName();
+    return '$age yo, $shortMonth, $day, $year';
   }
 }

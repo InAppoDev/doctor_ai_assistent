@@ -57,8 +57,7 @@ class AppointmentTileWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TimeWithIconWidget(
-                        time: appointment
-                            .when, //TODO   // minutes: appointment.minutes,
+                        time: appointment.when,
                       ),
                       if (isLogNotNull) ...[
                         SizedBox(
@@ -75,7 +74,6 @@ class AppointmentTileWidget extends StatelessWidget {
                       if (Responsive.isMobile(context)) ...[
                         const SizedBox(height: 24),
                         ReviewCheckboxWidget(isReviewed: isLogNotNull)
-                        //TODO   //  appointment.isReviewed,
                       ]
                     ],
                   ),

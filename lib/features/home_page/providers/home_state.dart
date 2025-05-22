@@ -1,13 +1,15 @@
 import 'package:ecnx_ambient_listening/core/models/appointment_model/appointment_model.dart';
 import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/core/network/network.dart';
+import 'package:ecnx_ambient_listening/core/speech_to_text/speech_to_text_service.dart';
+import 'package:ecnx_ambient_listening/core/utils/ui_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:speech_to_text/speech_recognition_result.dart';
 
 class HomeState extends ChangeNotifier {
   late final Network _backendService;
-  late stt.SpeechToText _speech;
+  final SpeechToTextService _speechService = SpeechToTextService();
   bool _isListening = false;
 
   bool get isListening => _isListening;
@@ -20,11 +22,10 @@ class HomeState extends ChangeNotifier {
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
     _backendService = Network(prefs);
-    _speech = stt.SpeechToText();
-    await _speech.initialize();
     await getAppointments();
     await _getLogs();
     await _backendService.getForms();
+    await _speechService.init();
   }
 
   List<LogModel> logs = [];
@@ -78,48 +79,32 @@ class HomeState extends ChangeNotifier {
   }
 
   void onMicTap() async {
-    if (!_isListening) {
-      final available = await _speech.initialize(
-        onStatus: (status) {
-          if (_isListening && (status == 'done' || status == 'notListening')) {
-            _speech.listen(
-              listenFor: Duration(seconds: 45),
-              pauseFor: Duration(seconds: 15),
-              listenOptions: stt.SpeechListenOptions(
-                listenMode: stt.ListenMode.dictation,
-              ),
-              onResult: (result) {
-                final text = result.recognizedWords;
-                _searchController.text = text;
-                notifyListeners();
-                getAppointments();
-              },
-              localeId: 'en_US',
-            );
-          }
-        },
-      );
+    if (isListening) {
+      _speechService.stopListening();
+      _isListening = false;
+      notifyListeners();
+      return;
+    }
 
-      if (available) {
-        _isListening = true;
-        notifyListeners();
-        _speech.listen(
-          listenFor: Duration(seconds: 45),
-          pauseFor: Duration(seconds: 15),
-          listenOptions: stt.SpeechListenOptions(
-            listenMode: stt.ListenMode.dictation,
-          ),
-          onResult: (result) {
-            final text = result.recognizedWords;
-            _searchController.text = text;
-            notifyListeners();
-            getAppointments();
-          },
-          localeId: 'en_US',
+    _isListening = true;
+    notifyListeners();
+
+    try {
+      await _speechService.startListening((SpeechRecognitionResult result) {
+        final recognizedText = result.recognizedWords;
+
+        _searchController.text +=
+            (recognizedText.isNotEmpty ? ' $recognizedText' : '');
+
+        _searchController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _searchController.text.length),
         );
-      }
-    } else {
-      _speech.stop();
+
+        notifyListeners();
+      });
+    } catch (e) {
+      showToast('Microphone error');
+      debugPrint('Error in onMicTap: $e');
       _isListening = false;
       notifyListeners();
     }
@@ -142,14 +127,24 @@ class HomeState extends ChangeNotifier {
     final query = _searchController.text.trim().toLowerCase();
 
     final filtered = query.isEmpty
-        ? filteredByDate.toList()
+        ? filteredByDate
         : filteredByDate.where((appointment) {
             final firstName = appointment.firstName.toLowerCase();
             final lastName = appointment.lastName.toLowerCase();
             return firstName.contains(query) || lastName.contains(query);
-          }).toList();
+          });
 
-    _appointments.addAll(filtered);
+    final seenIds = <int>{};
+    final uniqueFiltered = <AppointmentModel>[];
+
+    for (var appt in filtered) {
+      if (!seenIds.contains(appt.id)) {
+        seenIds.add(appt.id);
+        uniqueFiltered.add(appt);
+      }
+    }
+
+    _appointments.addAll(uniqueFiltered);
 
     isLoading = false;
     notifyListeners();

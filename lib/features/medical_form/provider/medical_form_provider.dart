@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:ecnx_ambient_listening/core/models/appointment_model/appointment_model.dart';
 import 'package:ecnx_ambient_listening/core/models/form_model/form_model.dart';
+import 'package:ecnx_ambient_listening/core/models/user_model/user_model.dart';
 import 'package:ecnx_ambient_listening/core/network/network.dart';
 import 'package:ecnx_ambient_listening/core/speech_to_text/speech_to_text_service.dart';
+import 'package:ecnx_ambient_listening/core/utils/ui_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -21,12 +23,16 @@ class MedicalFormProvider extends ChangeNotifier {
   bool isListening = false;
 
   Future<void> init() async {
+    isLoading = true;
+    notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     _backendService = Network(prefs);
     await getAppointment();
     await _getForms();
-
+    await _getUser();
     await _speechService.init();
+    isLoading = false;
+    notifyListeners();
   }
 
   late final Network _backendService;
@@ -38,22 +44,37 @@ class MedicalFormProvider extends ChangeNotifier {
   TextEditingController get searchController => _searchController;
 
   Future<void> getAppointment() async {
-    isLoading = true;
-    notifyListeners();
+    try {
+      appointment = await _backendService.getAppointmentById(appointmentId);
+    } catch (e) {
+      showToast('Failed to load appointment');
+      debugPrint('Error in getAppointment: $e');
+    }
+  }
 
-    appointment = await _backendService.getAppointmentById(appointmentId);
-    isLoading = false;
-    notifyListeners();
+  UserModel? user;
+
+  Future<void> _getUser() async {
+    try {
+      user = await _backendService.getUserData();
+      notifyListeners();
+    } catch (e) {
+      showToast('Something went wrong');
+    }
   }
 
   List<FormModel> forms = [];
 
   Future<void> createForm() async {
-    final form =
-        await _backendService.createForm(name: 'History of Present Illness');
-    if (form != null) {
-      forms.add(form);
-      notifyListeners();
+    try {
+      final form =
+          await _backendService.createForm(name: 'History of Present Illness');
+      if (form != null) {
+        forms.add(form);
+        notifyListeners();
+      }
+    } catch (e) {
+      showToast('Something went wrong');
     }
   }
 
@@ -63,8 +84,13 @@ class MedicalFormProvider extends ChangeNotifier {
   }
 
   Future<void> _getForms() async {
-    forms = await _backendService.getForms();
-    notifyListeners();
+    try {
+      forms = await _backendService.getForms();
+      notifyListeners();
+    } catch (e) {
+      showToast('Failed to load forms');
+      debugPrint('Error in _getForms: $e');
+    }
   }
 
   void updateFormTitleText(int i, String text) {
@@ -88,12 +114,16 @@ class MedicalFormProvider extends ChangeNotifier {
   }
 
   Future<void> updateForm() async {
-    for (final form in forms) {
-      await _backendService.updateForm(
-        id: form.id,
-        name: form.name,
-        conclusion: form.conclusion ?? '',
-      );
+    try {
+      for (final form in forms) {
+        await _backendService.updateForm(
+          id: form.id,
+          name: form.name,
+          conclusion: form.conclusion ?? '',
+        );
+      }
+    } catch (e) {
+      showToast('Something went wrong');
     }
   }
 
@@ -112,53 +142,63 @@ class MedicalFormProvider extends ChangeNotifier {
   }
 
   Future<void> exportAsPDF() async {
-    final pdf = pw.Document();
+    try {
+      final pdf = pw.Document();
 
-    pdf.addPage(
-      pw.MultiPage(
-        build: (context) => forms.map((chunk) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(chunk.name,
-                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-              pw.Text(chunk.conclusion ?? ''),
-              pw.SizedBox(height: 10),
-            ],
-          );
-        }).toList(),
-      ),
-    );
+      pdf.addPage(
+        pw.MultiPage(
+          build: (context) => forms.map((chunk) {
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(chunk.name,
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                pw.Text(chunk.conclusion ?? ''),
+                pw.SizedBox(height: 10),
+              ],
+            );
+          }).toList(),
+        ),
+      );
 
-    await Printing.layoutPdf(onLayout: (format) => pdf.save());
+      await Printing.layoutPdf(onLayout: (format) => pdf.save());
+    } catch (e) {
+      showToast('Failed to export PDF');
+      debugPrint('Error in exportAsPDF: $e');
+    }
   }
 
   Future<void> exportAsCSV() async {
-    List<List<String>> csvData = [
-      ['Title', 'Conclusion'],
-    ];
+    try {
+      List<List<String>> csvData = [
+        ['Title', 'Conclusion'],
+      ];
 
-    for (var chunk in forms) {
-      csvData.add([
-        'Speaker ${chunk.name}',
-        chunk.conclusion?.replaceAll('\n', ' ') ?? '',
-      ]);
+      for (var chunk in forms) {
+        csvData.add([
+          'Speaker ${chunk.name}',
+          chunk.conclusion?.replaceAll('\n', ' ') ?? '',
+        ]);
+      }
+
+      String csvString = const ListToCsvConverter().convert(csvData);
+
+      final directory = await getApplicationDocumentsDirectory();
+      final path = '${directory.path}/transcription_export.csv';
+      final file = File(path);
+
+      await file.writeAsString(csvString);
+
+      await SharePlus.instance.share(
+        ShareParams(
+          text: 'Exported CSV file',
+          files: [XFile(path)],
+        ),
+      );
+    } catch (e) {
+      showToast('Failed to export CSV');
+      debugPrint('Error in exportAsCSV: $e');
     }
-
-    String csvString = const ListToCsvConverter().convert(csvData);
-
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/transcription_export.csv';
-    final file = File(path);
-
-    await file.writeAsString(csvString);
-
-    await SharePlus.instance.share(
-      ShareParams(
-        text: 'Exported CSV file',
-        files: [XFile(path)],
-      ),
-    );
   }
 
   void onMicTap() async {
@@ -172,18 +212,25 @@ class MedicalFormProvider extends ChangeNotifier {
     isListening = true;
     notifyListeners();
 
-    await _speechService.startListening((SpeechRecognitionResult result) {
-      final recognizedText = result.recognizedWords;
+    try {
+      await _speechService.startListening((SpeechRecognitionResult result) {
+        final recognizedText = result.recognizedWords;
 
-      _searchController.text +=
-          (recognizedText.isNotEmpty ? ' $recognizedText' : '');
+        _searchController.text +=
+            (recognizedText.isNotEmpty ? ' $recognizedText' : '');
 
-      _searchController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _searchController.text.length),
-      );
+        _searchController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _searchController.text.length),
+        );
 
+        notifyListeners();
+      });
+    } catch (e) {
+      showToast('Microphone error');
+      debugPrint('Error in onMicTap: $e');
+      isListening = false;
       notifyListeners();
-    });
+    }
   }
 
   /// clear the found search terms

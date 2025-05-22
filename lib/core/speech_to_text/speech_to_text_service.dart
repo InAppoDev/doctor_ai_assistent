@@ -11,9 +11,7 @@ class SpeechToTextService {
   // Initialize the speech service
   Future<void> init() async {
     bool available = await _speechToText.initialize();
-    if (!available) {
-      print("Speech recognition not available.");
-    }
+    if (!available) {}
   }
 
   // Start listening for speech input

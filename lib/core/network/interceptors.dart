@@ -13,9 +13,62 @@ class RefreshTokenInterceptor extends Interceptor {
   Completer<void>? _tokenRefreshing;
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    if (_shouldRefreshSoon()) {
+      if (_tokenRefreshing != null) {
+        await _tokenRefreshing!.future;
+      } else {
+        _tokenRefreshing = Completer<void>();
+        final success = await _refreshToken();
+        _tokenRefreshing!.complete();
+        _tokenRefreshing = null;
+
+        if (!success) {
+          await _prefs.clear();
+          _redirectToLogin();
+          handler.reject(
+            DioException(
+              requestOptions: options,
+              type: DioExceptionType.cancel,
+              error: 'Token refresh failed',
+            ),
+          );
+          return;
+        }
+      }
+    }
+
     options.headers.addAll(_authHeaders());
     handler.next(options);
+  }
+
+  bool _shouldRefreshSoon() {
+    final token = _prefs.getString(PreferencesKeys.accessToken);
+    if (token == null || token.isEmpty) return false;
+
+    final parts = token.split('.');
+    if (parts.length != 3) return false;
+
+    try {
+      final payload = base64Url.normalize(parts[1]);
+      final decoded = json.decode(utf8.decode(base64Url.decode(payload)));
+      if (decoded is Map<String, dynamic>) {
+        final expSeconds = decoded['exp'] as int?;
+        if (expSeconds == null) return true;
+
+        final exp = DateTime.fromMillisecondsSinceEpoch(expSeconds * 1000);
+        final now = DateTime.now();
+
+        return now.add(const Duration(minutes: 1)).isAfter(exp);
+      } else {
+        return false;
+      }
+    } catch (_) {
+      return false;
+    }
   }
 
   @override
@@ -23,57 +76,7 @@ class RefreshTokenInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    final is401 = err.response?.statusCode == 401;
-    final isRefreshEndpoint = err.requestOptions.path.contains('refreshToken');
-    final alreadyRetried = err.requestOptions.headers['x-retried'] == 'true';
-
-    if (!is401 || isRefreshEndpoint || alreadyRetried) {
-      return super.onError(err, handler);
-    }
-
-    if (_tokenRefreshing != null) {
-      await _tokenRefreshing!.future;
-    } else {
-      _tokenRefreshing = Completer<void>();
-      final success = await _refreshToken();
-      _tokenRefreshing!.complete();
-      _tokenRefreshing = null;
-
-      if (!success) {
-        await _prefs.clear();
-        super.onError(err, handler);
-        _redirectToLogin();
-        return;
-      }
-    }
-
-    try {
-      final response = await _retry(err.requestOptions);
-      handler.resolve(response);
-    } catch (_) {
-      return super.onError(err, handler);
-    }
-  }
-
-  Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {
-    final options = Options(
-      method: requestOptions.method,
-      headers: {
-        ...requestOptions.headers,
-        ..._authHeaders(),
-        'x-retried': 'true',
-      },
-    );
-
-    debugPrint(
-      '🔁 Retrying request: ${requestOptions.method} ${requestOptions.path}',
-    );
-    return _dio.request<dynamic>(
-      requestOptions.path,
-      data: requestOptions.data,
-      queryParameters: requestOptions.queryParameters,
-      options: options,
-    );
+    return super.onError(err, handler);
   }
 
   Future<bool> _refreshToken() async {

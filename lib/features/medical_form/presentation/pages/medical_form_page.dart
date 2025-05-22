@@ -91,7 +91,9 @@ class _MedicalFormPageState extends State<MedicalFormPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             GestureDetector(
-                                              onTap: () => context.pop(),
+                                              onTap: () {
+                                                const HomeRoute().go(context);
+                                              },
                                               child: const Icon(
                                                   Icons.arrow_back,
                                                   color: AppColors.accentBlue),
@@ -147,6 +149,7 @@ class _MedicalFormPageState extends State<MedicalFormPage> {
                                           Flexible(
                                             flex: 4,
                                             child: PatientInformationWidget(
+                                              user: medicalProvider.user,
                                               patientInformation:
                                                   medicalState.appointment,
                                             ).paddingOnly(

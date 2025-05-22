@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -128,6 +129,21 @@ class Network {
     }
   }
 
+  Future<UserModel?> getUserData() async {
+    final response = await _makeRequest(
+      requestType: RequestType.get,
+      endpoint: Endpoints.me,
+    );
+    if (response != null &&
+        response.data != null &&
+        response.statusCode == 200) {
+      return UserModel.fromJson(response.data);
+    } else {
+      _logger.e("getUserData failed: ${response?.data}");
+      return null;
+    }
+  }
+
   Future<bool> loginUser({
     required String email,
     required String password,
@@ -144,7 +160,6 @@ class Network {
     if (response?.statusCode == 200 && response?.data != null) {
       final access = response!.data["access"];
       final refresh = response.data["refresh"];
-      print('tokennnnnnnnnnnn - $access');
       if (access != null && refresh != null) {
         _prefs.setString(PreferencesKeys.accessToken, access);
         _prefs.setString(PreferencesKeys.refreshToken, refresh);

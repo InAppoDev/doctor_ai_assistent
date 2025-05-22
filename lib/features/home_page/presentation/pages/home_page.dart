@@ -102,9 +102,7 @@ class HomePage extends StatelessWidget {
                                 /// the view model should update the appointments list based on the search result
                                 // context.read<HomeState>().searchPatient();
                               },
-                              onMicTap: () {
-                                homeProvider.onMicTap();
-                              },
+                              onMicTap: homeProvider.onMicTap,
                             ).paddingOnly(bottom: 24),
                             SchedulePatientButton(
                               onPressed: () async {

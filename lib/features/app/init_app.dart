@@ -22,7 +22,10 @@ Future<void> initApp() async {
 
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (_) => authProvider),
+      ChangeNotifierProvider(
+        lazy: false,
+        create: (_) => authProvider,
+      ),
     ],
     child: MyApp(),
   ));

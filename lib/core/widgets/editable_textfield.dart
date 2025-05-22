@@ -44,7 +44,6 @@ class _EditableTextfieldState extends State<EditableTextfield> {
     _subscription = _controller.document.changes.listen((event) {
       widget.onChunkTextChanged(_controller.document.toPlainText());
     });
-    print('widget.searchQuery 1 - ${widget.searchQuery}');
     if (widget.searchQuery != null && widget.searchQuery!.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         highlightSearchMatches();
