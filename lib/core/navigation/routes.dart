@@ -1,7 +1,7 @@
 // lib/core/navigation/app_router.dart
+import 'package:ecnx_ambient_listening/features/auth/presentation/pages/login/controllers/auth_controller.dart';
 import 'package:ecnx_ambient_listening/features/auth/presentation/pages/login/login_page.dart';
 import 'package:ecnx_ambient_listening/features/auth/presentation/pages/registration/registration_page.dart';
-import 'package:ecnx_ambient_listening/features/auth/provider/auth_provider.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/pages/edit_page.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/pages/transcribed_list_page.dart';
 import 'package:ecnx_ambient_listening/features/home_page/presentation/pages/home_page.dart';
@@ -10,7 +10,6 @@ import 'package:ecnx_ambient_listening/features/record/presentation/pages/record
 import 'package:ecnx_ambient_listening/features/schedule/presentation/pages/schedule_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 part 'routes.g.dart';
 
@@ -23,8 +22,7 @@ class HomeRoute extends GoRouteData {
 
   @override
   String? redirect(BuildContext context, GoRouterState state) {
-    final authProvider = context.read<AuthProvider>();
-    return authProvider.isLoggedIn ? null : const LoginRoute().location;
+    return AuthController.authorized ? null : const LoginRoute().location;
   }
 }
 

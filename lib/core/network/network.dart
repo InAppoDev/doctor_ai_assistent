@@ -15,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/auth/presentation/pages/login/controllers/auth_controller.dart';
 import 'api_exception.dart';
 
 part 'endpoints.dart';
@@ -79,25 +80,24 @@ class Network {
     }
   }
 
-  Future<bool> autoLogin() async {
-    String? accessToken = _prefs.getString(PreferencesKeys.accessToken);
-    String? refreshToken = _prefs.getString(PreferencesKeys.refreshToken);
+  Future<void> autoLogin() async {
+    final accessToken = _prefs.getString(PreferencesKeys.accessToken);
+    final refreshToken = _prefs.getString(PreferencesKeys.refreshToken);
 
     if (accessToken != null && refreshToken != null) {
       try {
-        return true;
+        AuthController.authorized = true;
       } on DioException catch (e) {
         final exception = handleException(e);
         if (exception is HttpError && exception.statusCode == 401) {
           await refreshTokens(refreshToken: refreshToken);
         } else {
-          return false;
+          AuthController.authorized = false;
         }
       } catch (_) {
-        return false;
+        AuthController.authorized = false;
       }
     }
-    return false;
   }
 
   // --- User Authentication Methods ---

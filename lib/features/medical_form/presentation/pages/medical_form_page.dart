@@ -202,26 +202,34 @@ class _MedicalFormPageState extends State<MedicalFormPage> {
                                             )
                                           : Column(
                                               children: [
-                                                PrimaryButton(
-                                                  text: 'Submit',
-                                                  color: AppColors.accentBlue,
-                                                  borderColor:
-                                                      AppColors.accentBlue,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 12),
-                                                  textStyle: AppTextStyles
-                                                      .regularPx16
-                                                      .copyWith(
-                                                          color:
-                                                              AppColors.white),
-                                                  onPress: () async {
-                                                    await medicalProvider
-                                                        .updateForm();
-                                                    if (context.mounted) {
-                                                      HomeRoute().push(context);
-                                                    }
-                                                  },
-                                                ).paddingOnly(bottom: 24),
+                                                medicalProvider.isSaving
+                                                    ? Center(
+                                                        child:
+                                                            CircularProgressIndicator())
+                                                    : PrimaryButton(
+                                                        text: 'Submit',
+                                                        color: AppColors
+                                                            .accentBlue,
+                                                        borderColor: AppColors
+                                                            .accentBlue,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 12),
+                                                        textStyle: AppTextStyles
+                                                            .regularPx16
+                                                            .copyWith(
+                                                                color: AppColors
+                                                                    .white),
+                                                        onPress: () async {
+                                                          await medicalProvider
+                                                              .updateForm();
+                                                          if (context.mounted) {
+                                                            HomeRoute()
+                                                                .push(context);
+                                                          }
+                                                        },
+                                                      ).paddingOnly(bottom: 24),
                                               ],
                                             ),
 

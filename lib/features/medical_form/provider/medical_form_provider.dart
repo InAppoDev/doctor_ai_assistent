@@ -21,6 +21,7 @@ class MedicalFormProvider extends ChangeNotifier {
   final SpeechToTextService _speechService = SpeechToTextService();
 
   bool isListening = false;
+  bool isSaving = false;
 
   Future<void> init() async {
     isLoading = true;
@@ -114,6 +115,8 @@ class MedicalFormProvider extends ChangeNotifier {
   }
 
   Future<void> updateForm() async {
+    isSaving = true;
+    notifyListeners();
     try {
       for (final form in forms) {
         await _backendService.updateForm(
@@ -125,6 +128,8 @@ class MedicalFormProvider extends ChangeNotifier {
     } catch (e) {
       showToast('Something went wrong');
     }
+    isSaving = false;
+    notifyListeners();
   }
 
   // ---------------------------------------------------------------------------

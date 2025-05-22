@@ -20,10 +20,11 @@ Future<void> initApp() async {
 
   final authProvider = getIt<AuthProvider>();
 
+  await authProvider.init();
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(
-        lazy: false,
         create: (_) => authProvider,
       ),
     ],
