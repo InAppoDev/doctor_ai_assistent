@@ -26,57 +26,59 @@ class PrimaryButton extends StatelessWidget {
   final double? iconSize;
   final TextStyle? textStyle;
   final bool? fullWidth;
-  const PrimaryButton({
-    super.key,
-    required this.onPress,
-    this.text = '',
-    this.isLoading = false,
-    this.height = 44,
-    this.color,
-    this.textColor = AppColors.text,
-    this.disabledColor,
-    this.isDisabled = false,
-    this.elevation = 0,
-    this.icon,
-    this.suffixIcon,
-    this.iconColor,
-    this.borderColor = Colors.transparent,
-    this.borderRadius = 6.0,
-    this.mainAxisAlignment = MainAxisAlignment.center,
-    this.padding,
-    this.textSize = 12,
-    this.textAlign,
-    this.fontWeight,
-    this.iconSize = 24.0,
-    this.textStyle,
-    this.fullWidth = false
-  });
+  const PrimaryButton(
+      {super.key,
+      required this.onPress,
+      this.text = '',
+      this.isLoading = false,
+      this.height = 44,
+      this.color,
+      this.textColor = AppColors.text,
+      this.disabledColor,
+      this.isDisabled = false,
+      this.elevation = 0,
+      this.icon,
+      this.suffixIcon,
+      this.iconColor,
+      this.borderColor = Colors.transparent,
+      this.borderRadius = 6.0,
+      this.mainAxisAlignment = MainAxisAlignment.center,
+      this.padding,
+      this.textSize = 12,
+      this.textAlign,
+      this.fontWeight,
+      this.iconSize = 24.0,
+      this.textStyle,
+      this.fullWidth = false});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: fullWidth == true ? MediaQuery.of(context).size.width : Responsive.isDesktop(context) ? 324 : MediaQuery.of(context).size.width,
-      height: height,
-      child: MaterialButton(
-        elevation: elevation,
-        highlightElevation: 0,
-        onPressed: isDisabled || isLoading ? null : () => onPress(),
-        disabledTextColor: disabledColor ?? AppColors.text,
-        color: color ?? AppColors.accentBlue,
-        padding: padding ?? EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
-          side: BorderSide(color: borderColor!, width: 2),
-        ),
-        child: buildChild(context),
-      ),
-    );
+    return isLoading
+        ? const CircularProgressIndicator.adaptive()
+        : SizedBox(
+            width: fullWidth == true
+                ? MediaQuery.of(context).size.width
+                : Responsive.isDesktop(context)
+                    ? 324
+                    : MediaQuery.of(context).size.width,
+            height: height,
+            child: MaterialButton(
+              elevation: elevation,
+              highlightElevation: 0,
+              onPressed: isDisabled || isLoading ? null : () => onPress(),
+              disabledTextColor: disabledColor ?? AppColors.text,
+              color: color ?? AppColors.accentBlue,
+              padding: padding ?? EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(borderRadius),
+                side: BorderSide(color: borderColor!, width: 2),
+              ),
+              child: buildChild(context),
+            ),
+          );
   }
 
   Widget buildChild(BuildContext context) {
-    if (isLoading) {
-      return const SizedBox(height: 25, child: CircularProgressIndicator.adaptive());
-    }
     if (suffixIcon != null && icon != null) {
       return Row(
         mainAxisAlignment: mainAxisAlignment,
@@ -90,14 +92,16 @@ class PrimaryButton extends StatelessWidget {
           Text(
             text,
             textAlign: textAlign,
-            style: textStyle ?? (Responsive.isDesktop(context) ?
-                AppTextStyles.regularPx20.copyWith(
-                  color: textColor,
-                  fontWeight: fontWeight,
-                ) : AppTextStyles.regularPx16.copyWith(
-                  color: textColor,
-                  fontWeight: fontWeight,
-                )),
+            style: textStyle ??
+                (Responsive.isDesktop(context)
+                    ? AppTextStyles.regularPx20.copyWith(
+                        color: textColor,
+                        fontWeight: fontWeight,
+                      )
+                    : AppTextStyles.regularPx16.copyWith(
+                        color: textColor,
+                        fontWeight: fontWeight,
+                      )),
           ),
           const Expanded(child: SizedBox()),
           Image.asset(
@@ -121,14 +125,16 @@ class PrimaryButton extends StatelessWidget {
           Text(
             text,
             textAlign: textAlign,
-            style: textStyle ?? (Responsive.isDesktop(context) ?
-                AppTextStyles.regularPx20.copyWith(
-                  color: textColor,
-                  fontWeight: fontWeight,
-                ) : AppTextStyles.regularPx16.copyWith(
-                  color: textColor,
-                  fontWeight: fontWeight,
-                )),
+            style: textStyle ??
+                (Responsive.isDesktop(context)
+                    ? AppTextStyles.regularPx20.copyWith(
+                        color: textColor,
+                        fontWeight: fontWeight,
+                      )
+                    : AppTextStyles.regularPx16.copyWith(
+                        color: textColor,
+                        fontWeight: fontWeight,
+                      )),
           )
         ],
       );
@@ -141,14 +147,16 @@ class PrimaryButton extends StatelessWidget {
           Text(
             text,
             textAlign: textAlign,
-            style: textStyle ?? (Responsive.isDesktop(context) ?
-                AppTextStyles.regularPx20.copyWith(
-                  color: textColor,
-                  fontWeight: fontWeight,
-                ) : AppTextStyles.regularPx16.copyWith(
-                  color: textColor,
-                  fontWeight: fontWeight,
-                )),
+            style: textStyle ??
+                (Responsive.isDesktop(context)
+                    ? AppTextStyles.regularPx20.copyWith(
+                        color: textColor,
+                        fontWeight: fontWeight,
+                      )
+                    : AppTextStyles.regularPx16.copyWith(
+                        color: textColor,
+                        fontWeight: fontWeight,
+                      )),
           ),
           const Expanded(child: SizedBox()),
           Image.asset(
@@ -163,11 +171,13 @@ class PrimaryButton extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      style: textStyle ?? (Responsive.isDesktop(context) ?
-                AppTextStyles.regularPx20.copyWith(
+      style: textStyle ??
+          (Responsive.isDesktop(context)
+              ? AppTextStyles.regularPx20.copyWith(
                   color: textColor,
                   fontWeight: fontWeight,
-                ) : AppTextStyles.regularPx16.copyWith(
+                )
+              : AppTextStyles.regularPx16.copyWith(
                   color: textColor,
                   fontWeight: fontWeight,
                 )),

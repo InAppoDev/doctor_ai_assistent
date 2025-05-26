@@ -80,9 +80,9 @@ class EditTextTile extends StatelessWidget {
                         children: [
                           if (Responsive.isMobile(context))
                             AvatarWidget(
-                              color: avatarColors[
+                              color: speakerColors[
                                   int.parse(chunkModel.speaker) %
-                                      avatarColors.length],
+                                      speakerColors.length],
                             ).paddingOnly(right: 12),
                           Expanded(
                             flex: 2,

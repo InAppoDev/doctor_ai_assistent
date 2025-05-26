@@ -69,6 +69,13 @@ class RegisterState extends ChangeNotifier {
       password: passwordController.text.trim(),
     );
 
+    if (user != null) {
+      await _backendService.loginUser(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+    }
+
     isLoading = false;
     notifyListeners();
 

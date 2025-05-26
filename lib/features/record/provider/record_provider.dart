@@ -22,19 +22,20 @@ class RecordProvider extends ChangeNotifier {
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   late StreamController<Uint8List> _audioStreamController;
 
-  final List<String> recordedText = [];
+  final List<TranscriptionModel> recordedText = [];
 
   final record = AudioRecorder();
   late final SharedPreferences _prefs;
   late final WebSocketService _socketService;
   late final Network _network;
 
-  String? _audioFilePath; // final merged output
+  String? _audioFilePath;
   final List<String> _chunkPaths = [];
   final List<TranscriptionModel> transcriptTimeline = [];
 
-  int _status = 0; // 0=stopped, 1=recording, 2=paused, 3=closed
+  int _status = 0;
   bool _showTextField = true;
+  bool isLoading = false;
   Timer? _timer;
   int seconds = 0;
   int minutes = 0;
@@ -146,19 +147,11 @@ class RecordProvider extends ChangeNotifier {
       transcription: transcript,
       time: transcriptReturnModel.time,
     );
-    recordedText.add(model.transcription);
+    recordedText.add(model);
     transcriptTimeline.add(model);
 
     notifyListeners();
   }
-
-  // void createChunks() {
-  //   _network.createChunk(
-  //       speaker: speaker,
-  //       transcription: transcription,
-  //       time: time,
-  //       logId: logId);
-  // }
 
   Future<void> pauseRecording() async {
     if (_status != 1) return;
@@ -235,6 +228,8 @@ class RecordProvider extends ChangeNotifier {
   Future<void> saveMedicalForm(
     AppointmentModel appointment,
   ) async {
+    isLoading = true;
+    notifyListeners();
     FormModel form;
     final key = await _socketService.requestAudioKey();
     debugPrint('audioKey - $key');
@@ -261,7 +256,7 @@ class RecordProvider extends ChangeNotifier {
         );
       }
     }
-
+    isLoading = false;
     notifyListeners();
   }
 

@@ -52,7 +52,6 @@ class _RecordPageState extends State<RecordPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('ssss appointmentId - ${widget.appointment}');
     return ChangeNotifierProvider(
       lazy: false,
       create: (context) => RecordProvider(),
@@ -202,191 +201,202 @@ class _RecordPageState extends State<RecordPage> {
                             recordProvider.status == 3)
 
                           /// when paused show buttons to navigate to other pages
-                          Responsive(
-                              desktop: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  PrimaryButton(
-                                    text: 'Fill out a medical form',
-                                    textColor: AppColors.white,
-                                    color: AppColors.accentBlue,
-                                    borderColor: AppColors.accentBlue,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12),
-                                    onPress: () {
-                                      showDialog(
+                          recordProvider.isLoading
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Responsive(
+                                  desktop: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      PrimaryButton(
+                                        text: 'Fill out a medical form',
+                                        textColor: AppColors.white,
+                                        color: AppColors.accentBlue,
+                                        borderColor: AppColors.accentBlue,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12),
+                                        onPress: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return MedicalFormDialogWidget(
+                                                    onCloseClick: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    onSaveClick: () async {
+                                                      await recordProvider
+                                                          .saveMedicalForm(
+                                                        widget.appointment,
+                                                      );
+                                                      await recordProvider
+                                                          .stopRecording()
+                                                          .then((_) {
+                                                        recordProvider.close();
+                                                        if (context.mounted &&
+                                                            recordProvider
+                                                                    .log !=
+                                                                null) {
+                                                          MedicalFormRoute(
+                                                            MedicalFormPageArgs(
+                                                                log:
+                                                                    recordProvider
+                                                                        .log!),
+                                                          ).push(context);
+                                                        }
+                                                      });
+                                                    },
+                                                    medicalForms: medicalForms,
+                                                    selectedFormIndex:
+                                                        selectedFormIndex);
+                                              });
+                                        },
+                                      ).paddingOnly(right: 20),
+                                      PrimaryButton(
+                                        text: 'Edit text',
+                                        textColor: AppColors.text,
+                                        color: Colors.transparent,
+                                        borderColor: AppColors.accentBlue,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12),
+                                        onPress: () async {
+                                          await recordProvider.saveMedicalForm(
+                                            widget.appointment,
+                                          );
+                                          await recordProvider
+                                              .stopRecording()
+                                              .then((_) {
+                                            recordProvider.close();
+                                            if (context.mounted) {
+                                              if (recordProvider.log != null) {
+                                                EditRoute(
+                                                    $extra: EditPageArgs(
+                                                  appointmentId:
+                                                      widget.appointment.id,
+                                                  log: recordProvider.log!,
+                                                )).push(context);
+                                              } else {
+                                                showToast(
+                                                    'Something went wrong');
+                                              }
+                                            }
+                                          });
+                                        },
+                                      ).paddingOnly(right: 20),
+                                      PrimaryButton(
+                                        text: 'Save',
+                                        textColor: AppColors.text,
+                                        color: Colors.transparent,
+                                        borderColor: AppColors.accentBlue,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12),
+                                        onPress: () async {
+                                          await recordProvider.saveMedicalForm(
+                                            widget.appointment,
+                                          );
+                                          if (context.mounted) {
+                                            HomeRoute().push(context);
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  mobile: Column(children: [
+                                    PrimaryButton(
+                                      text: 'Fill out a medical form',
+                                      textColor: AppColors.white,
+                                      color: AppColors.accentBlue,
+                                      borderColor: AppColors.accentBlue,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12),
+                                      textStyle: AppTextStyles.regularPx16
+                                          .copyWith(color: AppColors.white),
+                                      onPress: () {
+                                        showDialog(
                                           context: context,
                                           builder: (context) {
                                             return MedicalFormDialogWidget(
-                                                onCloseClick: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                onSaveClick: () async {
-                                                  await recordProvider
-                                                      .saveMedicalForm(
-                                                    widget.appointment,
-                                                  );
-                                                  await recordProvider
-                                                      .stopRecording()
-                                                      .then((_) {
-                                                    recordProvider.close();
-                                                    if (context.mounted &&
-                                                        recordProvider.log !=
-                                                            null) {
-                                                      MedicalFormRoute(
-                                                        MedicalFormPageArgs(
-                                                            log: recordProvider
-                                                                .log!),
-                                                      ).push(context);
-                                                    }
-                                                  });
-                                                },
-                                                medicalForms: medicalForms,
-                                                selectedFormIndex:
-                                                    selectedFormIndex);
-                                          });
-                                    },
-                                  ).paddingOnly(right: 20),
-                                  PrimaryButton(
-                                    text: 'Edit text',
-                                    textColor: AppColors.text,
-                                    color: Colors.transparent,
-                                    borderColor: AppColors.accentBlue,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12),
-                                    onPress: () async {
-                                      await recordProvider.saveMedicalForm(
-                                        widget.appointment,
-                                      );
-                                      await recordProvider
-                                          .stopRecording()
-                                          .then((_) {
-                                        recordProvider.close();
-                                        if (context.mounted) {
-                                          if (recordProvider.log != null) {
-                                            EditRoute(
-                                                $extra: EditPageArgs(
-                                              appointmentId:
-                                                  widget.appointment.id,
-                                              log: recordProvider.log!,
-                                            )).push(context);
-                                          } else {
-                                            showToast('Something went wrong');
-                                          }
-                                        }
-                                      });
-                                    },
-                                  ).paddingOnly(right: 20),
-                                  PrimaryButton(
-                                    text: 'Save',
-                                    textColor: AppColors.text,
-                                    color: Colors.transparent,
-                                    borderColor: AppColors.accentBlue,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12),
-                                    onPress: () async {
-                                      await recordProvider.saveMedicalForm(
-                                        widget.appointment,
-                                      );
-                                      if (context.mounted) {
-                                        HomeRoute().push(context);
-                                      }
-                                    },
-                                  ),
-                                ],
-                              ),
-                              mobile: Column(children: [
-                                PrimaryButton(
-                                  text: 'Fill out a medical form',
-                                  textColor: AppColors.white,
-                                  color: AppColors.accentBlue,
-                                  borderColor: AppColors.accentBlue,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                  textStyle: AppTextStyles.regularPx16
-                                      .copyWith(color: AppColors.white),
-                                  onPress: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return MedicalFormDialogWidget(
-                                          onCloseClick: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          onSaveClick: () async {
-                                            await recordProvider
-                                                .saveMedicalForm(
-                                              widget.appointment,
+                                              onCloseClick: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              onSaveClick: () async {
+                                                await recordProvider
+                                                    .saveMedicalForm(
+                                                  widget.appointment,
+                                                );
+                                                await recordProvider
+                                                    .stopRecording()
+                                                    .then((_) {
+                                                  recordProvider.close();
+                                                  if (context.mounted &&
+                                                      recordProvider.log !=
+                                                          null) {
+                                                    MedicalFormRoute(
+                                                      MedicalFormPageArgs(
+                                                          log: recordProvider
+                                                              .log!),
+                                                    ).push(context);
+                                                  }
+                                                });
+                                              },
+                                              medicalForms: medicalForms,
+                                              selectedFormIndex:
+                                                  selectedFormIndex,
                                             );
-                                            await recordProvider
-                                                .stopRecording()
-                                                .then((_) {
-                                              recordProvider.close();
-                                              if (context.mounted &&
-                                                  recordProvider.log != null) {
-                                                MedicalFormRoute(
-                                                  MedicalFormPageArgs(
-                                                      log: recordProvider.log!),
-                                                ).push(context);
-                                              }
-                                            });
                                           },
-                                          medicalForms: medicalForms,
-                                          selectedFormIndex: selectedFormIndex,
                                         );
                                       },
-                                    );
-                                  },
-                                ).paddingOnly(bottom: 16),
-                                PrimaryButton(
-                                  text: 'Edit text',
-                                  textColor: AppColors.text,
-                                  color: Colors.transparent,
-                                  borderColor: AppColors.accentBlue,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                  textStyle: AppTextStyles.regularPx16,
-                                  onPress: () async {
-                                    await recordProvider.saveMedicalForm(
-                                      widget.appointment,
-                                    );
-                                    await recordProvider
-                                        .stopRecording()
-                                        .then((_) {
-                                      recordProvider.close();
-                                      if (context.mounted) {
-                                        if (recordProvider.log != null) {
-                                          EditRoute(
-                                              $extra: EditPageArgs(
-                                            appointmentId:
-                                                widget.appointment.id,
-                                            log: recordProvider.log!,
-                                          )).push(context);
-                                        } else {
-                                          showToast('Something went wrong');
+                                    ).paddingOnly(bottom: 16),
+                                    PrimaryButton(
+                                      text: 'Edit text',
+                                      textColor: AppColors.text,
+                                      color: Colors.transparent,
+                                      borderColor: AppColors.accentBlue,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12),
+                                      textStyle: AppTextStyles.regularPx16,
+                                      onPress: () async {
+                                        await recordProvider.saveMedicalForm(
+                                          widget.appointment,
+                                        );
+                                        await recordProvider
+                                            .stopRecording()
+                                            .then((_) {
+                                          recordProvider.close();
+                                          if (context.mounted) {
+                                            if (recordProvider.log != null) {
+                                              EditRoute(
+                                                  $extra: EditPageArgs(
+                                                appointmentId:
+                                                    widget.appointment.id,
+                                                log: recordProvider.log!,
+                                              )).push(context);
+                                            } else {
+                                              showToast('Something went wrong');
+                                            }
+                                          }
+                                        });
+                                      },
+                                    ).paddingOnly(bottom: 16),
+                                    PrimaryButton(
+                                      text: 'Save',
+                                      textColor: AppColors.text,
+                                      color: Colors.transparent,
+                                      borderColor: AppColors.accentBlue,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12),
+                                      textStyle: AppTextStyles.regularPx16,
+                                      onPress: () async {
+                                        await recordProvider.saveMedicalForm(
+                                          widget.appointment,
+                                        );
+                                        if (context.mounted) {
+                                          HomeRoute().push(context);
                                         }
-                                      }
-                                    });
-                                  },
-                                ).paddingOnly(bottom: 16),
-                                PrimaryButton(
-                                  text: 'Save',
-                                  textColor: AppColors.text,
-                                  color: Colors.transparent,
-                                  borderColor: AppColors.accentBlue,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                  textStyle: AppTextStyles.regularPx16,
-                                  onPress: () async {
-                                    await recordProvider.saveMedicalForm(
-                                      widget.appointment,
-                                    );
-                                    if (context.mounted) {
-                                      HomeRoute().push(context);
-                                    }
-                                  },
-                                )
-                              ]).paddingSymmetric(horizontal: 16)),
+                                      },
+                                    )
+                                  ]).paddingSymmetric(horizontal: 16)),
                       ],
                     ).paddingSymmetric(
                         vertical: Responsive.isDesktop(context) ? 56 : 24),

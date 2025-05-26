@@ -75,9 +75,9 @@ class SchedulePage extends StatelessWidget {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               crossAxisSpacing:
-                                  Responsive.isDesktop(context) ? 10 : 69,
+                                  Responsive.isDesktop(context) ? 10 : 10,
                               mainAxisSpacing: 10,
-                              childAspectRatio: 3.5,
+                              childAspectRatio: 4.2,
                             ),
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
@@ -92,7 +92,7 @@ class SchedulePage extends StatelessWidget {
                                 onPressed: (selectedTime) {
                                   state.onScheduleTimeSelected(selectedTime);
                                 },
-                                isAvailable: index % 2 == 0,
+                                isAvailable: state.isTimeSlotInFuture(time),
                                 isSelected: state.scheduleTime == time,
                               );
                             },
@@ -167,6 +167,7 @@ class SchedulePage extends StatelessWidget {
                       Responsive(
                           mobile: Column(children: [
                             PrimaryButton(
+                              isLoading: p.isLoading,
                               text: 'Save',
                               textColor: AppColors.white,
                               color: AppColors.accentBlue,
@@ -197,6 +198,7 @@ class SchedulePage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 PrimaryButton(
+                                  isLoading: p.isLoading,
                                   text: 'Submit',
                                   textColor: AppColors.white,
                                   color: AppColors.accentBlue,

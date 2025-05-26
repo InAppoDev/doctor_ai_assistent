@@ -1,5 +1,7 @@
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/constants/consts.dart';
+import 'package:ecnx_ambient_listening/core/models/transcription_model/transcription_model.dart';
 import 'package:flutter/material.dart';
 
 class ColorCodedTextField extends StatefulWidget {
@@ -10,7 +12,7 @@ class ColorCodedTextField extends StatefulWidget {
   });
 
   final double height;
-  final List<String> recordedText;
+  final List<TranscriptionModel> recordedText;
 
   @override
   State createState() => _ColorCodedTextFieldState();
@@ -52,8 +54,19 @@ class _ColorCodedTextFieldState extends State<ColorCodedTextField> {
           child: SingleChildScrollView(
             controller: _scrollController,
             padding: const EdgeInsets.all(10),
-            child: Text(widget.recordedText.join(),
-                style: AppTextStyles.regularPx16.copyWith(color: Colors.green)),
+            child: RichText(
+              text: TextSpan(
+                children: widget.recordedText.map((transcription) {
+                  final speakerColor = speakerColors[
+                      transcription.speaker % speakerColors.length];
+                  return TextSpan(
+                    text: '${transcription.transcription} ',
+                    style:
+                        AppTextStyles.regularPx16.copyWith(color: speakerColor),
+                  );
+                }).toList(),
+              ),
+            ),
           ),
         ),
       ),

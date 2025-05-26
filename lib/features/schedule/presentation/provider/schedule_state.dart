@@ -21,6 +21,8 @@ class ScheduleState extends ChangeNotifier {
     await fetchAvailableTimeSlots();
   }
 
+  bool isLoading = false;
+
   // TextEditingController for first name input field.
   final TextEditingController firstNameController = TextEditingController();
 
@@ -54,6 +56,20 @@ class ScheduleState extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool isTimeSlotInFuture(TimeOfDay time) {
+    final date = scheduleDateTime;
+
+    final scheduledDateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
+
+    return scheduledDateTime.isAfter(DateTime.now());
+  }
+
   // List of available times for scheduling. These times are predefined.
   final List<TimeOfDay> _availableTimes = const [
     TimeOfDay(hour: 8, minute: 0),
@@ -85,15 +101,29 @@ class ScheduleState extends ChangeNotifier {
   }
 
   Future<void> savePatientScheduleAndCreateForm() async {
+    isLoading = true;
+    notifyListeners();
+    final date = scheduleDateTime;
+    final time = _scheduleTime ?? TimeOfDay.now();
+
+    final scheduledDateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
     await _networkService.createAppointment(
       firstName: firstNameController.text.trim(),
       lastName: lastNameController.text.trim(),
       birth: dateOfBirthController.text.toDateTime(),
-      when: scheduleDateTime,
+      when: scheduledDateTime,
       physician: 'Lucas Cooper',
       record: _getRandom7DigitNumber().toString(),
     );
     await _createForm();
+    isLoading = false;
+    notifyListeners();
   }
 
   int _getRandom7DigitNumber() {
