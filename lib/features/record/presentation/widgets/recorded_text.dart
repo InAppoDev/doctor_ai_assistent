@@ -20,11 +20,9 @@ class ColorCodedTextField extends StatefulWidget {
 
 class _ColorCodedTextFieldState extends State<ColorCodedTextField> {
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _controller = TextEditingController();
 
   @override
   void dispose() {
-    _controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -54,8 +52,8 @@ class _ColorCodedTextFieldState extends State<ColorCodedTextField> {
           child: SingleChildScrollView(
             controller: _scrollController,
             padding: const EdgeInsets.all(10),
-            child: RichText(
-              text: TextSpan(
+            child: Text.rich(
+              TextSpan(
                 children: widget.recordedText.map((transcription) {
                   final speakerColor = speakerColors[
                       transcription.speaker % speakerColors.length];

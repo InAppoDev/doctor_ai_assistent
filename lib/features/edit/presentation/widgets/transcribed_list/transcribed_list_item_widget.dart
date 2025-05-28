@@ -1,7 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
-import 'package:ecnx_ambient_listening/core/extensions/datetime_extension.dart';
+import 'package:ecnx_ambient_listening/core/models/chunk_model/chunk_model.dart';
 import 'package:ecnx_ambient_listening/core/widgets/avatar_widget.dart';
 import 'package:ecnx_ambient_listening/features/edit/provider/player_provider.dart';
 import 'package:flutter/material.dart';
@@ -9,20 +9,16 @@ import 'package:provider/provider.dart';
 
 class TranscribedListItemWidget extends StatelessWidget {
   /// The text and date should be changed to the actual data model
-  final String text;
-  final DateTime date;
+  final ChunkModel chunk;
   final int id;
-  final int speaker;
 
   final Function() onTap;
 
   const TranscribedListItemWidget({
     super.key,
-    required this.text,
-    required this.id,
-    required this.date,
+    required this.chunk,
     required this.onTap,
-    required this.speaker,
+    required this.id,
   });
 
   @override
@@ -33,6 +29,7 @@ class TranscribedListItemWidget extends StatelessWidget {
         onTap: onTap,
         child: Consumer<PlayerProvider>(
           builder: (context, state, _) {
+            final time = (chunk.time / 100).toString().substring(0, 4);
             return Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -47,29 +44,19 @@ class TranscribedListItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AvatarWidget(
-                    color: getTranscribeColor(speaker),
+                    color: getTranscribeColor(int.parse(chunk.speaker)),
                   ).paddingOnly(right: 12),
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              date.toUSAtimeWithoutPeriod(),
-                              style: AppTextStyles.mediumPx16,
-                            ),
-                            Text(
-                              date.toNameOfMonthAndDay(),
-                              style: AppTextStyles.regularPx12
-                                  .copyWith(color: AppColors.disabled),
-                            )
-                          ],
+                        Text(
+                          formatTimeString(time),
+                          style: AppTextStyles.mediumPx16,
                         ).paddingOnly(bottom: 8),
                         Text(
-                          text,
+                          chunk.transcription,
                           style: AppTextStyles.regularPx16,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
@@ -96,5 +83,13 @@ class TranscribedListItemWidget extends StatelessWidget {
         return AppColors.accentPink;
     }
     return AppColors.accentGreen;
+  }
+
+  String formatTimeString(String time) {
+    if (time.contains('.')) {
+      time = time.replaceFirst(RegExp(r'0*$'), '');
+      time = time.replaceFirst(RegExp(r'\.$'), '');
+    }
+    return time;
   }
 }

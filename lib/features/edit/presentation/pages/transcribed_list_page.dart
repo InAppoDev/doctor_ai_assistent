@@ -1,13 +1,11 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
-import 'package:ecnx_ambient_listening/core/constants/app_icons.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
 import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/audio_progress_bar.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/transcribed_list/transcribed_list_widget.dart';
 import 'package:ecnx_ambient_listening/features/edit/provider/player_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class TranscribedListArgs {
@@ -36,17 +34,8 @@ class TranscribedListPage extends StatelessWidget {
                     Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                       MouseRegion(
                         cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: () {
-                            context.pop();
-                          },
-                          child: SvgPicture.asset(
-                            AppIcons.closeIcon,
-                            height: 24,
-                            width: 24,
-                            colorFilter: const ColorFilter.mode(
-                                AppColors.accentBlue, BlendMode.srcIn),
-                          ),
+                        child: CloseButton(
+                          color: AppColors.accentBlue,
                         ),
                       )
                     ]).paddingAll(8),

@@ -20,18 +20,22 @@ import 'package:provider/provider.dart';
 
 class MedicalFormPageArgs {
   final LogModel log;
+  final int selectedFormIndex;
 
   const MedicalFormPageArgs({
     required this.log,
+    required this.selectedFormIndex,
   });
 }
 
 class MedicalFormPage extends StatefulWidget {
   final LogModel log;
+  final int selectedFormIndex;
 
   const MedicalFormPage({
     super.key,
     required this.log,
+    required this.selectedFormIndex,
   });
 
   @override
@@ -47,7 +51,10 @@ class _MedicalFormPageState extends State<MedicalFormPage> {
             lazy: false,
             create: (_) => PlayerProvider()..initData(url: widget.log.audio)),
         ChangeNotifierProvider(
-            create: (_) => MedicalFormProvider(widget.log.appointment)..init()),
+            create: (_) => MedicalFormProvider(
+                  appointmentId: widget.log.appointment,
+                  selectedFormIndex: widget.selectedFormIndex,
+                )..init()),
       ],
       builder: (context, _) {
         final medicalProvider = context.read<MedicalFormProvider>();
@@ -92,7 +99,8 @@ class _MedicalFormPageState extends State<MedicalFormPage> {
                                           children: [
                                             GestureDetector(
                                               onTap: () {
-                                                const HomeRoute().go(context);
+                                                const HomeRoute()
+                                                    .pushReplacement(context);
                                               },
                                               child: const Icon(
                                                   Icons.arrow_back,
@@ -171,16 +179,16 @@ class _MedicalFormPageState extends State<MedicalFormPage> {
                                             .updateFormDescriptionText,
                                       ),
 
-                                      Center(
-                                        child: IconButton(
-                                          onPressed: medicalProvider.createForm,
-                                          icon: Icon(
-                                            color: AppColors.accentBlue,
-                                            Icons.add,
-                                            size: 40,
-                                          ),
-                                        ),
-                                      ),
+                                      // Center(
+                                      //   child: IconButton(
+                                      //     onPressed: medicalProvider.createForm,
+                                      //     icon: Icon(
+                                      //       color: AppColors.accentBlue,
+                                      //       Icons.add,
+                                      //       size: 40,
+                                      //     ),
+                                      //   ),
+                                      // ),
 
                                       /// Submit button
                                       SizedBox(height: 32),
@@ -223,10 +231,11 @@ class _MedicalFormPageState extends State<MedicalFormPage> {
                                                                     .white),
                                                         onPress: () async {
                                                           await medicalProvider
-                                                              .updateForm();
+                                                              .createForm();
                                                           if (context.mounted) {
                                                             HomeRoute()
-                                                                .push(context);
+                                                                .pushReplacement(
+                                                                    context);
                                                           }
                                                         },
                                                       ).paddingOnly(bottom: 24),

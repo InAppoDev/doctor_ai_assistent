@@ -22,7 +22,7 @@ class RecordProvider extends ChangeNotifier {
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   late StreamController<Uint8List> _audioStreamController;
 
-  final List<TranscriptionModel> recordedText = [];
+  final List<TranscriptionModel> recordedTranscribeDataList = [];
 
   final record = AudioRecorder();
   late final SharedPreferences _prefs;
@@ -31,7 +31,6 @@ class RecordProvider extends ChangeNotifier {
 
   String? _audioFilePath;
   final List<String> _chunkPaths = [];
-  final List<TranscriptionModel> transcriptTimeline = [];
 
   int _status = 0;
   bool _showTextField = true;
@@ -85,10 +84,8 @@ class RecordProvider extends ChangeNotifier {
       debugPrint('🎤 Microphone permission denied');
       return;
     }
-
-    // Only reset things if this is a fresh start
     if (!resume) {
-      recordedText.clear();
+      recordedTranscribeDataList.clear();
       seconds = 0;
       minutes = 0;
       _chunkPaths.clear();
@@ -147,8 +144,8 @@ class RecordProvider extends ChangeNotifier {
       transcription: transcript,
       time: transcriptReturnModel.time,
     );
-    recordedText.add(model);
-    transcriptTimeline.add(model);
+    print('model - $model');
+    recordedTranscribeDataList.add(model);
 
     notifyListeners();
   }
@@ -216,7 +213,7 @@ class RecordProvider extends ChangeNotifier {
 
   void reset() {
     _setStatus(0);
-    recordedText.clear();
+    recordedTranscribeDataList.clear();
     _chunkPaths.clear();
     seconds = 0;
     minutes = 0;
@@ -247,7 +244,8 @@ class RecordProvider extends ChangeNotifier {
     );
 
     if (log != null) {
-      for (final transcribeData in transcriptTimeline) {
+      for (final transcribeData in recordedTranscribeDataList) {
+        print('transcribeData.time - ${transcribeData.time}');
         await _network.createChunk(
           speaker: transcribeData.speaker,
           transcription: transcribeData.transcription,

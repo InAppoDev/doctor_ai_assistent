@@ -413,9 +413,11 @@ class Network {
 
   Future<FormModel?> createForm({
     required String name,
+    String? conclusion,
   }) async {
     final data = {
       "name": name,
+      "conclusion": conclusion,
     };
 
     final response = await _makeRequest(

@@ -20,9 +20,7 @@ class TranscribedList extends StatelessWidget {
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
               return TranscribedListItemWidget(
-                speaker: int.parse(chunks[index].speaker),
-                text: chunks[index].transcription,
-                date: DateTime.now(),
+                chunk: chunks[index],
                 id: index,
                 onTap: () {
                   context

@@ -85,6 +85,7 @@ class MedicalFormRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) => MedicalFormPage(
         log: $extra.log,
+        selectedFormIndex: $extra.selectedFormIndex,
       );
 }
 

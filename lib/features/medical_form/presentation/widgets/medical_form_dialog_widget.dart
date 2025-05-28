@@ -26,7 +26,9 @@ class MedicalFormDialogWidget extends StatelessWidget {
     return Dialog(
       backgroundColor: AppColors.bg,
       insetPadding: EdgeInsets.symmetric(
-          horizontal: Responsive.isDesktop(context) ? MediaQuery.of(context).size.width * 0.2 : 24),
+          horizontal: Responsive.isDesktop(context)
+              ? MediaQuery.of(context).size.width * 0.2
+              : 24),
       child: Responsive(
         mobile: _buildDialogContent(context, isDesktop: false),
         desktop: _buildDialogContent(context, isDesktop: true),
@@ -63,7 +65,8 @@ class MedicalFormDialogWidget extends StatelessWidget {
                       color: AppColors.accentBlue,
                       textColor: AppColors.white,
                       text: 'Save',
-                      textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.white),
+                      textStyle: AppTextStyles.regularPx16
+                          .copyWith(color: AppColors.white),
                       borderColor: AppColors.accentBlue,
                     ).paddingOnly(bottom: 16),
                     PrimaryButton(
@@ -73,7 +76,8 @@ class MedicalFormDialogWidget extends StatelessWidget {
                       color: Colors.transparent,
                       textColor: AppColors.text,
                       text: 'Cancel',
-                      textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.text),
+                      textStyle: AppTextStyles.regularPx16
+                          .copyWith(color: AppColors.text),
                       borderColor: AppColors.accentBlue,
                     ),
                   ],
@@ -88,7 +92,8 @@ class MedicalFormDialogWidget extends StatelessWidget {
                       color: AppColors.accentBlue,
                       textColor: AppColors.white,
                       text: 'Save',
-                      textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.white),
+                      textStyle: AppTextStyles.regularPx16
+                          .copyWith(color: AppColors.white),
                       borderColor: AppColors.accentBlue,
                     ).paddingOnly(right: 16),
                     PrimaryButton(
@@ -98,7 +103,8 @@ class MedicalFormDialogWidget extends StatelessWidget {
                       color: Colors.transparent,
                       textColor: AppColors.text,
                       text: 'Cancel',
-                      textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.text),
+                      textStyle: AppTextStyles.regularPx16
+                          .copyWith(color: AppColors.text),
                       borderColor: AppColors.accentBlue,
                     ),
                   ],
@@ -117,7 +123,8 @@ class MedicalFormDialogWidget extends StatelessWidget {
                   AppIcons.closeIcon,
                   height: 24,
                   width: 24,
-                  colorFilter: const ColorFilter.mode(AppColors.accentBlue, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.accentBlue, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -132,79 +139,57 @@ class MedicalFormDialogWidget extends StatelessWidget {
       return ValueListenableBuilder<int?>(
         valueListenable: selectedFormIndex,
         builder: (context, selectedIndex, _) {
-          // return GridView.builder(
-          //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          //     crossAxisCount: 2,
-          //     crossAxisSpacing: 16,
-          //     mainAxisSpacing: 8,
-          //     childAspectRatio: 3.5,
-          //   ),
-          //   shrinkWrap: true,
-          //   physics: const NeverScrollableScrollPhysics(),
-          //   itemCount: medicalForms.length,
-          //   itemBuilder: (context, index) {
-          //     return `RadioListTile<int>(
-          //       value: index,
-          //       groupValue: selectedIndex,
-          //       fillColor: WidgetStateProperty.all(AppColors.accentGreen),
-          //       onChanged: (value) {
-          //         selectedFormIndex.value = value;
-          //       },
-          //       title: Text(`
-          //         medicalForms[index],
-          //         style: AppTextStyles.regularPx16,
-          //       ),
-          //       activeColor: AppColors.accentBlue,
-          //     );
-          //   },
-          // );
-          return Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center, children: [
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  selectedFormIndex.value = 0;
-                },
-                child: Row(children: [
-                  Radio<int>(
-                    value: 0,
-                    groupValue: selectedIndex,
-                    fillColor: WidgetStateProperty.all(AppColors.accentGreen),
-                    onChanged: (value) {
-                      selectedFormIndex.value = value;
+          return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      selectedFormIndex.value = 0;
                     },
-                  ).paddingOnly(right: 20),
-                  Text(
-                    medicalForms[0],
-                    style: AppTextStyles.regularPx20,
+                    child: Row(children: [
+                      Radio<int>(
+                        value: 0,
+                        groupValue: selectedIndex,
+                        fillColor:
+                            WidgetStateProperty.all(AppColors.accentGreen),
+                        onChanged: (value) {
+                          selectedFormIndex.value = value;
+                        },
+                      ).paddingOnly(right: 20),
+                      Text(
+                        medicalForms[0],
+                        style: AppTextStyles.regularPx20,
+                      ),
+                    ]).paddingOnly(right: 40),
                   ),
-                ]).paddingOnly(right: 40),
-              ),
-            ),
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  selectedFormIndex.value = 1;
-                },
-                child: Row(children: [
-                  Radio<int>(
-                    value: 1,
-                    groupValue: selectedIndex,
-                    fillColor: WidgetStateProperty.all(AppColors.accentGreen),
-                    onChanged: (value) {
-                      selectedFormIndex.value = value;
+                ),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      selectedFormIndex.value = 1;
                     },
-                  ).paddingOnly(right: 20),
-                  Text(
-                    medicalForms[1],
-                    style: AppTextStyles.regularPx20,
+                    child: Row(children: [
+                      Radio<int>(
+                        value: 1,
+                        groupValue: selectedIndex,
+                        fillColor:
+                            WidgetStateProperty.all(AppColors.accentGreen),
+                        onChanged: (value) {
+                          selectedFormIndex.value = value;
+                        },
+                      ).paddingOnly(right: 20),
+                      Text(
+                        medicalForms[1],
+                        style: AppTextStyles.regularPx20,
+                      ),
+                    ]),
                   ),
-                ]),
-              ),
-            ),
-          ]
-          );
+                ),
+              ]);
         },
       );
     } else {

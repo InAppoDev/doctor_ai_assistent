@@ -20,12 +20,14 @@ class HomeState extends ChangeNotifier {
   }
 
   Future<void> init() async {
+    print('init called');
     final prefs = await SharedPreferences.getInstance();
     _backendService = Network(prefs);
     await getAppointments();
     await _getLogs();
     await _backendService.getForms();
     await _speechService.init();
+    print('init finished');
   }
 
   List<LogModel> logs = [];

@@ -186,6 +186,9 @@ class EditPage extends StatelessWidget {
                                                                     null) {
                                                                   MedicalFormRoute(
                                                                     MedicalFormPageArgs(
+                                                                        selectedFormIndex:
+                                                                            selectedFormIndex.value ??
+                                                                                0,
                                                                         log: editState
                                                                             .fetchedLog!),
                                                                   ).push(
@@ -265,6 +268,9 @@ class EditPage extends StatelessWidget {
                                                                     null) {
                                                                   MedicalFormRoute(
                                                                     MedicalFormPageArgs(
+                                                                        selectedFormIndex:
+                                                                            selectedFormIndex.value ??
+                                                                                0,
                                                                         log: editState
                                                                             .fetchedLog!),
                                                                   ).push(
@@ -300,7 +306,8 @@ class EditPage extends StatelessWidget {
                                                       .read<EditState>()
                                                       .saveEditedChunks();
                                                   if (context.mounted) {
-                                                    HomeRoute().go(context);
+                                                    HomeRoute().pushReplacement(
+                                                        context);
                                                   }
                                                 },
                                               ).paddingOnly(bottom: 24),

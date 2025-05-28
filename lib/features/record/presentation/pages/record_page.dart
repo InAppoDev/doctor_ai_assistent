@@ -158,7 +158,8 @@ class _RecordPageState extends State<RecordPage> {
                                   Expanded(
                                     flex: 2,
                                     child: ColorCodedTextField(
-                                      recordedText: recordProvider.recordedText,
+                                      recordedText: recordProvider
+                                          .recordedTranscribeDataList,
                                       height: Responsive.isDesktop(context)
                                           ? 330
                                           : 270,
@@ -240,6 +241,10 @@ class _RecordPageState extends State<RecordPage> {
                                                                 null) {
                                                           MedicalFormRoute(
                                                             MedicalFormPageArgs(
+                                                                selectedFormIndex:
+                                                                    selectedFormIndex
+                                                                            .value ??
+                                                                        0,
                                                                 log:
                                                                     recordProvider
                                                                         .log!),
@@ -318,6 +323,8 @@ class _RecordPageState extends State<RecordPage> {
                                           builder: (context) {
                                             return MedicalFormDialogWidget(
                                               onCloseClick: () {
+                                                print(
+                                                    'selectedFormIndex - $selectedFormIndex');
                                                 Navigator.of(context).pop();
                                               },
                                               onSaveClick: () async {
@@ -334,6 +341,10 @@ class _RecordPageState extends State<RecordPage> {
                                                           null) {
                                                     MedicalFormRoute(
                                                       MedicalFormPageArgs(
+                                                          selectedFormIndex:
+                                                              selectedFormIndex
+                                                                      .value ??
+                                                                  0,
                                                           log: recordProvider
                                                               .log!),
                                                     ).push(context);

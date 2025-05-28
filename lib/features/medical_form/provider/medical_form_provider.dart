@@ -16,8 +16,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 
 class MedicalFormProvider extends ChangeNotifier {
-  MedicalFormProvider(this.appointmentId);
+  MedicalFormProvider({
+    required this.appointmentId,
+    required this.selectedFormIndex,
+  });
   final int appointmentId;
+  final int selectedFormIndex;
   final SpeechToTextService _speechService = SpeechToTextService();
 
   bool isListening = false;
@@ -32,6 +36,7 @@ class MedicalFormProvider extends ChangeNotifier {
     await _getForms();
     await _getUser();
     await _speechService.init();
+    _fillForms();
     isLoading = false;
     notifyListeners();
   }
@@ -64,20 +69,155 @@ class MedicalFormProvider extends ChangeNotifier {
     }
   }
 
-  List<FormModel> forms = [];
+  void _fillForms() {
+    if (user == null) return;
+    int maxExistingId = forms.isEmpty
+        ? 0
+        : forms.map((f) => f.id).reduce((a, b) => a > b ? a : b);
+    int idCounter = maxExistingId + 1;
 
-  Future<void> createForm() async {
-    try {
-      final form =
-          await _backendService.createForm(name: 'History of Present Illness');
-      if (form != null) {
-        forms.add(form);
-        notifyListeners();
-      }
-    } catch (e) {
-      showToast('Something went wrong');
+    final newForms = selectedFormIndex == 0
+        ? [
+            'Name/Age/DOB',
+            'Date of admission',
+            'Med. Record Number',
+            'General',
+            'Pulmonary',
+            'Cardiovascular',
+            'Musculoskeletal',
+            'Neuro',
+            'Derm',
+            'Heme',
+            'GU',
+            'Psych',
+          ].map((name) {
+            return FormModel(
+              id: idCounter++,
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+              name: name,
+              user: user!.id,
+              conclusion: _defaultConclusion(name),
+            );
+          }).toList()
+        : [
+            {
+              'name': 'Chief Complaint/Reason for Visit',
+              'conclusion': 'Cronic Headache',
+            },
+            {
+              'name': 'History of Present Illness',
+              'conclusion':
+                  'Dr. Modibo Usman is a 48 y/o M with a h/o Great Health and Arthritis presenting with complaint of Having cough, runny nose and sore throat for 3 days. Patient c/o cough productive of whitish sputum associated with sore throat, odynophagia, posterior neck pain, generalized weakness and body aches. Neck pain is ~5/10 intensity, non-radiating and triggered by swallowing. No relieving factors. He denies fever or chills, SOB, chest pain or headache. His son had similar symptoms 3 days ago but recovered fully without testing. He is UpToDate with his COVID vaccine but is unsure if he has received the influenza vaccine. Pt reported prior similar symptoms a few months ago.'
+            },
+            {
+              'name': 'Past Medical History',
+              'conclusion': 'Hepatitis C from 2020',
+            },
+            {
+              'name': 'Past Surgical History',
+              'conclusion': 'NO',
+            },
+            {
+              'name': 'Allergies',
+              'conclusion': 'Azithromycin',
+            },
+            {
+              'name': 'Medications',
+              'conclusion': 'Aspirin, Vitamin D',
+            },
+            {
+              'name': 'Physical Examination',
+              'conclusion':
+                  'General: Pleasant and cooperative. No acute distress. \nHENT: Normocephalic...'
+            },
+            {
+              'name': 'Cardiovascular',
+              'conclusion':
+                  'Regular rate and rhythm. No murmurs. No peripheral edema...'
+            },
+            {
+              'name': 'Diagnostic Studies',
+              'conclusion': 'WBC:2, HGB:2, HCT:2, PLT:2, INR:2...'
+            },
+          ].map((entry) {
+            return FormModel(
+              id: idCounter++,
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+              name: entry['name']!,
+              conclusion: entry['conclusion'],
+              user: user!.id,
+            );
+          }).toList();
+
+    forms = newForms;
+    notifyListeners();
+  }
+
+  String? _defaultConclusion(String name) {
+    switch (name) {
+      case 'General':
+        return 'Pleasant and cooperative. No acute distress.';
+      case 'Pulmonary':
+        return 'Clear to auscultation bilaterally. No accessory muscle use.';
+      case 'Cardiovascular':
+        return 'Regular rate and rhythm. No murmurs.  No peripheral edema to palpation bilaterally.  Dorsalis pedis pulses intact bilaterally.';
+      case 'Musculoskeletal':
+        return 'Normal muscle mass for age. No focal joint swelling.';
+      case 'Neuro':
+        return 'Alert and oriented x 3. Moves all 4 extremities. No gross focal deficits.';
+      case 'Derm':
+        return 'No rash. No lesions.';
+      case 'Heme':
+        return 'No bleeding.  No ecchymosis.';
+      case 'GU':
+        return 'No Foley catheter. No abnormal discharge.';
+      case 'Psych':
+        return 'Mood and affect appropriate. No depression or anxiety.';
+      case 'History of Present Illness':
+        return 'Dr. Modibo Usman is a 48 y/o M with a h/o Great Health and Arthritis presenting with complaint of having cough, runny nose and sore throat for 3 days. '
+            'Patient c/o cough productive of whitish sputum associated with sore throat, odynophagia, posterior neck pain, generalized weakness and body aches. '
+            'Neck pain is ~5/10 intensity, non-radiating and triggered by swallowing. No relieving factors. '
+            'He denies fever or chills, SOB, chest pain or headache. His son had similar symptoms 3 days ago but recovered fully without testing. '
+            'He is UpToDate with his COVID vaccine but is unsure if he has received the influenza vaccine. Pt reported prior similar symptoms a few months ago.';
+      case 'Past Medical History':
+        return 'Hepatitis C from 2020';
+      case 'Past Surgical History':
+        return 'NO';
+      case 'Allergies':
+        return 'Azithromycin';
+      case 'Medications':
+        return 'Aspirin, Vitamin D';
+      case 'Physical Examination':
+        return 'General: Pleasant and cooperative. No acute distress. \n'
+            'HENT: Normocephalic and atraumatic. Oral mucosa moist, no lesions. Teeth intact. \n'
+            'Eyes: Anicteric. PERL,EOMI. No conjunctival erythema. \n'
+            'Neck: Supple. Trachea midline. No thyromegaly. No JVD. \n'
+            'Lymph Nodes: No cervical or supraclavicular lymphadenopathy. \n'
+            'Pulmonary: Clear to auscultation bilaterally. No wheezing, crackles or rhonchi. No accessory muscle use.';
+      case 'Diagnostic Studies':
+        return 'WBC:2, HGB:2, HCT:2, PLT:2, INR:2\n'
+            'K:2, Cl:2, CO2:2, BUN:2, CREA:2, GLU:2, Calcium:2, Mg:2, Phos:2, LACTATE:2, TROPONINI:2';
+      default:
+        return null;
     }
   }
+
+  List<FormModel> forms = [];
+
+  // Future<void> createForm() async {
+  //   try {
+  //     final form =
+  //         await _backendService.createForm(name: 'History of Present Illness');
+  //     if (form != null) {
+  //       forms.add(form);
+  //       notifyListeners();
+  //     }
+  //   } catch (e) {
+  //     showToast('Something went wrong');
+  //   }
+  // }
 
   void clearSearch() {
     _searchController.clear();
@@ -114,15 +254,14 @@ class MedicalFormProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateForm() async {
+  Future<void> createForm() async {
     isSaving = true;
     notifyListeners();
     try {
       for (final form in forms) {
-        await _backendService.updateForm(
-          id: form.id,
+        await _backendService.createForm(
           name: form.name,
-          conclusion: form.conclusion ?? '',
+          conclusion: form.conclusion,
         );
       }
     } catch (e) {

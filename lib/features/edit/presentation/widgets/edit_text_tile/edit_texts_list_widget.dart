@@ -18,7 +18,6 @@ class EditTextsListWidget extends StatelessWidget {
     return ColumnBuilder(
         itemCount: chunks.length,
         itemBuilder: (context, index) {
-          print(' chunks[index].speaker - ${chunks[index].speaker}');
           return ChangeNotifierProvider(
             create: (context) => EditTextProvider()
               ..initData(

@@ -186,10 +186,7 @@ class WebSocketService {
             }
           }
         }
-      }
-
-      // ✅ Updated this block as well
-      else if (decoded is Map<String, dynamic>) {
+      } else if (decoded is Map<String, dynamic>) {
         final transcript = decoded['Transcript']?.toString().trim();
         final speakerRaw = decoded['Speaker'];
         final startTimeRaw = decoded['StartTime'];
