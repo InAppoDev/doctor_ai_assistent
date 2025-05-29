@@ -115,9 +115,10 @@ class _EditableTextfieldState extends State<EditableTextfield> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                QuillToolbar.simple(
+                QuillSimpleToolbar(
+
                   controller: widget.quillController,
-                  configurations: QuillSimpleToolbarConfigurations(
+                  config: QuillSimpleToolbarConfig(
                     showBoldButton: widget.showBoldButton,
                     showItalicButton: widget.showItalicButton,
                     showUnderLineButton: widget.showUnderLineButton,
@@ -215,7 +216,7 @@ class _EditableTextfieldState extends State<EditableTextfield> {
                     : null,
                 child: QuillEditor.basic(
                   controller: widget.quillController,
-                  configurations: const QuillEditorConfigurations(),
+                  config: const QuillEditorConfig(),
                 ),
               ),
             ),

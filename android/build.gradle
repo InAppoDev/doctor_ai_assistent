@@ -1,9 +1,17 @@
+buildscript {
+    ext.kotlin_version = '1.9.22'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+}
+
 allprojects {
     repositories {
         google()
         mavenCentral()
         maven { url "https://www.arthenica.com/maven" }
-
     }
 }
 
@@ -17,8 +25,4 @@ subprojects {
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
-}
-
-buildscript {
-    ext.kotlin_version = '1.9.22'
 }

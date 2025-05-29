@@ -105,8 +105,8 @@ class EditState extends ChangeNotifier {
   void _setUpQuillControllerData() {
     if (fetchedLog == null) return;
     for (final chunk in fetchedLog!.chunks) {
-      _quillControllers.add(QuillController.basic(
-          configurations: QuillControllerConfigurations()));
+      _quillControllers
+          .add(QuillController.basic(config: QuillControllerConfig()));
     }
   }
 
