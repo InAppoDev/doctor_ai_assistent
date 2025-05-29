@@ -1,5 +1,4 @@
 class AppIcons {
-
   // Pause icon
   static const String pauseIcon = 'assets/icons/pause_icon.svg';
 
@@ -21,7 +20,6 @@ class AppIcons {
   // underline icon
   static const String underlineIcon = 'assets/icons/underline_icon.svg';
 
-
   // Logo
   static const String logo = 'assets/images/logo_1x.svg';
 
@@ -30,4 +28,8 @@ class AppIcons {
 
   // alarm icon
   static const String alarmIcon = 'assets/icons/alarm_icon.svg';
+
+  static const String pdfIcon = 'assets/icons/pdf.svg';
+
+  static const String csvIcon = 'assets/icons/csv.svg';
 }

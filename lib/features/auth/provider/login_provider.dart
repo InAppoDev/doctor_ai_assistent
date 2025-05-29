@@ -1,42 +1,48 @@
-import 'package:flutter/material.dart';
+import 'package:ecnx_ambient_listening/core/network/network.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-/// Manages the state for the login functionality, including form fields
-/// and password visibility.
 class LoginState extends ChangeNotifier {
-  // ---------------------------------------------------------------------------
-  // Controllers and Form Key
-  // ---------------------------------------------------------------------------
-
-  /// Controller for the login (username or email) input field.
+  LoginState() {
+    init();
+  }
   final TextEditingController loginController = TextEditingController();
-
-  /// Controller for the password input field.
   final TextEditingController passwordController = TextEditingController();
-
-  /// Global key used to manage and validate the login form.
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  // ---------------------------------------------------------------------------
-  // Password Visibility
-  // ---------------------------------------------------------------------------
+  late final Network _backend;
 
-  /// Tracks whether the password field is currently visible.
   bool isPasswordVisible = false;
+  bool isLoading = false;
 
-  /// Toggles the visibility of the password field and notifies listeners.
-  void togglePasswordVisibility() {
-    isPasswordVisible = !isPasswordVisible;
-    notifyListeners(); // Triggers UI updates for visibility changes.
+  /// Call this method after creating the instance
+  Future<void> init() async {
+    final prefs = await SharedPreferences.getInstance();
+    _backend = Network(prefs);
   }
 
-  // ---------------------------------------------------------------------------
-  // Cleanup
-  // ---------------------------------------------------------------------------
+  void togglePasswordVisibility() {
+    isPasswordVisible = !isPasswordVisible;
+    notifyListeners();
+  }
 
-  /// Disposes of the [TextEditingController]s to free up resources.
-  /// 
-  /// This is called when the [LoginState] is no longer needed to prevent
-  /// memory leaks or dangling references.
+  Future<bool> submitLogin() async {
+    if (!formKey.currentState!.validate()) return false;
+
+    isLoading = true;
+    notifyListeners();
+
+    final success = await _backend.loginUser(
+      email: loginController.text.trim(),
+      password: passwordController.text,
+    );
+
+    isLoading = false;
+    notifyListeners();
+
+    return success;
+  }
+
   @override
   void dispose() {
     loginController.dispose();

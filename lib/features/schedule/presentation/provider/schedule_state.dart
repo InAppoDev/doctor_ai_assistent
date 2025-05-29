@@ -1,8 +1,28 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
 
-/// Manages the state for scheduling, including user input fields, date and time selection, 
+import 'package:ecnx_ambient_listening/core/extensions/string_extension.dart';
+import 'package:ecnx_ambient_listening/core/network/network.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+/// Manages the state for scheduling, including user input fields, date and time selection,
 /// and available time slots. Notifies listeners of any changes.
 class ScheduleState extends ChangeNotifier {
+  late final Network _networkService;
+
+  ScheduleState() {
+    init();
+  }
+
+  /// Initializes the backend service and any necessary setup.
+  Future<void> init() async {
+    final prefs = await SharedPreferences.getInstance();
+    _networkService = Network(prefs);
+    await fetchAvailableTimeSlots();
+  }
+
+  bool isLoading = false;
+
   // TextEditingController for first name input field.
   final TextEditingController firstNameController = TextEditingController();
 
@@ -19,8 +39,6 @@ class ScheduleState extends ChangeNotifier {
   DateTime get scheduleDateTime => _scheduleDateTime ?? DateTime.now();
 
   /// Updates the scheduled date and time when selected and notifies listeners.
-  /// 
-  /// [dateTime] - The selected date and time for scheduling.
   void onScheduleDateTimeSelected(DateTime dateTime) {
     _scheduleDateTime = dateTime;
     notifyListeners();
@@ -33,11 +51,23 @@ class ScheduleState extends ChangeNotifier {
   TimeOfDay get scheduleTime => _scheduleTime ?? TimeOfDay.now();
 
   /// Updates the scheduled time when selected and notifies listeners.
-  /// 
-  /// [time] - The selected time for scheduling.
   void onScheduleTimeSelected(TimeOfDay time) {
     _scheduleTime = time;
     notifyListeners();
+  }
+
+  bool isTimeSlotInFuture(TimeOfDay time) {
+    final date = scheduleDateTime;
+
+    final scheduledDateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
+
+    return scheduledDateTime.isAfter(DateTime.now());
   }
 
   // List of available times for scheduling. These times are predefined.
@@ -60,15 +90,49 @@ class ScheduleState extends ChangeNotifier {
   /// Returns the list of available times for scheduling.
   List<TimeOfDay> get availableTimes => _availableTimes;
 
-  /// for fetching the available time slots for scheduling.
+  /// For fetching the available time slots for scheduling.
   /// This method should be replaced with the actual API call.
-  
   Future<void> fetchAvailableTimeSlots() async {
     try {
       // Fetch available time slots from the API.
     } catch (e) {
       debugPrint('Error fetching available time slots: $e');
     }
+  }
+
+  Future<void> savePatientScheduleAndCreateForm() async {
+    isLoading = true;
+    notifyListeners();
+    final date = scheduleDateTime;
+    final time = _scheduleTime ?? TimeOfDay.now();
+
+    final scheduledDateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
+    await _networkService.createAppointment(
+      firstName: firstNameController.text.trim(),
+      lastName: lastNameController.text.trim(),
+      birth: dateOfBirthController.text.toDateTime(),
+      when: scheduledDateTime,
+      physician: 'Lucas Cooper',
+      record: _getRandom7DigitNumber().toString(),
+    );
+    await _createForm();
+    isLoading = false;
+    notifyListeners();
+  }
+
+  int _getRandom7DigitNumber() {
+    final random = Random();
+    return 1000000 + random.nextInt(9000000);
+  }
+
+  Future<void> _createForm() async {
+    await _networkService.createForm(name: 'History of Present Illness');
   }
 
   /// Disposes of the controllers to free up resources when no longer needed.

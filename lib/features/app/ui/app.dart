@@ -1,19 +1,23 @@
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
-import 'package:ecnx_ambient_listening/core/services/get_it/get_it_service.dart';
-import 'package:ecnx_ambient_listening/features/auth/provider/auth_provider.dart';
+import 'package:ecnx_ambient_listening/core/constants/consts.dart';
+import 'package:ecnx_ambient_listening/core/navigation/app_router.dart';
 import 'package:flutter/material.dart';
-
-import '../../../core/navigation/app_route_config.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  final _appRouter = getIt<AppRouter>();
-  final _authProvider = getIt<AuthProvider>();
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        FlutterQuillLocalizations.delegate,
+      ],
+      supportedLocales: supportedLocales,
       debugShowCheckedModeBanner: false,
       title: 'ECNX Ambient Listening',
       theme: ThemeData(
@@ -21,10 +25,7 @@ class MyApp extends StatelessWidget {
         primaryColor: AppColors.accentBlue,
         useMaterial3: true,
       ),
-      routerConfig: _appRouter.config(
-        /// uncomment the line below to enable authentication guard
-        // reevaluateListenable: _authProvider,
-      ),
+      routerConfig: router,
     );
   }
 }

@@ -1,220 +1,333 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
+import 'package:ecnx_ambient_listening/core/models/appointment_model/appointment_model.dart';
+import 'package:ecnx_ambient_listening/core/models/form_model/form_model.dart';
+import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
+import 'package:ecnx_ambient_listening/core/models/transcription_model/transcription_model.dart';
+import 'package:ecnx_ambient_listening/core/network/network.dart';
+import 'package:ecnx_ambient_listening/core/web_socket/web_socket_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:intl/intl.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
-import 'package:path/path.dart' as p;
+import 'package:shared_preferences/shared_preferences.dart';
 
-/// Manages the state and behavior for recording functionality, including status, timer, and visibility of text fields and buttons.
 class RecordProvider extends ChangeNotifier {
-  /// The implementation of the Record for voice recording
+  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  late StreamController<Uint8List> _audioStreamController;
 
-  RecordProvider() {
-    _audioRecord = AudioRecorder();
-  }
+  final List<TranscriptionModel> recordedTranscribeDataList = [];
 
-  /// Initializes the provider with the provided [audioRecord].
-  late final AudioRecorder _audioRecord;
-
-  AudioRecorder get audioRecord => _audioRecord;
-
-  /// Generates a random ID to use for the audio file name.
-  /// This is used to ensure unique file names for each recording.
-  String _generateRandomId() {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    final random = Random();
-    return List.generate(
-      10,
-      (index) => chars[random.nextInt(chars.length)],
-      growable: false,
-    ).join();
-  }
-
-  /// Determines the appropriate directory path based on the platform.
-  Future<String> _getDirectoryPath() async {
-    if (kIsWeb) {
-      // Web platform: Store in memory or handle via browser APIs.
-      return '/web_recordings';
-    } else {
-      // Mobile/Desktop platform: Use `path_provider`.
-      final directory = await getApplicationDocumentsDirectory();
-      return directory.path;
-    }
-  }
-
-  /// Starts recording audio using the [AudioRecorder].
-  /// This method also starts the timer to track the recording duration.
-  Future<void> startRecordingAudio() async {
-    try {
-      if (await hasPermission()) {
-        final directory = await _getDirectoryPath();
-        _audioFilePath = p.join(directory, '${_generateRandomId()}.wav');
-        await _audioRecord.start(
-          const RecordConfig(
-            encoder: AudioEncoder.wav,
-          ),
-          path: _audioFilePath!
-        );
-      } else {
-        debugPrint('Permission denied');
-      }
-    } catch (e) {
-      debugPrint('Error starting recording: $e');
-    }
-  }
-
-  Future<bool> hasPermission() async {
-    final status = await Permission.microphone.status;
-    if (status.isGranted) {
-      return true;
-    } else {
-      final result = await Permission.microphone.request();
-      return result.isGranted;
-    }
-  }
-
-  /// Stops the ongoing audio recording.
-  /// This method also stops the timer tracking the recording duration.
-  Future<void> stopRecordingAudio() async {
-    try {
-      _audioFilePath = await  _audioRecord.stop();
-    } catch (e) {
-      debugPrint('Error stopping recording: $e');
-    }
-  }
-
-  Future<void> resumeRecordingAudio() async {
-    try {
-      await _audioRecord.resume();
-    } catch (e) {
-      debugPrint('Error resuming recording: $e');
-    }
-  }
-
-  Future<void> pauseRecordingAudio() async {
-    try {
-      await _audioRecord.pause();
-    } catch (e) {
-      debugPrint('Error pausing recording: $e');
-    }
-  }
-
-  /// File path of the recorded audio file.
-  /// This is used to play the recorded audio.
+  final record = AudioRecorder();
+  late final SharedPreferences _prefs;
+  late final WebSocketService _socketService;
+  late final Network _network;
 
   String? _audioFilePath;
+  final List<String> _chunkPaths = [];
 
-  String? get audioFilePath => _audioFilePath;
-
-  /*
-  * 0 - Initial state (not recording)
-  * 1 - Recording state
-  * 2 - Stopped state (recording stopped)
-  # 3 - Ended session (provider disposed)
-  */
-  // Private variable to hold the current status of recording.
   int _status = 0;
-
-  /// Returns the current status of the recording (initial, recording, or stopped).
-  int get status => _status;
-
-  /// Updates the recording status and notifies listeners of the change.
-  ///
-  /// [status] - The new status to set (0 for initial, 1 for recording, 2 for stopped).
-  void setStatus(int status) {
-    _status = status;
-    notifyListeners();
-  }
-
-  /// Starts the recording by setting the status to recording (1).
-  void startRecording() {
-    if (_status == 0) {
-      startRecordingAudio();
-    } else if (_status == 2) {
-      resumeRecordingAudio();
-    }
-    setStatus(1);
-  }
-
-  /// Stops the recording by setting the status to stopped (2).
-  void stopRecording() {
-    pauseRecordingAudio();
-    setStatus(2);
-  }
-
-  /// Resets the recording status to the initial state (0).
-  void reset() {
-    setStatus(0);
-  }
-
-  // Timer
+  bool _showTextField = true;
+  bool isLoading = false;
   Timer? _timer;
-
   int seconds = 0;
   int minutes = 0;
+  String? audioKey;
 
-  /// Returns the current timer instance. Can be used to check if a timer is running.
+  String? get audioFilePath => _audioFilePath;
+  int get status => _status;
+  bool get showTextField => _showTextField;
   Timer? get timer => _timer;
 
-  /// Starts a periodic timer that updates every second, tracking the elapsed time.
-  ///
-  /// The timer updates the [seconds] and [minutes] counters and notifies listeners of the changes.
-  void startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (seconds == 59) {
-        // When seconds reach 59, reset to 0 and increment minutes.
-        seconds = 0;
-        minutes++;
-      } else {
-        // Increment seconds.
-        seconds++;
-      }
+  LogModel? log;
+
+  RecordProvider() {
+    _init();
+  }
+
+  Future<void> _init() async {
+    _prefs = await SharedPreferences.getInstance();
+    _network = Network(_prefs);
+    _socketService = WebSocketService(prefs: _prefs);
+  }
+
+  Future<String> _generateFilePath() async {
+    final basePath = kIsWeb
+        ? '/web_recordings'
+        : (await getApplicationDocumentsDirectory()).path;
+    final fileName = List.generate(10, (_) => _randomChar()).join();
+    return p.join(basePath, '$fileName.wav');
+  }
+
+  String _randomChar() {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    return chars[Random().nextInt(chars.length)];
+  }
+
+  Future<bool> _hasMicrophonePermission() async {
+    final status = await Permission.microphone.status;
+    return status.isGranted ||
+        (await Permission.microphone.request()).isGranted;
+  }
+
+  /// Start recording.
+  /// If resume==false, starts fresh (clears recordedText and timer)
+  /// If resume==true, resumes recording without resetting state
+  Future<void> startRecording({bool resume = false}) async {
+    if (!await _hasMicrophonePermission()) {
+      debugPrint('🎤 Microphone permission denied');
+      return;
+    }
+    if (!resume) {
+      recordedTranscribeDataList.clear();
+      seconds = 0;
+      minutes = 0;
+      _chunkPaths.clear();
+      _audioFilePath = await _generateFilePath();
       notifyListeners();
-    });
+    }
+
+    _audioStreamController = StreamController<Uint8List>.broadcast();
+
+    try {
+      final chunkFilePath = await _generateFilePath();
+      _chunkPaths.add(chunkFilePath);
+
+      if (!resume || !_socketService.isConnected) {
+        await _socketService.connect();
+
+        _socketService.socketListener(
+          onTranscript: _handleTranscript,
+          onKey: (key) {
+            audioKey = key;
+          },
+        );
+      }
+
+      await record.start(RecordConfig(), path: chunkFilePath);
+
+      await _recorder.openRecorder();
+
+      await _recorder.startRecorder(
+        toStream: _audioStreamController,
+        codec: Codec.pcm16WAV,
+      );
+
+      _audioStreamController.stream.listen((data) {
+        _socketService.sendText(data);
+      });
+
+      _setStatus(1);
+
+      if (_timer == null) {
+        _startTimer();
+      }
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('❌ Error during recording start/resume: $e');
+    }
   }
 
-  /// Stops the ongoing timer.
-  void stopTimer() {
-    _timer?.cancel();
-  }
+  void _handleTranscript(TranscriptionModel transcriptReturnModel) {
+    final transcript = transcriptReturnModel.transcription.trim();
+    if (transcript.isEmpty) return;
 
-  // TextField visibility management
-  bool _showTextField = true;
+    final model = TranscriptionModel(
+      speaker: transcriptReturnModel.speaker,
+      transcription: transcript,
+      time: transcriptReturnModel.time,
+    );
+    print('model - $model');
+    recordedTranscribeDataList.add(model);
 
-  /// Returns whether the text field should be displayed or hidden.
-  bool get showTextField => _showTextField;
-
-  /// Hides or shows the text field based on the provided value.
-  ///
-  /// [hideTextField] - A boolean indicating whether to hide the text field.
-  void setHideTextField(bool hideTextField) {
-    _showTextField = hideTextField;
     notifyListeners();
   }
 
-  /// Toggles the visibility of the text field.
+  Future<void> pauseRecording() async {
+    if (_status != 1) return;
+
+    try {
+      await _recorder.stopRecorder();
+      await record.stop();
+
+      _setStatus(2);
+      _stopTimer();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('❌ Error during recording pause: $e');
+    }
+  }
+
+  Future<void> stopRecording() async {
+    try {
+      if (_status == 1) {
+        await pauseRecording();
+      }
+
+      if (_chunkPaths.isNotEmpty && _audioFilePath != null) {
+        await _mergeWavFiles(_chunkPaths, _audioFilePath!);
+      }
+
+      _setStatus(2);
+      _stopTimer();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('❌ Error during recording stop: $e');
+    }
+  }
+
+  /// Merge multiple WAV files into one by concatenating PCM data, skipping headers except first file
+  Future<void> _mergeWavFiles(
+      List<String> chunkPaths, String outputPath) async {
+    if (chunkPaths.isEmpty) return;
+
+    final outputFile = File(outputPath);
+    final outputSink = outputFile.openWrite();
+
+    // Read first chunk (header + data)
+    final firstChunk = File(chunkPaths.first);
+    final firstBytes = await firstChunk.readAsBytes();
+
+    // Write WAV header of first chunk
+    outputSink.add(firstBytes.sublist(0, 44));
+
+    // Write PCM data from all chunks skipping headers
+    for (final chunkPath in chunkPaths) {
+      final chunkFile = File(chunkPath);
+      final bytes = await chunkFile.readAsBytes();
+
+      // Skip header for all chunks (44 bytes)
+      outputSink.add(bytes.sublist(44));
+    }
+
+    await outputSink.flush();
+    await outputSink.close();
+  }
+
+  void reset() {
+    _setStatus(0);
+    recordedTranscribeDataList.clear();
+    _chunkPaths.clear();
+    seconds = 0;
+    minutes = 0;
+    _audioFilePath = null;
+    _stopTimer();
+    notifyListeners();
+  }
+
+  Future<void> saveMedicalForm(
+    AppointmentModel appointment,
+  ) async {
+    isLoading = true;
+    notifyListeners();
+    FormModel form;
+    final key = await _socketService.requestAudioKey();
+    debugPrint('audioKey - $key');
+    final duration = await _getFormattedDuration();
+    final forms = await _network.getForms();
+    form = forms.firstWhere((f) =>
+        f.user == appointment.user &&
+        DateFormat('yyyy-mm-dd').format(f.createdAt) ==
+            DateFormat('yyyy-mm-dd').format(appointment.createdAt));
+    log = await _network.createLog(
+      key: key,
+      duration: duration,
+      form: form.id,
+      appointment: appointment.id,
+    );
+
+    if (log != null) {
+      for (final transcribeData in recordedTranscribeDataList) {
+        print('transcribeData.time - ${transcribeData.time}');
+        await _network.createChunk(
+          speaker: transcribeData.speaker,
+          transcription: transcribeData.transcription,
+          time: transcribeData.time,
+          logId: log!.id,
+        );
+      }
+    }
+    isLoading = false;
+    notifyListeners();
+  }
+
   void toggleTextField() {
     _showTextField = !_showTextField;
     notifyListeners();
   }
 
-  /// Cleans up any resources when the provider is disposed.
-  /// This ensures that the timer is canceled to avoid memory leaks.
+  void setHideTextField(bool hide) {
+    _showTextField = !hide;
+    notifyListeners();
+  }
+
+  void close() async {
+    await _recorder.closeRecorder();
+    await _audioStreamController.close();
+    _socketService.close();
+
+    _stopTimer();
+    _setStatus(3);
+    notifyListeners();
+  }
+
   @override
   void dispose() {
-    debugPrint('Disposing RecordProvider');
-    _audioRecord.dispose();
-    _status = 3;
-    _timer?.cancel();
+    debugPrint('🧹 Disposing RecordProvider');
+    close();
     super.dispose();
   }
 
-  void close() {
-    _audioRecord.dispose();
-    _status = 3;
-    _timer?.cancel();
+  void _setStatus(int newStatus) {
+    _status = newStatus;
     notifyListeners();
+  }
+
+  void _startTimer() {
+    _timer ??= Timer.periodic(const Duration(seconds: 1), (_) {
+      seconds++;
+      if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+      }
+      notifyListeners();
+    });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  Future<Duration?> _getAudioDuration(String path) async {
+    final player = AudioPlayer();
+    try {
+      final pos = await player.setFilePath(path);
+      debugPrint('Audio duration for $path - $pos');
+      return player.duration;
+    } catch (e) {
+      debugPrint('❌ Error getting audio duration: $e');
+      return null;
+    } finally {
+      await player.dispose();
+    }
+  }
+
+  Future<double> _getFormattedDuration() async {
+    if (_audioFilePath == null) return 0.0;
+    debugPrint('_audioFilePath - $_audioFilePath');
+    final duration = await _getAudioDuration(_audioFilePath!);
+    if (duration == null) return 0.0;
+
+    final int minutes = duration.inMinutes;
+    final int seconds = duration.inSeconds % 60;
+    return double.parse('$minutes.${seconds.toString().padLeft(2, '0')}');
   }
 }

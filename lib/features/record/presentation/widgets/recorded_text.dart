@@ -1,14 +1,18 @@
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
+import 'package:ecnx_ambient_listening/core/constants/consts.dart';
+import 'package:ecnx_ambient_listening/core/models/transcription_model/transcription_model.dart';
 import 'package:flutter/material.dart';
 
 class ColorCodedTextField extends StatefulWidget {
   const ColorCodedTextField({
     super.key,
-    required this.height
+    required this.height,
+    required this.recordedText,
   });
 
   final double height;
+  final List<TranscriptionModel> recordedText;
 
   @override
   State createState() => _ColorCodedTextFieldState();
@@ -16,17 +20,9 @@ class ColorCodedTextField extends StatefulWidget {
 
 class _ColorCodedTextFieldState extends State<ColorCodedTextField> {
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _controller = TextEditingController();
-
-  final List<Map<String, dynamic>> _textData = [
-    {'text': 'Speech-to-Text Implementation.Speech Input Indicator .Transcribed Patient Responses. Auto-populate Pre-defined Medical Forms. Speaker Identification: Multi-speaker Display, Dynamic Speaker Switching, Profiles, Timeline. Speech-to-Text Implementation.Speech Input Indicator .Transcribed Patient Responses. Auto-populate Pre-defined Medical Forms. Speaker Identification: Multi-speaker Display, Dynamic Speaker Switching, Profiles, Timeline.\n\n', 'color': Colors.green},
-    {'text': 'Speech-to-Text Implementation.Speech Input Indicator .Transcribed Patient Responses. Auto-populate Pre-defined Medical Forms. Speaker Identification: Multi-speaker Display, Dynamic Speaker Switching, Profiles, Timeline. Speech-to-Text Implementation.Speech.\n\n', 'color': Colors.blue},
-    {'text': 'Speech-to-Text Implementation.Speech Input Indicator .Transcribed Patient Responses. Auto-populate Pre-defined Medical For\n\n', 'color': Colors.red},
-  ];
 
   @override
   void dispose() {
-    _controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -56,12 +52,15 @@ class _ColorCodedTextFieldState extends State<ColorCodedTextField> {
           child: SingleChildScrollView(
             controller: _scrollController,
             padding: const EdgeInsets.all(10),
-            child: SelectableText.rich(
+            child: Text.rich(
               TextSpan(
-                children: _textData.map((data) {
+                children: widget.recordedText.map((transcription) {
+                  final speakerColor = speakerColors[
+                      transcription.speaker % speakerColors.length];
                   return TextSpan(
-                    text: data['text'],
-                    style: AppTextStyles.regularPx16.copyWith(color: data['color'])
+                    text: '${transcription.transcription} ',
+                    style:
+                        AppTextStyles.regularPx16.copyWith(color: speakerColor),
                   );
                 }).toList(),
               ),

@@ -33,5 +33,18 @@ class TitleAndTextModel {
   final String title;
   final String text;
 
-  const TitleAndTextModel({required this.title, required this.text});
+  const TitleAndTextModel({
+    required this.title,
+    required this.text,
+  });
+
+  TitleAndTextModel copyWith({
+    String? title,
+    String? text,
+  }) {
+    return TitleAndTextModel(
+      title: title ?? this.title,
+      text: text ?? this.text,
+    );
+  }
 }

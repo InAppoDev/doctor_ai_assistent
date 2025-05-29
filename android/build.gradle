@@ -1,7 +1,17 @@
+buildscript {
+    ext.kotlin_version = '1.9.22'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+}
+
 allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://www.arthenica.com/maven" }
     }
 }
 

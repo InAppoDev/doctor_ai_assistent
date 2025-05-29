@@ -1,237 +1,456 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_colors.dart';
+import 'package:ecnx_ambient_listening/core/constants/app_icons.dart';
 import 'package:ecnx_ambient_listening/core/constants/app_text_styles.dart';
-import 'package:ecnx_ambient_listening/core/navigation/app_route_config.dart';
-import 'package:ecnx_ambient_listening/core/services/get_it/get_it_service.dart';
-import 'package:ecnx_ambient_listening/core/widgets/custom_text_button.dart';
+import 'package:ecnx_ambient_listening/core/models/log_model/log_model.dart';
+import 'package:ecnx_ambient_listening/core/navigation/routes.dart';
 import 'package:ecnx_ambient_listening/core/widgets/logo_widget.dart';
 import 'package:ecnx_ambient_listening/core/widgets/primary_button.dart';
 import 'package:ecnx_ambient_listening/core/widgets/responsive/responsive_widget.dart';
+import 'package:ecnx_ambient_listening/features/edit/presentation/pages/transcribed_list_page.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/desktop_transcribed_list_widget.dart';
 import 'package:ecnx_ambient_listening/features/edit/presentation/widgets/edit_text_tile/edit_texts_list_widget.dart';
 import 'package:ecnx_ambient_listening/features/edit/provider/edit_state.dart';
 import 'package:ecnx_ambient_listening/features/edit/provider/player_provider.dart';
+import 'package:ecnx_ambient_listening/features/medical_form/presentation/pages/medical_form_page.dart';
 import 'package:ecnx_ambient_listening/features/medical_form/presentation/widgets/medical_form_dialog_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-@RoutePage()
-class EditPage extends StatelessWidget implements AutoRouteWrapper {
-  /// Note: need to add the [id] parameter to the constructor for fetching the text
-  final String path;
-  const EditPage({super.key, @QueryParam() this.path = ''});
+class EditPageArgs {
+  const EditPageArgs({
+    required this.appointmentId,
+    required this.log,
+  });
 
-  @override
-  Widget wrappedRoute(BuildContext context) {
-    final decodedPath = Uri.decodeComponent(path);
-    return MultiProvider(providers: [
-      ChangeNotifierProvider(
-        create: (context) => PlayerProvider()..initData(url: decodedPath),
-      ),
-      ChangeNotifierProvider(create: (context) => EditState())
-    ], child: this);
-  }
+  final int appointmentId;
+  final LogModel log;
+}
+
+class EditPage extends StatelessWidget {
+  final EditPageArgs args;
+
+  const EditPage({
+    super.key,
+    required this.args,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: AppColors.bg,
-        body: SafeArea(
-          child: Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                  child: SingleChildScrollView(
-                    child: Column(
-                        mainAxisAlignment:
-                            Responsive.isDesktop(context) ? MainAxisAlignment.start : MainAxisAlignment.center,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => PlayerProvider()..initData(url: args.log.audio),
+        ),
+        ChangeNotifierProvider(
+          lazy: false,
+          create: (context) => EditState(log: args.log),
+        ),
+      ],
+      builder: (context, _) {
+        return Consumer2<EditState, PlayerProvider>(
+            builder: (context, editState, playerProvider, child) {
+          return Scaffold(
+              backgroundColor: AppColors.bg,
+              body: SafeArea(
+                child: editState.isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Row(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              LogoWidget(onTap: () {}).paddingOnly(top: Responsive.isDesktop(context) ? 16 : 8)
-                            ],
-                          ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 26),
-                          Responsive(
-                            desktop: const Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Edit the text',
-                                  style: AppTextStyles.mediumPx32,
-                                ),
-                              ],
-                            ),
-                            mobile: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      getIt<AppRouter>().back();
-                                    },
-                                    child: const Icon(Icons.arrow_back, color: AppColors.accentBlue, size: 24),
-                                  ),
-                                ),
-                                const Text(
-                                  'Edit the text',
-                                  style: AppTextStyles.mediumPx24,
-                                ),
-                                Container()
-                              ],
-                            ),
-                          ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
-
-                          /// transcribed list button for navigation to transcribed list
-                          if (Responsive.isMobile(context))
-                            PrimaryButton(
-                              onPress: () {
-                                final audioFilePath = context.read<PlayerProvider>().audioFilePath;
-                                getIt<AppRouter>().push(TranscribedListRoute(
-                                  path: Uri.encodeComponent(audioFilePath.isEmpty ? path : audioFilePath),
-                                ));
-                              },
-                              color: AppColors.accentGreen,
-                              textColor: AppColors.white,
-                              text: 'Transcribed',
-                              borderColor: AppColors.accentGreen,
-                            ).paddingOnly(bottom: 24),
-
-                          /// editable textfield list
-                          EditTextsListWidget(
-                            list: context.read<EditState>().transcribedTexts,
-                          ).paddingOnly(bottom: Responsive.isDesktop(context) ? 40 : 24),
-
-                          /// responsive buttons section
-                          Responsive(
-                              desktop: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  PrimaryButton(
-                                    text: 'Fill out a medical form',
-                                    textColor: AppColors.white,
-                                    color: AppColors.accentBlue,
-                                    borderColor: AppColors.accentBlue,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    onPress: () {
-                                      final ValueNotifier<int?> selectedFormIndex = ValueNotifier(null);
-                                      showDialog(
-                                          context: context,
-                                          builder: (dialogContext) {
-                                            return MedicalFormDialogWidget(
-                                                onCloseClick: () {
-                                                  Navigator.of(dialogContext).pop();
+                          Expanded(
+                            flex: 2,
+                            child: ScrollConfiguration(
+                              behavior: ScrollConfiguration.of(context)
+                                  .copyWith(scrollbars: false),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                    mainAxisAlignment:
+                                        Responsive.isDesktop(context)
+                                            ? MainAxisAlignment.start
+                                            : MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          LogoWidget(onTap: () {}).paddingOnly(
+                                              top: Responsive.isDesktop(context)
+                                                  ? 16
+                                                  : 8)
+                                        ],
+                                      ).paddingOnly(
+                                          bottom: Responsive.isDesktop(context)
+                                              ? 40
+                                              : 26),
+                                      Responsive(
+                                        desktop: const Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Edit the text',
+                                              style: AppTextStyles.mediumPx32,
+                                            ),
+                                          ],
+                                        ),
+                                        mobile: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            MouseRegion(
+                                              cursor: SystemMouseCursors.click,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  HomeRoute().go(context);
                                                 },
-                                                onSaveClick: () {
-                                                  var audioFilePath = context.read<PlayerProvider>().audioFilePath;
-                                                  if (audioFilePath.isEmpty) {
-                                                    audioFilePath = Uri.decodeComponent(path);
+                                                child: const Icon(
+                                                    Icons.arrow_back,
+                                                    color: AppColors.accentBlue,
+                                                    size: 24),
+                                              ),
+                                            ),
+                                            const Text(
+                                              'Edit the text',
+                                              style: AppTextStyles.mediumPx24,
+                                            ),
+                                            Container()
+                                          ],
+                                        ),
+                                      ).paddingOnly(
+                                          bottom: Responsive.isDesktop(context)
+                                              ? 40
+                                              : 24),
+
+                                      /// transcribed list button for navigation to transcribed list
+                                      if (Responsive.isMobile(context) &&
+                                          editState.fetchedLog != null)
+                                        PrimaryButton(
+                                          onPress: () {
+                                            TranscribedListRoute(
+                                              TranscribedListArgs(
+                                                  log: editState.fetchedLog!),
+                                            ).push(context);
+                                          },
+                                          color: AppColors.accentGreen,
+                                          textColor: AppColors.white,
+                                          text: 'Transcribed',
+                                          borderColor: AppColors.accentGreen,
+                                        ).paddingOnly(bottom: 24),
+
+                                      EditTextsListWidget(
+                                        chunks: editState.unitedSpeakerChunks,
+                                      ).paddingOnly(
+                                          bottom: Responsive.isDesktop(context)
+                                              ? 40
+                                              : 24),
+
+                                      /// responsive buttons section
+                                      Responsive(
+                                          desktop: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              PrimaryButton(
+                                                text: 'Fill out a medical form',
+                                                textColor: AppColors.white,
+                                                color: AppColors.accentBlue,
+                                                borderColor:
+                                                    AppColors.accentBlue,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
+                                                onPress: () async {
+                                                  final ValueNotifier<int?>
+                                                      selectedFormIndex =
+                                                      ValueNotifier(0);
+                                                  await context
+                                                      .read<EditState>()
+                                                      .saveEditedChunks();
+                                                  if (context.mounted) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder:
+                                                            (dialogContext) {
+                                                          return MedicalFormDialogWidget(
+                                                              onCloseClick: () {
+                                                                Navigator.of(
+                                                                        dialogContext)
+                                                                    .pop();
+                                                              },
+                                                              onSaveClick: () {
+                                                                if (editState
+                                                                        .fetchedLog !=
+                                                                    null) {
+                                                                  MedicalFormRoute(
+                                                                    MedicalFormPageArgs(
+                                                                        selectedFormIndex:
+                                                                            selectedFormIndex.value ??
+                                                                                0,
+                                                                        log: editState
+                                                                            .fetchedLog!),
+                                                                  ).push(
+                                                                      context);
+                                                                }
+                                                              },
+                                                              medicalForms: const [
+                                                                'Progress Notes',
+                                                                'H&P form'
+                                                              ],
+                                                              selectedFormIndex:
+                                                                  selectedFormIndex);
+                                                        }).then((_) {
+                                                      selectedFormIndex
+                                                          .dispose();
+                                                    });
                                                   }
-                                                  getIt<AppRouter>()
-                                                      .push(MedicalFormRoute(path: Uri.encodeComponent(audioFilePath)));
                                                 },
-                                                medicalForms: const ['Progress Notes', 'H&P form'],
-                                                selectedFormIndex: selectedFormIndex);
-                                          }).then((_) {
-                                        selectedFormIndex.dispose();
-                                      });
-                                    },
-                                  ).paddingOnly(right: 20),
-                                  PrimaryButton(
-                                    text: 'Save',
-                                    textColor: AppColors.text,
-                                    color: Colors.transparent,
-                                    borderColor: AppColors.accentBlue,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    onPress: () {
-                                      getIt<AppRouter>().popUntil((route) => route.settings.name == HomeRoute.name);
-                                    },
-                                  )
-                                ],
-                              ).paddingOnly(bottom: 32),
-                              mobile: Column(
-                                children: [
-                                  PrimaryButton(
-                                    text: 'Fill out a medical form',
-                                    textColor: AppColors.white,
-                                    color: AppColors.accentBlue,
-                                    borderColor: AppColors.accentBlue,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    textStyle: AppTextStyles.regularPx16.copyWith(color: AppColors.white),
-                                    onPress: () {
-                                      final ValueNotifier<int?> selectedFormIndex = ValueNotifier(null);
-                                      showDialog(
-                                          context: context,
-                                          builder: (dialogContext) {
-                                            return MedicalFormDialogWidget(
-                                                onCloseClick: () {
-                                                  Navigator.of(dialogContext).pop();
-                                                },
-                                                onSaveClick: () {
-                                                  var audioFilePath = context.read<PlayerProvider>().audioFilePath;
-                                                  if (audioFilePath.isEmpty) {
-                                                    audioFilePath = Uri.decodeComponent(path);
+                                              ).paddingOnly(right: 20),
+                                              PrimaryButton(
+                                                text: 'Save',
+                                                textColor: AppColors.text,
+                                                color: Colors.transparent,
+                                                borderColor:
+                                                    AppColors.accentBlue,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
+                                                onPress: () async {
+                                                  await context
+                                                      .read<EditState>()
+                                                      .saveEditedChunks();
+                                                  if (context.mounted) {
+                                                    const HomeRoute()
+                                                        .go(context);
                                                   }
-                                                  getIt<AppRouter>()
-                                                      .push(MedicalFormRoute(path: Uri.encodeComponent(audioFilePath)));
                                                 },
-                                                medicalForms: const ['Progress Notes', 'H&P form'],
-                                                selectedFormIndex: selectedFormIndex);
-                                          }).then((_) {
-                                        selectedFormIndex.dispose();
-                                      });
-                                    },
-                                  ).paddingOnly(bottom: 16),
-                                  PrimaryButton(
-                                    text: 'Save',
-                                    textColor: AppColors.text,
-                                    color: Colors.transparent,
-                                    borderColor: AppColors.accentBlue,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    textStyle: AppTextStyles.regularPx16,
-                                    onPress: () {
-                                      getIt<AppRouter>().popUntil((route) => route.settings.name == HomeRoute.name);
-                                    },
-                                  ).paddingOnly(bottom: 24),
-                                ],
-                              )),
+                                              )
+                                            ],
+                                          ).paddingOnly(bottom: 32),
+                                          mobile: Column(
+                                            children: [
+                                              PrimaryButton(
+                                                text: 'Fill out a medical form',
+                                                textColor: AppColors.white,
+                                                color: AppColors.accentBlue,
+                                                borderColor:
+                                                    AppColors.accentBlue,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
+                                                textStyle: AppTextStyles
+                                                    .regularPx16
+                                                    .copyWith(
+                                                        color: AppColors.white),
+                                                onPress: () async {
+                                                  final ValueNotifier<int?>
+                                                      selectedFormIndex =
+                                                      ValueNotifier(0);
+                                                  await context
+                                                      .read<EditState>()
+                                                      .saveEditedChunks();
+                                                  if (context.mounted) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder:
+                                                            (dialogContext) {
+                                                          return MedicalFormDialogWidget(
+                                                              onCloseClick: () {
+                                                                Navigator.of(
+                                                                        dialogContext)
+                                                                    .pop();
+                                                              },
+                                                              onSaveClick: () {
+                                                                if (editState
+                                                                        .fetchedLog !=
+                                                                    null) {
+                                                                  MedicalFormRoute(
+                                                                    MedicalFormPageArgs(
+                                                                        selectedFormIndex:
+                                                                            selectedFormIndex.value ??
+                                                                                0,
+                                                                        log: editState
+                                                                            .fetchedLog!),
+                                                                  ).push(
+                                                                      context);
+                                                                }
+                                                              },
+                                                              medicalForms: const [
+                                                                'Progress Notes',
+                                                                'H&P form'
+                                                              ],
+                                                              selectedFormIndex:
+                                                                  selectedFormIndex);
+                                                        }).then((_) {
+                                                      selectedFormIndex
+                                                          .dispose();
+                                                    });
+                                                  }
+                                                },
+                                              ).paddingOnly(bottom: 16),
+                                              PrimaryButton(
+                                                text: 'Save',
+                                                textColor: AppColors.text,
+                                                color: Colors.transparent,
+                                                borderColor:
+                                                    AppColors.accentBlue,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
+                                                textStyle:
+                                                    AppTextStyles.regularPx16,
+                                                onPress: () async {
+                                                  await context
+                                                      .read<EditState>()
+                                                      .saveEditedChunks();
+                                                  if (context.mounted) {
+                                                    HomeRoute().pushReplacement(
+                                                        context);
+                                                  }
+                                                },
+                                              ).paddingOnly(bottom: 24),
+                                            ],
+                                          )),
 
-                          /// export as buttons
-                          Responsive(
-                              desktop: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CustomTextButton(
-                                      text: 'Export as',
-                                      onPressed: () async {
-                                        await context.read<EditState>().exportAsPDF();
-                                      }).paddingOnly(right: 20),
-                                ],
+                                      /// export as buttons
+                                      Responsive(
+                                        desktop: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () async {
+                                                await context
+                                                    .read<EditState>()
+                                                    .exportAsPDF();
+                                              },
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      WidgetStatePropertyAll(
+                                                          Colors.transparent)),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    'Export as as document',
+                                                    style: AppTextStyles
+                                                        .mediumPx16
+                                                        .copyWith(
+                                                      color: AppColors.text,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                    ),
+                                                  ).paddingOnly(right: 18),
+                                                  SvgPicture.asset(
+                                                    AppIcons.pdfIcon,
+                                                  ),
+                                                ],
+                                              ),
+                                            ).paddingOnly(right: 20),
+                                            TextButton(
+                                              onPressed: () async {
+                                                await context
+                                                    .read<EditState>()
+                                                    .exportAsCSV();
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    'Export as as document',
+                                                    style: AppTextStyles
+                                                        .mediumPx16
+                                                        .copyWith(
+                                                      color: AppColors.text,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                    ),
+                                                  ).paddingOnly(right: 18),
+                                                  SvgPicture.asset(
+                                                    AppIcons.csvIcon,
+                                                  ),
+                                                ],
+                                              ),
+                                            ).paddingOnly(right: 20),
+                                          ],
+                                        ),
+                                        mobile: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () async {
+                                                await context
+                                                    .read<EditState>()
+                                                    .exportAsPDF();
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Export as document',
+                                                    style: AppTextStyles
+                                                        .mediumPx16
+                                                        .copyWith(
+                                                      color: AppColors.text,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                    ),
+                                                  ).paddingOnly(right: 18),
+                                                  SvgPicture.asset(
+                                                    AppIcons.pdfIcon,
+                                                  ),
+                                                ],
+                                              ),
+                                            ).paddingOnly(bottom: 16),
+                                            TextButton(
+                                              onPressed: () async {
+                                                await context
+                                                    .read<EditState>()
+                                                    .exportAsCSV();
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Export as document',
+                                                    style: AppTextStyles
+                                                        .mediumPx16
+                                                        .copyWith(
+                                                      color: AppColors.text,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                    ),
+                                                  ).paddingOnly(right: 18),
+                                                  SvgPicture.asset(
+                                                      AppIcons.csvIcon),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ]).paddingAll(
+                                    Responsive.isDesktop(context) ? 40 : 16),
                               ),
-                              mobile: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomTextButton(
-                                    text: 'Export as',
-                                    onPressed: () async {
-                                      await context.read<EditState>().exportAsPDF();
-                                    },
-                                  ).paddingOnly(bottom: 16),
-                                ],
-                              )),
-                        ]).paddingAll(Responsive.isDesktop(context) ? 40 : 16),
-                  ),
-                ),
-              ),
+                            ),
+                          ),
 
-              /// desktop transcribed list
-              if (Responsive.isDesktop(context)) const Expanded(flex: 1, child: DesktopTranscribedListWidget())
-            ],
-          ),
-        ));
+                          /// desktop transcribed list
+                          if (Responsive.isDesktop(context) &&
+                              editState.fetchedLog != null)
+                            Expanded(
+                                flex: 1,
+                                child: DesktopTranscribedListWidget(
+                                  log: editState.fetchedLog!,
+                                ))
+                        ],
+                      ),
+              ));
+        });
+      },
+    );
   }
 }

@@ -7,7 +7,6 @@ class PlayerProvider extends ChangeNotifier {
   // ---------------------------------------------------------------------------
   // Initialization
   // ---------------------------------------------------------------------------
-
   /// Initializes the audio player with the provided [url].
   ///
   /// - Throws an [ArgumentError] if the URL is empty.
@@ -16,32 +15,16 @@ class PlayerProvider extends ChangeNotifier {
   Future<void> initData({required String url}) async {
     if (url.isEmpty) {
       throw ArgumentError('URL cannot be empty');
-    } else {
-      _audioFilePath = url;
     }
-
     try {
-      var source;
-      if (kIsWeb){
-        source = AudioSource.uri(Uri.parse(url));
-      } else {
-        source = AudioSource.file(url);
-      }
-
-      await player.setAudioSource(source);
-      // await _player.setFilePath(url); // Loads the audio file from the URL.
-      _duration = _player.duration ?? Duration.zero; // Set audio duration or fallback to zero.
-      notifyListeners(); // Notify UI of updated state.
+      await player.setUrl(url);
+      _duration = _player.duration ?? Duration.zero;
+      notifyListeners();
     } catch (e) {
       debugPrint('Error initializing audio: $e');
       rethrow; // Rethrow the exception for higher-level handling.
     }
   }
-
-  /// Audio file path for the current audio player instance.
-  String _audioFilePath = '';
-
-  String get audioFilePath => _audioFilePath;
 
   // ---------------------------------------------------------------------------
   // Audio Player and State Management
@@ -63,6 +46,16 @@ class PlayerProvider extends ChangeNotifier {
   void setIsPlaying(bool value) {
     _isPlaying = value;
     notifyListeners(); // Notify UI of the updated playing state.
+  }
+
+  void playPause() {
+    if (_player.playing) {
+      _player.pause();
+      setIsPlaying(false);
+    } else {
+      _player.play();
+      setIsPlaying(true);
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -93,13 +86,16 @@ class PlayerProvider extends ChangeNotifier {
     notifyListeners(); // Notify UI of the updated position.
   }
 
-  int _transcribedId = 0;
+  int transcribedId = 0;
 
-  int get transcribedId => _transcribedId;
+  void setTranscribedId(int id, double timePosition) {
+    transcribedId = id;
+    final newDuration = _duration.inMilliseconds > 0
+        ? Duration(milliseconds: (timePosition * 1000).toInt())
+        : Duration.zero;
 
-  void setTranscribedId(int id) {
-    _transcribedId = id;
-    setPosition(_duration.inSeconds > 0 ? Duration(seconds: _duration.inSeconds ~/ 2) : Duration.zero);
+    setPosition(newDuration);
+    _player.seek(newDuration);
     notifyListeners();
   }
 
