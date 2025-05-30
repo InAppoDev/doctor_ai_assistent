@@ -323,8 +323,6 @@ class _RecordPageState extends State<RecordPage> {
                                           builder: (context) {
                                             return MedicalFormDialogWidget(
                                               onCloseClick: () {
-                                                print(
-                                                    'selectedFormIndex - $selectedFormIndex');
                                                 Navigator.of(context).pop();
                                               },
                                               onSaveClick: () async {

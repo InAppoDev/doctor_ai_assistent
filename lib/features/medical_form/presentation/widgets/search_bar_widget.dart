@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatefulWidget {
   final TextEditingController controller;
-  final Function() onSearch;
+  final Function(String) onChanged;
   final Function() onMicTap;
   final Function() onClear;
   final bool isListening;
@@ -15,7 +15,7 @@ class SearchBarWidget extends StatefulWidget {
   const SearchBarWidget({
     super.key,
     required this.controller,
-    required this.onSearch,
+    required this.onChanged,
     required this.onMicTap,
     required this.onClear,
     this.isListening = false,
@@ -78,11 +78,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                           .copyWith(color: AppColors.disabled),
                       border: InputBorder.none,
                     ),
-                    onSubmitted: (_) {
-                      if (mounted) {
-                        widget.onSearch(); // Ensure the widget is still active
-                      }
-                    },
+                    onChanged: widget.onChanged,
                   ),
                 ),
                 if (showCloseButton)
@@ -110,7 +106,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                     width: 140,
                     height: 48,
                     child: PrimaryButton(
-                      onPress: widget.onSearch,
+                      onPress: widget.onChanged,
                       color: AppColors.accentBlue,
                       textColor: AppColors.white,
                       text: 'Search',

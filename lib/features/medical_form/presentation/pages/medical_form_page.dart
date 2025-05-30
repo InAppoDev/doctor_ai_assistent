@@ -139,7 +139,7 @@ class _MedicalFormPageState extends State<MedicalFormPage> {
                                                   medicalProvider.isListening,
                                               controller: medicalProvider
                                                   .searchController,
-                                              onSearch: () {},
+                                              onChanged: (text) {},
                                               onMicTap:
                                                   medicalProvider.onMicTap,
                                               onClear:

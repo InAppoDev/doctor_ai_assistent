@@ -11,9 +11,11 @@ class AppointmentsContainerWidget extends StatefulWidget {
   const AppointmentsContainerWidget({
     super.key,
     required this.getLogByAppointment,
+    required this.onChanged,
   });
 
   final LogModel? Function(int) getLogByAppointment;
+  final void Function(String) onChanged;
 
   @override
   State<AppointmentsContainerWidget> createState() =>
@@ -43,7 +45,7 @@ class _AppointmentsContainerWidgetState
         children: [
           SearchBarWidget(
             onMicTap: () {},
-            onSearch: () {},
+            onChanged: widget.onChanged,
             controller: textEditingController,
             onClear: textEditingController.clear,
           ).paddingOnly(right: 20),

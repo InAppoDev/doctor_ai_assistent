@@ -1,12 +1,24 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:ecnx_ambient_listening/core/models/transcription_model/transcription_model.dart';
 import 'package:ecnx_ambient_listening/core/services/auth_service/auth_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class PlatformChecker {
+  static bool get isWeb => kIsWeb;
+
+  static bool get isMobile {
+    if (kIsWeb) return false;
+    try {
+      return Platform.isAndroid || Platform.isIOS;
+    } catch (e) {
+      return false;
+    }
+  }
+}
 
 class WebSocketService {
   WebSocket? _rawSocket; // For sending

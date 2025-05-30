@@ -55,6 +55,11 @@ class HomePage extends StatelessWidget {
                                   SchedulePatientButton(
                                     onPressed: () async {
                                       await ScheduleRoute().push(context);
+                                      if (context.mounted) {
+                                        await context
+                                            .read<HomeState>()
+                                            .getAppointments();
+                                      }
                                     },
                                   )
                                 ],
@@ -101,11 +106,7 @@ class HomePage extends StatelessWidget {
                                 isListening: state.isListening,
                                 onClear: state.searchController.clear,
                                 controller: state.searchController,
-                                onSearch: () {
-                                  /// call the view model method to search for the patient
-                                  /// the view model should update the appointments list based on the search result
-                                  // context.read<HomeState>().searchPatient();
-                                },
+                                onChanged: (text) {},
                                 onMicTap: homeProvider.onMicTap,
                               ).paddingOnly(bottom: 24),
                               SchedulePatientButton(
@@ -143,6 +144,7 @@ class HomePage extends StatelessWidget {
                                       Flexible(
                                           flex: 4,
                                           child: AppointmentsContainerWidget(
+                                            onChanged: homeProvider.onChanged,
                                             getLogByAppointment: homeProvider
                                                 .getLogByAppointment,
                                           )),

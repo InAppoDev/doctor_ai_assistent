@@ -63,6 +63,11 @@ class HomeState extends ChangeNotifier {
     return null;
   }
 
+  void onChanged(String text) {
+    _searchController.text = text;
+    notifyListeners();
+  }
+
   final TextEditingController _searchController = TextEditingController();
   TextEditingController get searchController => _searchController;
 

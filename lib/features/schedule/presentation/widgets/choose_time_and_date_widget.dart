@@ -17,7 +17,7 @@ class ChooseTimeAndDateWidget extends StatelessWidget {
         color: AppColors.bg,
         boxShadow: [
           BoxShadow(
-            color: AppColors.text.withOpacity(0.1),
+            color: AppColors.text.withValues(alpha: 0.1),
             offset: const Offset(0, 6),
             blurRadius: 2,
           ),
@@ -26,32 +26,30 @@ class ChooseTimeAndDateWidget extends StatelessWidget {
       child: Row(children: [
         Flexible(
           flex: 3,
-          child: Consumer<ScheduleState>(
-            builder: (context, state, _) {
-              return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 3.5,
-                ),
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: context.read<ScheduleState>().availableTimes.length,
-                itemBuilder: (context, index) {
-                  final time = state.availableTimes[index];
-                  return RadioWithTimeWidget(
-                    time: time,
-                    onPressed: (selectedTime) {
-                      state.onScheduleTimeSelected(selectedTime);
-                    },
-                    isAvailable: index % 2 == 0,
-                    isSelected: state.scheduleTime == time,
-                  );
-                },
-              );
-            }
-          ),
+          child: Consumer<ScheduleState>(builder: (context, state, _) {
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 3.5,
+              ),
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: context.read<ScheduleState>().availableTimes.length,
+              itemBuilder: (context, index) {
+                final time = state.availableTimes[index];
+                return RadioWithTimeWidget(
+                  time: time,
+                  onPressed: (selectedTime) {
+                    state.onScheduleTimeSelected(selectedTime);
+                  },
+                  isAvailable: state.isTimeSlotInFuture(time),
+                  isSelected: state.scheduleTime == time,
+                );
+              },
+            );
+          }),
         ),
         Flexible(flex: 1, child: Container()),
         Flexible(

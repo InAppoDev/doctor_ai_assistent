@@ -74,8 +74,7 @@ class SchedulePage extends StatelessWidget {
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              crossAxisSpacing:
-                                  Responsive.isDesktop(context) ? 10 : 10,
+                              crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
                               childAspectRatio: 4.2,
                             ),
@@ -205,11 +204,11 @@ class SchedulePage extends StatelessWidget {
                                   borderColor: AppColors.accentBlue,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 12),
-                                  onPress: () {
-                                    /// call the view model method to submit the form
-                                    /// the view model should submit the form and navigate to the home page
-                                    /// context.read<MedicalFormState>().submitForm();
-                                    context.pop();
+                                  onPress: () async {
+                                    await p.savePatientScheduleAndCreateForm();
+                                    if (context.mounted) {
+                                      context.pop();
+                                    }
                                   },
                                 ).paddingOnly(right: 20),
                                 PrimaryButton(
